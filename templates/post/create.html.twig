@@ -1,0 +1,26 @@
+{% extends 'client.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4 mb-4">
+        <h1 class="text-center mb-4">Créer un Nouveau Post</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm p-4">
+                    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                        <div class="mb-3">
+                            {{ form_row(form.titre) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.contenu) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.imageFile) }}
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Publier 🌱</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
