@@ -1,33 +1,52 @@
 {% extends 'client.html.twig' %}
 
-{% block title %} Panier {% endblock %}
+{% block title %}Mon Panier{% endblock %}
 
 {% block body %}
-    <h1>Votre Panier</h1>
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title">Mon Panier</h3>
+            </div>
+            <div class="card-body">
+                {% if panier is empty %}
+                    <div class="alert alert-warning" role="alert">
+                        Votre panier est vide.
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Quantité</th>
+                                    <th>Prix Unitaire</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produit in panier %}
+                                    <tr>
+                                        <td>{{ produit.nom }}</td> <!-- Nom du produit -->
+                                        <td>{{ produit.quantitestock }}</td> <!-- Quantité -->
+                                        <td>{{ produit.prixunitaire }} €</td> <!-- Prix unitaire -->
+                                        <td>{{ produit.prixunitaire * produit.quantitestock }} €</td> <!-- Prix total -->
+                                        <td>
+                                            <a href="{{ path('app_commande_supprimer', {id: produit.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
 
-    {% if panier is empty %}
-        <div class="alert alert-warning">Votre panier est vide.</div>
-    {% else %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Produit</th>
-                    <th>Quantité</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for id, quantity in panier %}
-                    <tr>
-                        <td>Produit {{ id }}</td>
-                        <td>{{ quantity }}</td>
-                        <td>
-                            <a href="{{ path('app_commande_supprimer', {'id': id}) }}" class="btn btn-danger">Supprimer</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="{{ path('app_commande_vider') }}" class="btn btn-warning">Vider le panier</a>
-    {% endif %}
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <p><strong>Total : </strong>{{ total }} €</p>
+                        <a href="{{ path('app_commande_commander') }}" class="btn btn-success">Passer la commande</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

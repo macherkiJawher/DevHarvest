@@ -1,49 +1,72 @@
 <?php
-// src/Service/PanierService.php
+
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PanierService
 {
-    private SessionInterface $session;
+    private $requestStack;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
-    public function ajouterProduit(int $id)
+    public function ajouterProduit(int $produitId)
     {
-        $panier = $this->session->get('panier', []);
+        $request = $this->requestStack->getCurrentRequest();
+        $panier = $request->cookies->get('panier', '[]'); // Valeur par défaut comme tableau vide en JSON
+        $panier = json_decode($panier, true);
 
-        if (!isset($panier[$id])) {
-            $panier[$id] = 1;
-        } else {
-            $panier[$id]++;
-        }
+        // Ajout du produit au panier
+        $panier[] = $produitId;
 
-        $this->session->set('panier', $panier);
+        // On met à jour le cookie avec le nouveau panier
+        setcookie('panier', json_encode($panier), time() + 3600, '/');
     }
 
-    public function getPanier(): array
+    public function getPanier()
     {
-        return $this->session->get('panier', []);
+        $request = $this->requestStack->getCurrentRequest();
+        $panier = $request->cookies->get('panier', '[]'); // Valeur par défaut comme tableau vide en JSON
+        return json_decode($panier, true);
     }
 
-    public function supprimerProduit(int $id)
+    public function supprimerProduit(int $produitId)
     {
-        $panier = $this->session->get('panier', []);
+        $request = $this->requestStack->getCurrentRequest();
+        $panier = $request->cookies->get('panier', '[]'); // Valeur par défaut comme tableau vide en JSON
+        $panier = json_decode($panier, true);
 
-        if (isset($panier[$id])) {
-            unset($panier[$id]);
-        }
+        // Retirer le produit du panier
+        $panier = array_diff($panier, [$produitId]);
 
-        $this->session->set('panier', $panier);
+        setcookie('panier', json_encode($panier), time() + 3600, '/');
     }
 
     public function viderPanier()
     {
-        $this->session->remove('panier');
+        // Supprimer le cookie du panier
+        setcookie('panier', '', time() - 3600, '/');
+    }
+
+    // Calculer le total du panier
+    public function getTotal()
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        $panier = $request->cookies->get('panier', '[]'); // Valeur par défaut comme tableau vide en JSON
+        $panier = json_decode($panier, true);
+
+        $total = 0;
+        // Ici tu devrais récupérer les prix des produits dans ton panier
+        foreach ($panier as $produitId) {
+            // Exemple de récupération du prix d'un produit à partir de l'ID
+            // Tu dois remplacer ceci par un appel à ton repository pour obtenir les détails du produit
+            $prixProduit = 10; // Exemple : Remplace ceci par la logique pour récupérer le prix réel du produit
+            $total += $prixProduit;
+        }
+
+        return $total;
     }
 }

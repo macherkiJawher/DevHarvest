@@ -10,7 +10,7 @@ parameters:
 
 services:
 
-    App\Service\PanierService: ~
+   
 
     # default configuration for services in *this* file
     _defaults:

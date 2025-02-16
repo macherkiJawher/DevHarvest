@@ -7,7 +7,11 @@
             {% endfor %}
         </ul>
         <p>Total: {{ panier.total }}€</p>
-        <a href="{{ path('passer_commande') }}" class="btn btn-success">Passer la commande</a>
+        <form action="{{ path('app_commande_commander') }}" method="POST">
+    <button type="submit" class="btn btn-success">Passer la commande</button>
+</form>
+
+
     {% else %}
         <p>Votre panier est vide.</p>
     {% endif %}

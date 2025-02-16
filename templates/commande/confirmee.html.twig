@@ -1,9 +1,24 @@
 {% extends 'client.html.twig' %}
 
-{% block title %}Commande Confirmée{% endblock %}
+{% block title %}Confirmation de Commande{% endblock %}
 
 {% block body %}
-    <h1>Merci pour votre commande !</h1>
-    <p>Votre commande a été enregistrée avec succès.</p>
-    <a href="{{ path('produit_index') }}" class="btn btn-primary">Retour à la boutique</a>
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h3 class="card-title">Confirmation de votre commande</h3>
+            </div>
+            <div class="card-body">
+                <p>Merci pour votre commande ! Voici les détails :</p>
+                <ul>
+                    <li><strong>ID de la commande : </strong>{{ commande.id }}</li>
+                    <li><strong>Date : </strong>{{ commande.date|date('d/m/Y') }}</li>
+                    <li><strong>Total : </strong>{{ commande.total }} €</li>
+                </ul>
+
+                <p>Nous vous enverrons un e-mail de confirmation sous peu.</p>
+                <a href="{{ path('app_home') }}" class="btn btn-primary">Retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
