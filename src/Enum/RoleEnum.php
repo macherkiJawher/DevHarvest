@@ -13,7 +13,6 @@ enum RoleEnum: string
     public static function getChoices(): array
     {
         return [
-            'Admin' => self::ADMIN,
             'Agriculteur' => self::AGRICULTEUR,
             'Client' => self::CLIENT,
             'Fournisseur' => self::FOURNISSEUR,

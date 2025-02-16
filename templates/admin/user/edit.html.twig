@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Éditer l'Utilisateur</h1>
-    {{ form_start(form) }}
+    {{ form_start(form,{'attr': {'novalidate': 'novalidate'}} ) }}
         {{ form_widget(form) }}
         <button class="btn btn-primary mt-2">Mettre à jour</button>
     {{ form_end(form) }}

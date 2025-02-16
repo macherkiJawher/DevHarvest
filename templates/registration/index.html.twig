@@ -1,13 +1,47 @@
-{% extends 'base.html.twig' %}
+{% extends 'client.html.twig' %}
 
 {% block title %}Inscription{% endblock %}
 
-{% block body %}
-    <h1>Inscription</h1>
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.password) }}
-        {{ form_row(registrationForm.role) }}
-        {{ form_row(registrationForm.submit) }}
-    {{ form_end(registrationForm) }}
+{% block navbar %} 
+ <header class="main-header">
+        <!-- Start Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-default bootsnav">
+            <div class="container">
+                <!-- Start Header Navigation -->
+                <div class="navbar-header">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+                    <a class="navbar-brand" href="{{ path('app_client') }}"><img src="{{ asset('client/images/logo.png')}}" class="logo" alt=""></a>
+                </div>
+                <!-- End Header Navigation -->
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
+                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Login</a></li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+        </nav>
+    </header>
 {% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card p-4" style="max-width: 400px; width: 100%; background-color: #f1f8e9; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <h1 class="text-center" style="color: #388e3c;">Inscription</h1>
+
+          {{ form_start(form,{'attr': {'novalidate': 'novalidate'}} ) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-success mt-2">
+        register</button>
+    {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+

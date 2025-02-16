@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/admin/user')]
 class UserCrudController extends AbstractController
@@ -24,23 +25,31 @@ class UserCrudController extends AbstractController
     }
 
     #[Route('/new', name: 'admin_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+   
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        UserPasswordHasherInterface $passwordHasher // Injection du service de hachage
+    ): Response {
         $user = new User();
-        // Pour créer un nouvel utilisateur, on utilise le formulaire admin.
+        
+        // Utilisation du formulaire UserType
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-        
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            // Si vous souhaitez gérer le mot de passe, pensez à le hasher ici.
-            // Par exemple : $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
-            
+            // Vérifier si un mot de passe a été saisi avant de le hacher
+            if ($user->getPassword()) {
+                $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+                $user->setPassword($hashedPassword);
+            }
+    
             $entityManager->persist($user);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('admin_user_index');
         }
-
+    
         return $this->render('admin/user/new.html.twig', [
             'user' => $user,
             'form' => $form->createView(),

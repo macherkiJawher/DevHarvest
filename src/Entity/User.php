@@ -61,17 +61,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [$this->role->value];
     }
+   
 
-    public function getRole(): RoleEnum
+    public function getRole(): string
     {
-        return $this->role;
+        return $this->role->value ?? 'ROLE_USER'; // Assure qu'une valeur est toujours retournée
     }
+    
 
-    public function setRole(RoleEnum $role): self
-    {
-        $this->role = $role;
-        return $this;
-    }
+    
+    public function setRole(string $role): self
+{
+    $this->role = RoleEnum::from($role); // Convertit la chaîne en Enum
+    return $this;
+}
+
+
 
     public function getUserIdentifier(): string
     {

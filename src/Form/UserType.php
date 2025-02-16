@@ -27,21 +27,17 @@ class UserType extends AbstractType
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Rôle',
-                'choices' => RoleEnum::getChoices(),
+                'choices' => array_combine(
+                    array_map(fn (RoleEnum $role) => $role->name, array_filter(RoleEnum::cases(), fn ($role) => $role !== RoleEnum::ADMIN)),
+                    array_map(fn (RoleEnum $role) => $role->value, array_filter(RoleEnum::cases(), fn ($role) => $role !== RoleEnum::ADMIN))
+                ),
                 'expanded' => false,
                 'multiple' => false,
-                // Affiche la clé du tableau comme label
-                'choice_label' => function ($choice, $key, $value) {
-                    return $key;
-                },
-                // Utilise la valeur de l'énumération comme valeur du champ
-                'choice_value' => function (?RoleEnum $choice) {
-                    return $choice?->value;
-                },
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Enregistrer'
             ]);
+            
+            
+            
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -1,0 +1,28 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4">Connexion</h2>
+
+    {% if error %}
+        <div class="alert alert-danger">Email ou mot de passe incorrect.</div>
+    {% endif %}
+
+   <form method="post">
+    <div class="mb-3">
+        <label for="email" class="form-label">Email :</label>
+        <input type="email" name="_username" id="email" class="form-control" required autofocus>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe :</label>
+        <input type="password" name="_password" id="password" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Se connecter</button>
+</form>
+
+</div>
+{% endblock %}

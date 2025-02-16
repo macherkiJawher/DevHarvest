@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use App\Enum\RoleEnum;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,23 +16,34 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
-    {
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        UserPasswordHasherInterface $passwordHasher // Injection du service de hachage
+    ): Response {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-
+        
+        // Utilisation du formulaire UserType
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+            // Vérifier si un mot de passe a été saisi avant de le hacher
+            if ($user->getPassword()) {
+                $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+                $user->setPassword($hashedPassword);
+            }
+    
             $entityManager->persist($user);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_login');
         }
-
+    
         return $this->render('registration/index.html.twig', [
-            'registrationForm' => $form->createView(),
+            'user' => $user,
+            'form' => $form->createView(),
         ]);
     }
+    
 }
