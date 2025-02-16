@@ -1,15 +1,14 @@
-{% extends 'client.html.twig' %}
-
-<h1>Votre Panier</h1>
-
-<div>
-    {% if panier is not empty %}
+{% block body %}
+    <h1>Mon Panier</h1>
+    {% if panier.items is not empty %}
         <ul>
-            {% for produit in panier %}
-                <li>{{ produit.nom }} - {{ produit.prix }}€</li>
+            {% for item in panier.items %}
+                <li>{{ item.produit.nom }} - {{ item.produit.prix }}€ x{{ item.quantite }}</li>
             {% endfor %}
         </ul>
+        <p>Total: {{ panier.total }}€</p>
+        <a href="{{ path('passer_commande') }}" class="btn btn-success">Passer la commande</a>
     {% else %}
         <p>Votre panier est vide.</p>
     {% endif %}
-</div>
+{% endblock %}

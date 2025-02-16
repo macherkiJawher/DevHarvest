@@ -15,6 +15,40 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/produit')]
 final class ProduitController extends AbstractController
 {
+    // Méthode privée pour gérer le téléchargement des images
+    private function handleImageUpload($imageFile, Produit $produit): ?string
+    {
+        if ($imageFile) {
+            // Validation de l'extension du fichier
+            $allowedExtensions = ['jpg', 'jpeg', 'png'];
+            $extension = $imageFile->guessExtension();
+            if (!in_array($extension, $allowedExtensions)) {
+                $this->addFlash('error', 'Le fichier doit être une image de type JPG ou PNG.');
+                return null;
+            }
+
+            // Validation de la taille du fichier (max 5 Mo)
+            if ($imageFile->getSize() > 5 * 1024 * 1024) {
+                $this->addFlash('error', 'Le fichier est trop volumineux. La taille maximale autorisée est de 5 Mo.');
+                return null;
+            }
+
+            // Créer le nom unique et déplacer le fichier
+            $filename = uniqid() . '.' . $extension;
+            try {
+                $imageFile->move(
+                    $this->getParameter('produit_images_directory'),
+                    $filename
+                );
+                return $filename;
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
+                return null;
+            }
+        }
+        return null;
+    }
+
     #[Route('/', name: 'app_produit_index', methods: ['GET'])]
     public function index(ProduitRepository $produitRepository): Response
     {
@@ -31,26 +65,17 @@ final class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handling the image file
-            $imageFile = $form->get('imageFile')->getData(); // Correct field name here
-            if ($imageFile) {
-                $filename = uniqid() . '.' . $imageFile->guessExtension(); // Create a unique filename
-                try {
-                    $imageFile->move(
-                        $this->getParameter('produit_images_directory'), // Target directory
-                        $filename
-                    );
-                    $produit->setImage($filename); // Save the filename to the database
-                } catch (FileException $e) {
-                    // Handle the exception if upload fails
-                    $this->addFlash('error', 'An error occurred during the image upload.');
-                    return $this->redirectToRoute('app_produit_new');
-                }
+            // Gérer l'upload de l'image
+            $imageFile = $form->get('imageFile')->getData();
+            $filename = $this->handleImageUpload($imageFile, $produit);
+            if ($filename) {
+                $produit->setImage($filename);
             }
 
             $entityManager->persist($produit);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Produit ajouté avec succès!');
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -75,25 +100,18 @@ final class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handling the image file in case of modification
-            $imageFile = $form->get('imageFile')->getData(); // Correct field name here
+            // Gérer l'upload de l'image si elle est modifiée
+            $imageFile = $form->get('imageFile')->getData();
             if ($imageFile) {
-                $filename = uniqid() . '.' . $imageFile->guessExtension(); // Create a unique filename
-                try {
-                    $imageFile->move(
-                        $this->getParameter('produit_images_directory'), // Target directory
-                        $filename
-                    );
-                    $produit->setImage($filename); // Update the image in the database
-                } catch (FileException $e) {
-                    // Handle the exception if upload fails
-                    $this->addFlash('error', 'An error occurred during the image upload.');
-                    return $this->redirectToRoute('app_produit_edit', ['id' => $produit->getId()]);
+                $filename = $this->handleImageUpload($imageFile, $produit);
+                if ($filename) {
+                    $produit->setImage($filename);
                 }
             }
 
             $entityManager->flush();
 
+            $this->addFlash('success', 'Produit mis à jour avec succès!');
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -109,6 +127,8 @@ final class ProduitController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $produit->getId(), $request->get('_token'))) {
             $entityManager->remove($produit);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Produit supprimé avec succès!');
         }
 
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);

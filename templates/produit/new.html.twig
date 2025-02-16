@@ -15,21 +15,6 @@
 
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <!-- Messages de feedback -->
-            {% for message in app.flashes('success') %}
-                <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-
-            {% for message in app.flashes('error') %}
-                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-
             <!-- Carte contenant le formulaire -->
             <div class="card shadow-lg border-0">
                 <div class="card-header bg-success text-white text-center">
@@ -49,4 +34,29 @@
         </div>
     </div>
 </div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        {% if app.session.flashbag.has('success') %}
+            Swal.fire({
+                title: 'Succès!',
+                text: '{{ app.session.flashbag.get('success')[0] }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        {% endif %}
+
+        {% if app.session.flashbag.has('error') %}
+            Swal.fire({
+                title: 'Erreur!',
+                text: '{{ app.session.flashbag.get('error')[0] }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        {% endif %}
+    </script>
+{% endblock %}
 {% endblock %}

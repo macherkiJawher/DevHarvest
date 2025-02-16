@@ -4,17 +4,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Produit;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PanierRepository")
  */
 class Panier
 {
-    // Si tu as un utilisateur authentifié, tu peux l'ajouter ici.
-    // @ORM\ManyToOne(targetEntity="App\Entity\User")
-    // private $user;
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -33,7 +28,6 @@ class Panier
      */
     private $quantite;
 
-    // Getters et setters
     public function getId(): ?int
     {
         return $this->id;
@@ -44,7 +38,7 @@ class Panier
         return $this->produit;
     }
 
-    public function setProduit(?Produit $produit): self
+    public function setProduit(Produit $produit): self
     {
         $this->produit = $produit;
 

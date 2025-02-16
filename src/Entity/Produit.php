@@ -19,15 +19,21 @@ class Produit
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La description est obligatoire.")]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?float $prixunitaire = null; // Utilisation de float pour le prix
+    #[Assert\NotBlank(message: "Le prix unitaire est obligatoire.")]
+    #[Assert\Positive(message: "Le prix unitaire doit être un nombre positif.")]
+    private ?float $prixunitaire = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La quantité en stock est obligatoire.")]
+    #[Assert\PositiveOrZero(message: "La quantité en stock doit être un nombre positif ou égal à zéro.")]
     private ?int $quantitestock = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -40,6 +46,7 @@ class Produit
     private ?string $image = null;
 
     #[ORM\Column(type: 'string', enumType: CategorieProduit::class)]
+    #[Assert\NotBlank(message: "La catégorie est obligatoire.")]
     private ?CategorieProduit $categorie = null;
 
     /**
@@ -129,13 +136,13 @@ class Produit
         return $this->categorie;
     }
 
-    // Correction ici pour gérer l'énumération correctement.
+    // Setter for categorie
     public function setCategorie($categorie): static
     {
         if (is_string($categorie) && CategorieProduit::tryFrom($categorie)) {
-            $this->categorie = CategorieProduit::from($categorie); // Convertit directement en Enum
+            $this->categorie = CategorieProduit::from($categorie); // Convert directly to Enum
         } elseif ($categorie instanceof CategorieProduit) {
-            $this->categorie = $categorie; // Si l'objet est déjà de type CategorieProduit, on l'assigne directement
+            $this->categorie = $categorie; // If it's already an instance of CategorieProduit, just assign it
         } else {
             throw new \InvalidArgumentException("La catégorie doit être une valeur valide de l'énumération CategorieProduit.");
         }
@@ -173,7 +180,7 @@ class Produit
         return $this;
     }
 
-    // Méthode pour obtenir l'URL de l'image
+    // Method to get image URL
     public function getImageUrl(): string
     {
         return '/uploads/produits/' . $this->image;

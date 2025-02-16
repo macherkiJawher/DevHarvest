@@ -27,7 +27,8 @@
                                 <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
                                      alt="{{ produit.nom }}" 
                                      class="img-fluid" 
-                                     style="object-fit: cover; height: 100%; width: 100%;">
+                                     style="object-fit: cover; height: 100%; width: 100%;" 
+                                     loading="lazy">
                             {% else %}
                                 <div class="d-flex align-items-center justify-content-center h-100 bg-light">
                                     <span class="text-muted">Aucune image</span>
@@ -54,9 +55,7 @@
                             <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning me-2">
                                 <i class="fas fa-edit"></i> Modifier
                             </a>
-                            <form action="{{ path('app_produit_delete', {'id': produit.id}) }}" method="post" 
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');"
-                                  style="display:inline;">
+                            <form action="{{ path('app_produit_delete', {'id': produit.id}) }}" method="post" id="delete-form-{{ produit.id }}" style="display:inline;">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
                                 <button class="btn btn-danger" type="submit">
                                     <i class="fas fa-trash"></i> Supprimer
@@ -74,4 +73,47 @@
             {% endfor %}
         </div>
     </div>
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            {% if app.session.flashbag.has('success') %}
+                Swal.fire({
+                    title: 'Succès!',
+                    text: '{{ app.session.flashbag.get('success')[0] }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            {% endif %}
+
+            {% if app.session.flashbag.has('error') %}
+                Swal.fire({
+                    title: 'Erreur!',
+                    text: '{{ app.session.flashbag.get('error')[0] }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            {% endif %}
+
+            // Confirmation de suppression avec SweetAlert
+            {% for produit in produits %}
+                document.querySelector('#delete-form-{{ produit.id }}').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Êtes-vous sûr?',
+                        text: "Vous allez supprimer ce produit!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Oui, supprimer!',
+                        cancelButtonText: 'Annuler'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.submit(); // Soumettre le formulaire pour la suppression
+                        }
+                    });
+                });
+            {% endfor %}
+        </script>
+    {% endblock %}
 {% endblock %}
