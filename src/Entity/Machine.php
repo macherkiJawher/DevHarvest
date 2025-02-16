@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: 'App\Repository\MachineRepository')]
 class Machine
@@ -15,27 +16,37 @@ class Machine
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "Le nom de la machine est obligatoire.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le nom ne doit pas dépasser {{ limit }} caractères."
+    )]
     private $nom_machine;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "Le type de machine est obligatoire.")]
     private $type;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "L'état de la machine est obligatoire.")]
     private $etat;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(message: "La date du dernier entretien est obligatoire.")]
+    #[Assert\Type(\DateTimeInterface::class, message: "Veuillez fournir une date valide.")]
     private $date_dernier_entretien;
 
     #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(message: "Le prix de location est obligatoire.")]
+    #[Assert\Positive(message: "Le prix de location doit être un nombre positif.")]
     private $prix_location_jour;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "La marque de la machine est obligatoire.")]
     private $marque;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $image;
-
- 
 
     #[ORM\OneToMany(mappedBy: 'machine', targetEntity: Reservation::class, orphanRemoval: true)]
     private $reservations;
@@ -58,7 +69,6 @@ class Machine
     public function setNomMachine(string $nom_machine): self
     {
         $this->nom_machine = $nom_machine;
-
         return $this;
     }
 
@@ -70,7 +80,6 @@ class Machine
     public function setType(string $type): self
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -82,7 +91,6 @@ class Machine
     public function setEtat(string $etat): self
     {
         $this->etat = $etat;
-
         return $this;
     }
 
@@ -94,7 +102,6 @@ class Machine
     public function setDateDernierEntretien(\DateTimeInterface $date_dernier_entretien): self
     {
         $this->date_dernier_entretien = $date_dernier_entretien;
-
         return $this;
     }
 
@@ -106,7 +113,6 @@ class Machine
     public function setPrixLocationJour(int $prix_location_jour): self
     {
         $this->prix_location_jour = $prix_location_jour;
-
         return $this;
     }
 
@@ -118,23 +124,19 @@ class Machine
     public function setMarque(string $marque): self
     {
         $this->marque = $marque;
-
         return $this;
     }
 
-       // Getter et Setter pour l'attribut image
-       public function getImage(): ?string
-       {
-           return $this->image;
-       }
-   
-       public function setImage(?string $image): self
-       {
-           $this->image = $image;
-   
-           return $this;
-       }
-   
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+        return $this;
+    }
 
     /**
      * @return Collection|Reservation[]
@@ -150,19 +152,16 @@ class Machine
             $this->reservations[] = $reservation;
             $reservation->setMachine($this);
         }
-
         return $this;
     }
 
     public function removeReservation(Reservation $reservation): self
     {
         if ($this->reservations->removeElement($reservation)) {
-            // set the owning side to null (unless already changed)
             if ($reservation->getMachine() === $this) {
                 $reservation->setMachine(null);
             }
         }
-
         return $this;
     }
-} 
+}
