@@ -1,0 +1,14 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Créer un Nouvel Utilisateur{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Créer un Nouvel Utilisateur</h1>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-success mt-2">Créer</button>
+    {{ form_end(form) }}
+    <a href="{{ path('admin_user_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+</div>
+{% endblock %}

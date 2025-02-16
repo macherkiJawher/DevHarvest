@@ -1,0 +1,24 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de l'Utilisateur{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Détails de l'Utilisateur</h1>
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <td>{{ user.id }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <th>Rôle</th>
+            <td>{{ user.role.value }}</td>
+        </tr>
+    </table>
+    <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">Retour à la liste</a>
+</div>
+{% endblock %}
