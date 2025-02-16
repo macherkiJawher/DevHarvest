@@ -2,39 +2,52 @@
 
 {% block title %}Liste des posts{% endblock %}
 
-
-
-
 {% block body %}
-    <div class="container mt-4">
+    <div class="container mt-4" style="max-width: 800px;">
         <h1 class="text-center mb-4">🌾 Forum des Agriculteurs 🌿</h1>
 
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center mb-4">
-                <a href="{{ path('post_create') }}" class="btn btn-success w-100">Créer un nouveau post 🌱</a>
-            </div>
+        <div class="text-center mb-3">
+            <a href="{{ path('post_create') }}" class="btn btn-success w-100">Créer un nouveau post 🌱</a>
         </div>
 
-        <div class="row">
+        <div class="post-list">
             {% for post in posts %}
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        {% if post.image %}
-                            <img src="{{ asset('uploads/posts/' ~ post.image) }}" class="card-img-top" alt="Image du post">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">{{ post.titre }}</h5>
-                            <p class="card-text text-muted">{{ post.contenu|slice(0, 150) }}...</p>
-                            <p class="text-end"><small class="text-muted">🕒 Publié le {{ post.date|date('d/m/Y H:i') }}</small></p>
-                            
-                            <a href="{{ path('post_view', { 'id': post.id }) }}" class="btn btn-outline-primary w-100 mb-2">Voir plus ➡️</a>
-                            
-                            {% if post.auteur == app.user %}
-                                <form action="{{ path('post_delete', { 'id': post.id }) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
-                                    <button type="submit" class="btn btn-danger w-100">🗑 Supprimer</button>
-                                </form>
+                <div class="post-card shadow-sm p-3 mb-3 bg-white rounded position-relative">
+                    {% if post.auteur == app.user %}
+                        <form action="{{ path('post_delete', { 'id': post.id }) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');" class="position-absolute">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                            <button type="submit" class="btn btn-outline-danger  btn-sm"><i class="fas fa-trash"></i></button>
+                        </form>
+                    {% endif %}
+                    <div class="d-flex">
+                        <div class="w-100">
+                            <p class="text-muted mb-1"><strong>Posté par </strong></p>
+                            <small class="text-muted">🕒 Publié le {{ post.date|date('d/m/Y H:i') }}</small>
+                            <h5 class="mb-1 text-primary">{{ post.titre }}</h5>
+                            <p class="text-muted mb-1">{{ post.contenu|slice(0, 150) }}...</p>
+                            {% if post.image %}
+                                <img src="{{ asset('uploads/posts/' ~ post.image) }}" class="img-fluid img-custom mb-2 " alt="Image du post">
                             {% endif %}
+                            
+                            <div class="mt-2 d-flex gap-3 align-items-center">
+                                <!-- Like Button with Font Awesome Icon -->
+                                <button class="btn btn-outline-success btn-sm d-flex align-items-center like-btn">
+                                    <i class="fas fa-thumbs-up me-2 mr-2"></i> 
+                                    <span>3054</span>
+                                </button>
+
+                                <!-- Dislike Button with Font Awesome Icon -->
+                                <button class="btn btn-outline-danger btn-sm d-flex align-items-center dislike-btn">
+                                    <i class="fas fa-thumbs-down me-2 mr-2"></i>
+                                    <span>152</span>
+                                </button>
+
+                                <!-- Comment Button -->
+                                <a href="{{ path('post_view', { 'id': post.id }) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center comment-btn">
+                                    <i class="fas fa-comment me-2 mr-2"></i> 
+                                    <span> Voir plus</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -43,5 +56,78 @@
             {% endfor %}
         </div>
     </div>
-{% endblock %}
 
+    <style>
+        body {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .post-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            padding: 15px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Adding shadow for better separation */
+        }
+
+        .btn-outline-success, .btn-outline-danger, .btn-outline-primary {
+            transition: all 0.3s ease;
+            border-width: 2px; /* Increase the border width for more definition */
+        }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+            box-shadow: 0 4px 10px rgba(40,167,69,0.3); /* Shadow effect on hover */
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+            box-shadow: 0 4px 10px rgba(220,53,69,0.3);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+        }
+
+        .btn i {
+            font-size: 1.3em; /* Increased icon size for better visibility */
+        }
+
+        .img-custom {
+            max-height: 100vw;
+            border-radius: 20px;
+            object-fit: cover; /* Cela garantit que l'image conserve ses proportions sans déformation */
+        }
+
+        .position-absolute {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 10px;
+        }
+
+        .gap-3 {
+            gap: 20px;
+        }
+
+        /* Added animation on buttons */
+        .like-btn, .dislike-btn, .comment-btn {
+            border-radius: 30px; /* Rounded buttons */
+            padding: 8px 20px; /* Spacing inside the button */
+        }
+
+        .like-btn:hover, .dislike-btn:hover, .comment-btn:hover {
+            transform: scale(1.1); /* Slight zoom effect on hover */
+        }
+
+        /* Custom style for the button counters */
+        .btn span {
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}

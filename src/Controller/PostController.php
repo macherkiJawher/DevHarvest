@@ -72,13 +72,29 @@ class PostController extends AbstractController
     }
     
 
-    #[Route('/{id}', name: 'post_view')]
-    public function viewPost(Post $post): Response
-    {
-        return $this->render('post/view.html.twig', [
-            'post' => $post,
-        ]);
+    #[Route('/post/{id}', name: 'post_view')]
+public function view(Post $post, Request $request, EntityManagerInterface $entityManager): Response
+{
+    $commentaire = new Commentaire();
+    $form = $this->createForm(CommentaireType::class, $commentaire);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $commentaire->setDate(new \DateTime());
+        $commentaire->setPost($post);
+
+        $entityManager->persist($commentaire);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('post_view', ['id' => $post->getId()]);
     }
+
+    return $this->render('post/view.html.twig', [
+        'post' => $post,
+        'form' => $form->createView(), // ⚠️ On passe bien le formulaire à la vue
+    ]);
+}
+
 
     #[Route('/delete/{id}', name: 'post_delete', methods: ['POST'])]
 public function deletePost(Post $post, EntityManagerInterface $em): Response

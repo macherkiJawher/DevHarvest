@@ -17,11 +17,8 @@ class Commentaire
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
-
-    #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    private ?User $auteur = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
     private ?Post $post = null;
@@ -51,18 +48,6 @@ class Commentaire
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getAuteur(): ?user
-    {
-        return $this->auteur;
-    }
-
-    public function setAuteur(?user $auteur): static
-    {
-        $this->auteur = $auteur;
 
         return $this;
     }
