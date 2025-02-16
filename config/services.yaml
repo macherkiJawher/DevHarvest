@@ -9,6 +9,9 @@ parameters:
     produit_images_directory: '%kernel.project_dir%/public/uploads/produits'
 
 services:
+
+    App\Service\PanierService: ~
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

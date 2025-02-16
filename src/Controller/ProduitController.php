@@ -120,7 +120,14 @@ final class ProduitController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    #[Route('/commande/panier', name: 'produits_panier')]
+    public function afficherProduitsPourPanier(ProduitRepository $produitRepository): Response
+    {
+        $produits = $produitRepository->findAll();
 
+        return $this->render('produit/liste_panier.html.twig', [
+            'produits' => $produits,
+        ]);}
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {

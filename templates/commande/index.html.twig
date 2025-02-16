@@ -1,39 +1,38 @@
-{% extends 'client.html.twig' %}
+{# templates/panier/index.html.twig #}
+{% extends 'base.html.twig' %}
 
-{% block title %}Commande index{% endblock %}
+{% block title %}Votre Panier{% endblock %}
 
 {% block body %}
-    <h1>Commande index</h1>
-
+    <h1>Votre Panier</h1>
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Datecommande</th>
-                <th>Etat</th>
+                <th>Produit</th>
+                <th>Prix Unitaire</th>
+                <th>Quantité</th>
                 <th>Total</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for commande in commandes %}
-            <tr>
-                <td>{{ commande.id }}</td>
-                <td>{{ commande.datecommande ? commande.datecommande|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ commande.etat }}</td>
-                <td>{{ commande.total }}</td>
-                <td>
-                    <a href="{{ path('app_commande_show', {'id': commande.id}) }}">show</a>
-                    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
+            {% for item in panier %}
+                <tr>
+                    <td>{{ item.produit.nom }}</td>
+                    <td>{{ item.produit.prixunitaire }}€</td>
+                    <td>{{ item.quantite }}</td>
+                    <td>{{ item.total }}€</td>
+                    <td>
+                        <a href="{{ path('app_panier_ajouter', {'id': item.produit.id}) }}" class="btn btn-sm btn-success">+</a>
+                        <a href="{{ path('app_panier_retirer', {'id': item.produit.id}) }}" class="btn btn-sm btn-danger">-</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Votre panier est vide.</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_commande_new') }}">Create new</a>
+    <a href="{{ path('app_panier_vider') }}" class="btn btn-danger">Vider le panier</a>
 {% endblock %}
