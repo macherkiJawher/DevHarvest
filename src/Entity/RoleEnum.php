@@ -1,38 +1,21 @@
 <?php
 
-// src/Entity/RoleEnum.php
+namespace App\Enum;
 
-namespace App\Entity;
-
-use Doctrine\ORM\Mapping as ORM;
-
-#[ORM\Entity]
-#[ORM\Table(name: 'role_enum')]
-class RoleEnum
+enum RoleEnum: string
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
-    #[ORM\Column(type: 'string', length: 180)]
-    private ?string $name = null;
-
-    public function getId(): ?int
+    case AGRICULTEUR = 'ROLE_AGRICULTEUR';
+    case CLIENT = 'ROLE_CLIENT';
+    case FOURNISSEUR = 'ROLE_FOURNISSEUR';
+    case TECHNICIEN = 'ROLE_TECHNICIEN';
+    
+    public static function getChoices(): array
     {
-        return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
+        return [
+            'Agriculteur' => self::AGRICULTEUR,
+            'Client' => self::CLIENT,
+            'Fournisseur' => self::FOURNISSEUR,
+            'Technicien' => self::TECHNICIEN,
+        ];
     }
 }
-

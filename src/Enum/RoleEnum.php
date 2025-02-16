@@ -1,14 +1,23 @@
 <?php
-// src/Enum/RoleEnum.php
 
 namespace App\Enum;
 
-final class RoleEnum
+enum RoleEnum: string
 {
-    public const ROLE_USER = 'ROLE_USER';
-    public const ROLE_AGRICULTEUR = 'ROLE_AGRICULTEUR';
-    public const ROLE_CLIENT = 'ROLE_CLIENT';
-    public const ROLE_FOURNISSEUR = 'ROLE_FOURNISSEUR';
-    public const ROLE_ADMIN = 'ROLE_ADMIN';
-}
+    case ADMIN = 'ROLE_ADMIN';
+    case AGRICULTEUR = 'ROLE_AGRICULTEUR';
+    case CLIENT = 'ROLE_CLIENT';
+    case FOURNISSEUR = 'ROLE_FOURNISSEUR';
+    case TECHNICIEN = 'ROLE_TECHNICIEN';
 
+    public static function getChoices(): array
+    {
+        return [
+            'Admin' => self::ADMIN,
+            'Agriculteur' => self::AGRICULTEUR,
+            'Client' => self::CLIENT,
+            'Fournisseur' => self::FOURNISSEUR,
+            'Technicien' => self::TECHNICIEN,
+        ];
+    }
+}
