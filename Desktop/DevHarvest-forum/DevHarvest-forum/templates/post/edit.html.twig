@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le post{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center">Modifier le post</h1>
+
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+            <div class="mb-3">
+                {{ form_row(form.titre) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.contenu) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.imageFile) }}
+            </div>
+            <button type="submit" class="btn btn-success w-100">💾 Enregistrer</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('post_view', { 'id': post.id }) }}" class="btn btn-secondary mt-3">⬅ Annuler</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Liste des posts{% endblock %}
+
+
+
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">🌾 Forum des Agriculteurs 🌿</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center mb-4">
+                <a href="{{ path('post_create') }}" class="btn btn-success w-100">Créer un nouveau post 🌱</a>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if post.image %}
+                            <img src="{{ asset('uploads/posts/' ~ post.image) }}" class="card-img-top" alt="Image du post">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ post.titre }}</h5>
+                            <p class="card-text text-muted">{{ post.contenu|slice(0, 150) }}...</p>
+                            <p class="text-end"><small class="text-muted">🕒 Publié le {{ post.date|date('d/m/Y H:i') }}</small></p>
+                            
+                            <a href="{{ path('post_view', { 'id': post.id }) }}" class="btn btn-outline-primary w-100 mb-2">Voir plus ➡️</a>
+                            
+                            {% if post.auteur == app.user %}
+                                <form action="{{ path('post_delete', { 'id': post.id }) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                    <button type="submit" class="btn btn-danger w-100">🗑 Supprimer</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center">Aucun post trouvé.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+

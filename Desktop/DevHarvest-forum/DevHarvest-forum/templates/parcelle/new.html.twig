@@ -1,0 +1,96 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Ajouter une Parcelle{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="mb-4 text-center">Ajouter une Parcelle</h1>
+
+        {{ form_start(form, {'attr': {'class': 'parcelle-form'}}) }}
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form_label(form.description, 'Description de la parcelle', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.description, {
+                    'attr': {'class': 'form-control', 'placeholder': 'Entrez une description de la parcelle'}
+                }) }}
+                {{ form_errors(form.description) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_label(form.zone, 'Zone de la parcelle', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.zone, {
+                    'attr': {'class': 'form-control', 'placeholder': 'Entrez la zone de la parcelle'}
+                }) }}
+                {{ form_errors(form.zone) }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form_label(form.superficie, 'Superficie (m²)', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.superficie, {
+                    'attr': {'class': 'form-control', 'placeholder': 'Superficie en m²'}
+                }) }}
+                {{ form_errors(form.superficie) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_label(form.prix_de_location, 'Prix de location (TND)', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.prix_de_location, {
+                    'attr': {'class': 'form-control', 'placeholder': 'Prix de location en TND'}
+                }) }}
+                {{ form_errors(form.prix_de_location) }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form_label(form.date_de_location, 'Date de location', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.date_de_location, {
+                    'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez la date de location'}
+                }) }}
+                {{ form_errors(form.date_de_location) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_label(form.date_de_fin_location, 'Date de fin de location', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.date_de_fin_location, {
+                    'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez la date de fin de location'}
+                }) }}
+                {{ form_errors(form.date_de_fin_location) }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form_label(form.etat, 'État de la parcelle', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.etat, {
+                    'attr': {'class': 'form-control', 'placeholder': 'Indiquez l\'état de la parcelle'}
+                }) }}
+                {{ form_errors(form.etat) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_label(form.type_sol, 'Type de sol', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.type_sol, {
+                    'attr': {'class': 'form-control'}
+                }) }}
+                {{ form_errors(form.type_sol) }}
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                {{ form_label(form.image, 'Image de la parcelle (jpeg, png, gif)', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.image, {
+                    'attr': {'class': 'form-control-file'}
+                }) }}
+                {{ form_errors(form.image) }}
+            </div>
+        </div>
+
+        <div class="form-group text-center mt-4">
+            <button class="btn btn-success btn-lg" type="submit">Soumettre</button>
+            <a href="{{ path('parcelle_index') }}" class="btn btn-danger btn-lg ml-3">Annuler</a>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Créer une culture{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Créer une nouvelle culture</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                {{ form_start(form) }}
+                
+                <!-- Nom de la culture -->
+                <div class="mb-4">
+                    <label for="{{ form.nom.vars.id }}" class="form-label">Nom de la culture</label>
+                    {{ form_widget(form.nom, { 'attr': { 'class': 'form-control', 'placeholder': 'Entrez le nom de la culture' } }) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label for="{{ form.description.vars.id }}" class="form-label">Description</label>
+                    {{ form_widget(form.description, { 'attr': { 'class': 'form-control', 'placeholder': 'Décrivez brièvement la culture' } }) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <!-- Image -->
+                <div class="mb-4">
+                    <label for="{{ form.image.vars.id }}" class="form-label">Image de la culture (facultatif)</label>
+                    {{ form_widget(form.image, { 'attr': { 'class': 'form-control', 'accept': 'image/*' } }) }}
+                    {{ form_errors(form.image) }}
+                </div>
+
+                <!-- Date de plantation -->
+                <div class="mb-4">
+                    <label for="{{ form.datePlantation.vars.id }}" class="form-label">Date de plantation</label>
+                    {{ form_widget(form.datePlantation, { 'attr': { 'class': 'form-control', 'placeholder': 'Sélectionnez la date de plantation' } }) }}
+                    {{ form_errors(form.datePlantation) }}
+                </div>
+
+                <!-- Date de récolte -->
+                <div class="mb-4">
+                    <label for="{{ form.dateRecolte.vars.id }}" class="form-label">Date de récolte</label>
+                    {{ form_widget(form.dateRecolte, { 'attr': { 'class': 'form-control', 'placeholder': 'Sélectionnez la date de récolte' } }) }}
+                    {{ form_errors(form.dateRecolte) }}
+                </div>
+
+                <!-- Bouton de soumission -->
+                   <div class="form-group text-center mt-4">
+            <button class="btn btn-success btn-lg" type="submit">Soumettre</button>
+            <a href="{{ path('app_culture_index') }}" class="btn btn-danger btn-lg ml-3">Annuler</a>
+        </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Liste des cultures{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-5" style="font-family: 'Roboto', sans-serif; font-weight: 600;">Liste des cultures</h1>
+
+        <div class="d-flex justify-content-end mb-4">
+            <a href="{{ path('culture_new') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus"></i> Ajouter une culture
+            </a>
+        </div>
+
+        <div class="row">
+            {% for culture in cultures %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        {% if culture.image %}
+                            <img src="{{ asset('uploads/images/' ~ culture.image) }}" class="card-img-top" alt="{{ culture.nom }}">
+                        {% else %}
+                            <img src="{{ asset('images/default.jpg') }}" class="card-img-top" alt="Image non disponible">
+                        {% endif %}
+
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">{{ culture.nom }}</h5>
+                            <div>
+                                <a href="{{ path('culture_show', {'id': culture.id}) }}" class="btn btn-primary btn-sm">Voir plus</a>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ culture.id }})">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Popup de Confirmation -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmLabel">Confirmation de Suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer cette culture ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form id="deleteForm" method="POST">
+                        <input type="hidden" name="_token" id="csrfToken" value="">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(cultureId) {
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            const form = document.getElementById('deleteForm');
+            form.action = "/culture/" + cultureId;
+            document.getElementById('csrfToken').value = "{{ csrf_token('delete') }}";
+            modal.show();
+        }
+    </script>
+
+    <style>
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+    </style>
+
+{% endblock %}
