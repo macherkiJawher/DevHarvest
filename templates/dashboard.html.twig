@@ -1,0 +1,98 @@
+{# templates/admin/dashboard.html.twig #}
+
+{% extends 'client.html.twig' %}
+
+{% block title %}Dashboard Administrateur{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tableau de Bord Administrateur</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Liste des Zones</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Total des zones: {{ zones|length }}</p>
+                                        <a href="{{ path('admin_zone_index') }}" class="btn btn-primary">Voir toutes les zones</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Créer une Zone</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <a href="{{ path('admin_zone_new') }}" class="btn btn-success">Créer une nouvelle zone</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Zone populaire</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if zones|length > 0 %}
+                                            <p>La zone la plus populaire est: {{ zones[0].nomZone }}</p>
+                                        {% else %}
+                                            <p>Aucune zone disponible</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="mt-4">Zones récentes</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Superficie</th>
+                                            <th>Nom</th>
+                                            <th>Localisation</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for zone in zones %}
+                                            <tr>
+                                                <td>{{ zone.id }}</td>
+                                                <td>{{ zone.superficieZone }}</td>
+                                                <td>{{ zone.nomZone }}</td>
+                                                <td>{{ zone.localisationZone }}</td>
+                                                <td>
+                                                    <a href="{{ path('admin_zone_edit', {'id': zone.id}) }}" class="btn btn-warning">Éditer</a>
+                                                    <form action="{{ path('admin_zone_delete', {'id': zone.id}) }}" method="post" style="display:inline;">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ zone.id) }}">
+                                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="5">Aucune zone trouvée</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

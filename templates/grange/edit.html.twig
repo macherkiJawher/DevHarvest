@@ -1,0 +1,13 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Modifier{% endblock %}
+
+{% block body %}
+    <h1>Modifier une grange</h1>
+
+    {{ include('grange/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    <a href="{{ path('app_grange_index') }}">Retour</a>
+
+    {{ include('grange/_delete_form.html.twig') }}
+{% endblock %}

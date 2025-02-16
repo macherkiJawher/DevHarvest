@@ -1,0 +1,73 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Grange Index{% endblock %}
+
+{% block body %}
+    <!-- Start Granges -->
+    <div class="granges-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="title-all text-center">
+                        <h1>Granges</h1>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="special-menu text-center">
+                        <div class="button-group filter-button-group">
+                            <button onclick="window.location.href='{{ path('app_grange_new') }}'" class="active" data-filter="*">Créer une Grange</button>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row special-list">
+                {% for grange in granges %}
+        <div class="col-lg-3 col-md-6 special-grid">
+            <div class="grange-single fix">
+                <div class="box-img-hover">
+                    {% if grange.image %}
+                        <img class="img-fluid" src="{{ asset('uploads/granges/' ~ grange.image) }}" alt="{{ grange.typeGrange }}">
+                    {% else %}
+                        <img class="img-fluid" src="{{ asset('client/images/grange-placeholder.jpg') }}" alt="Default Grange Image">
+                    {% endif %}
+                    <div class="mask-icon">
+                        <ul>
+                            <li>
+                                <a href="{{ path('app_grange_show', {'id': grange.id}) }}" data-toggle="tooltip" data-placement="right" title="détails">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('app_grange_edit', {'id': grange.id}) }}" data-toggle="tooltip" data-placement="right" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="why-text">
+                    <h4>{{ grange.typeGrange }}</h4>
+                    <p>Capacity: {{ grange.capacite }} units</p>
+                    <p><strong>Zone:</strong> {{ grange.zone ? grange.zone.nomZone : 'Aucune zone' }}</p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12 text-center">
+            <p>No granges found.</p>
+        </div>
+    {% endfor %}
+            </div>
+            
+            
+
+        </div>
+    </div>
+    <!-- End Granges -->
+{% endblock %}

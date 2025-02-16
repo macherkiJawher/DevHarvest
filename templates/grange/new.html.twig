@@ -1,0 +1,11 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Créer une Grange{% endblock %}
+
+{% block body %}
+    <h1>Créer une Grange</h1>
+
+    {{ include('grange/_form.html.twig') }}
+
+    <a href="{{ path('app_grange_index') }}">Retour</a>
+{% endblock %}

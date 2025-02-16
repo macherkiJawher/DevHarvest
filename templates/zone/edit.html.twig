@@ -1,0 +1,13 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Modifier{% endblock %}
+
+{% block body %}
+    <h1>Modifier la zone</h1>
+
+    {{ include('zone/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    <a href="{{ path('app_zone_index') }}">Retour</a>
+
+    {{ include('zone/_delete_form.html.twig') }}
+{% endblock %}

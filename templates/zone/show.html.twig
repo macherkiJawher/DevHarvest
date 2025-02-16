@@ -1,0 +1,53 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Zone{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Zone Details</h1>
+
+        <!-- Zone Image Section -->
+        <div class="zone-image mb-4">
+            {% if zone.image %}
+                <img class="img-fluid rounded" src="{{ asset('uploads/zones/' ~ zone.image) }}" alt="{{ zone.nomZone }}">
+            {% else %}
+                <img class="img-fluid rounded" src="{{ asset('client/images/zone-placeholder.jpg') }}" alt="Default Zone Image">
+            {% endif %}
+        </div>
+
+        <!-- Zone Information Table -->
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ zone.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Superficie</th>
+                            <td>{{ zone.superficieZone }} m²</td>
+                        </tr>
+                        <tr>
+                            <th>Nom de la Zone</th>
+                            <td>{{ zone.nomZone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Localisation</th>
+                            <td>{{ zone.localisationZone }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-4">
+            <a href="{{ path('app_zone_index') }}" class="btn btn-secondary">Retour</a>
+            <a href="{{ path('app_zone_edit', {'id': zone.id}) }}" class="btn btn-warning ml-2">Modifier</a>
+        </div>
+
+        <!-- Delete Form -->
+        {{ include('zone/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

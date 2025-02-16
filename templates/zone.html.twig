@@ -1,0 +1,39 @@
+<!-- Start Zones -->
+<div class="zones-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="title-all text-center">
+                    <h1>Zones</h1>
+                    <p>Explore our different agricultural zones available for farming and cultivation.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="special-menu text-center">
+                    <div class="button-group filter-button-group">
+                        <button class="active" data-filter="*">All</button>
+                        <button data-filter=".top-featured">Top Featured</button>
+                        <button data-filter=".best-seller">Best Seller</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row special-list">
+            {% for zone in zones %}
+                <div class="col-lg-3 col-md-6 special-grid {{ zone.type }}">
+                    <div class="zone-single fix">
+                        <div class="zone-details">
+                            <h4>{{ zone.nom_zone }}</h4>
+                            <p><strong>Superficie:</strong> {{ zone.superficie_zone }} m²</p>
+                            <p><strong>Localisation:</strong> {{ zone.localisation_zone }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- End Zones -->

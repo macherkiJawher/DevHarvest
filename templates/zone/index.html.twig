@@ -1,0 +1,71 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Zone Index{% endblock %}
+
+{% block body %}
+    <!-- Start Zones -->
+    <div class="zone-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="title-all text-center">
+                        <h1>Les Zones</h1>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="special-menu text-center">
+                        <div class="button-group filter-button-group">
+                            <button onclick="window.location.href='{{ path('app_zone_new') }}'" class="active" data-filter="*">Créer une zone</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row special-list">
+                {% for zone in zones %}
+                    <div class="col-lg-3 col-md-6 special-grid">
+                        <div class="zone-single fix">
+                            <div class="box-img-hover">
+                                {% if zone.image %}
+                                    <img class="img-fluid" src="{{ asset('uploads/zones/' ~ zone.image) }}" alt="{{ zone.nomZone }}">
+                                {% else %}
+                                    <img class="img-fluid" src="{{ asset('client/images/zone-placeholder.jpg') }}" alt="Default Zone Image">
+                                {% endif %}
+                                <div class="mask-icon">
+                                    <ul>
+                                        <li>
+                                            <a href="{{ path('app_zone_show', {'id': zone.id}) }}" data-toggle="tooltip" data-placement="right" title="détails">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ path('app_zone_edit', {'id': zone.id}) }}" data-toggle="tooltip" data-placement="right" title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="why-text">
+                                <h4>{{ zone.nomZone }}</h4>
+                                <p>Superficie: {{ zone.superficieZone }} m²</p>
+                                <p>Localisation: {{ zone.localisationZone }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <p>No zones found.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- End Zones -->
+{% endblock %}

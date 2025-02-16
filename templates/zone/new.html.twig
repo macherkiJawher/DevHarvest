@@ -1,0 +1,45 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Créer une zone{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Créer une zone</h1>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.nom_zone) }}
+                        {{ form_widget(form.nom_zone, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.nom_zone) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.superficie_zone) }}
+                        {{ form_widget(form.superficie_zone, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.superficie_zone) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.localisation_zone) }}
+                        {{ form_widget(form.localisation_zone, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.localisation_zone) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.image) }}
+                        {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                        {{ form_errors(form.image) }}
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Créer</button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        <a href="{{ path('app_zone_index') }}" class="btn btn-secondary mt-3">Retour</a>
+    </div>
+{% endblock %}
