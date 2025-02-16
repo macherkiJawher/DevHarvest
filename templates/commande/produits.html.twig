@@ -1,56 +1,54 @@
 {% extends 'client.html.twig' %}
 
-{% block title %} Produits {% endblock %}
+{% block title %}Nos Produits{% endblock %}
 
 {% block body %}
-    <h1>Liiiiiiiiiiiiiste des Produits</h1>
-   <div class="row mt-4">
-            {% for produit in produits %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card shadow-lg h-100 d-flex flex-column">
-                        <div class="card-img-top text-center" style="height: 200px; overflow: hidden;">
-                            {% if produit.image %}
-                                <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
-                                     alt="{{ produit.nom }}" 
-                                     class="img-fluid" 
-                                     style="object-fit: cover; height: 100%; width: 100%;" 
-                                     loading="lazy">
+    <h1 class="text-center mb-5">Nos Produits</h1>
+    
+    <div class="row justify-content-center">
+        {% for produit in produits %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card shadow-lg h-100 d-flex flex-column">
+                    <div class="card-img-top text-center" style="height: 250px; overflow: hidden;">
+                        {% if produit.image %}
+                            <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
+                                 alt="{{ produit.nom }}" 
+                                 class="img-fluid" 
+                                 style="object-fit: cover; height: 100%; width: 100%;" 
+                                 loading="lazy">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                                <span class="text-muted">Aucune image</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body text-center flex-grow-1">
+                        <h5 class="card-title fw-bold fs-4 text-primary">{{ produit.nom }}</h5>
+                        <p class="card-text fs-5 text-muted">{{ produit.description }}</p>
+                        <p class="fs-5"><strong>Prix:</strong> <span class="text-success">{{ produit.prixunitaire }} €</span></p>
+                        <p class="fs-5"><strong>Stock:</strong> 
+                            {% if produit.quantitestock > 0 %}
+                                <span class="text-success">{{ produit.quantitestock }}</span>
                             {% else %}
-                                <div class="d-flex align-items-center justify-content-center h-100 bg-light">
-                                    <span class="text-muted">Aucune image</span>
-                                </div>
+                                <span class="text-danger">Rupture</span>
                             {% endif %}
-                        </div>
-                        <div class="card-body text-center flex-grow-1">
-                            <h5 class="card-title fw-bold fs-4 text-primary">{{ produit.nom }}</h5>
-                            <p class="card-text fs-5 text-muted">{{ produit.description }}</p>
-                            <p class="fs-5"><strong>Prix:</strong> <span class="text-success">{{ produit.prixunitaire }} €</span></p>
-                            <p class="fs-5"><strong>Stock:</strong> 
-                                {% if produit.quantitestock > 0 %}
-                                    <span class="text-success">{{ produit.quantitestock }}</span>
-                                {% else %}
-                                    <span class="text-danger">Rupture</span>
-                                {% endif %}
-                            </p>
-                            <p class="fs-5"><strong>Catégorie:</strong> {{ produit.categorie.value }}</p>
-                        </div>
-                        <div class="card-footer text-center">
-                            <a href="{{ path('app_commande_ajouter', {'id': produit.id}) }}" 
-                           class="btn btn-info">
+                        </p>
+                        <p class="fs-5"><strong>Catégorie:</strong> {{ produit.categorie.value }}</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ path('app_commande_ajouter', {'id': produit.id}) }}" 
+                           class="btn btn-info btn-lg">
                             <i class="fas fa-cart-plus"></i> Ajouter au panier
                         </a>
-                           
-                          
-                        </div>
                     </div>
                 </div>
-            {% else %}
-                <div class="col-12">
-                    <div class="alert alert-warning text-center fs-4">
-                        <i class="fas fa-exclamation-triangle"></i> Aucun produit trouvé.
-                    </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center fs-4">
+                    <i class="fas fa-exclamation-triangle"></i> Aucun produit trouvé.
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
