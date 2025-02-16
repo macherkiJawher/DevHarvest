@@ -1,0 +1,35 @@
+
+{% block title %} Produit{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.nom) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.prixunitaire) }}
+            {{ form_widget(form.prixunitaire, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.quantitestock) }}
+            {{ form_widget(form.quantitestock, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.categorie) }}
+            {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.imageFile) }}
+            {{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    {{ form_end(form) }}
+{% endblock %}

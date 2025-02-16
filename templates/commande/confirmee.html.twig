@@ -1,0 +1,9 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Commande Confirmée{% endblock %}
+
+{% block body %}
+    <h1>Merci pour votre commande !</h1>
+    <p>Votre commande a été enregistrée avec succès.</p>
+    <a href="{{ path('produit_index') }}" class="btn btn-primary">Retour à la boutique</a>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'client.html.twig' %}
+
+<h1>Votre Panier</h1>
+
+<div>
+    {% if panier is not empty %}
+        <ul>
+            {% for produit in panier %}
+                <li>{{ produit.nom }} - {{ produit.prix }}€</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Votre panier est vide.</p>
+    {% endif %}
+</div>
