@@ -1,0 +1,37 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Détails de la Machine{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>Détails de la machine</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nom :</strong> {{ machine.nomMachine }}</p>
+                        <p><strong>Type :</strong> {{ machine.type }}</p>
+                        <p><strong>État :</strong> {{ machine.etat }}</p>
+                        <p><strong>Date dernier entretien :</strong> {{ machine.dateDernierEntretien|date('Y-m-d') }}</p>
+                        <p><strong>Prix location/jour :</strong> <span class="badge bg-success">{{ machine.prixLocationJour }} €</span></p>
+                        <p><strong>Marque :</strong> {{ machine.marque }}</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        {% if machine.image %}
+                            <img src="{{ asset('uploads/images/' ~ machine.image) }}" class="img-fluid rounded" alt="Image de la machine" style="max-width: 300px;">
+                        {% else %}
+                            <p class="text-muted">Aucune image disponible</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                  
+                    <a href="{{ path('app_machine_list') }}" class="btn btn-secondary px-4">Retour à la liste</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

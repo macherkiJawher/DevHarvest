@@ -112,6 +112,13 @@ class MachineController extends AbstractController
             'machine' => $machine,
         ]);
     }
+    #[Route('/{id}/show', name: 'app_machine_showReservation', methods: ['GET'])]
+    public function showReservation(Machine $machine): Response
+    {
+        return $this->render('machine/showReservation.html.twig', [
+            'machine' => $machine,
+        ]);
+    }
 
     /**
      * Modifier une machine existante.

@@ -165,4 +165,4 @@ class Machine
 
         return $this;
     }
-}
+} 

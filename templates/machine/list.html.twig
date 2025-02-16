@@ -25,7 +25,7 @@
                             <p class="card-text"><strong>Marque :</strong> {{ machine.marque }}</p>
 
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ path('app_machine_show', { 'id': machine.id }) }}" class="btn btn-primary btn-sm">Voir</a>
+                                <a href="{{ path('app_machine_showReservation', { 'id': machine.id }) }}" class="btn btn-primary btn-sm">Voir</a>
                                 <a href="{{ path('app_machine_reserver', { 'id': machine.id }) }}" class="btn btn-success btn-sm">Réserver</a>
                             </div>
                         </div>
