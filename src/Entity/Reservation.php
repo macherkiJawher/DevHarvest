@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ReservationRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ReservationRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
@@ -14,53 +14,85 @@ class Reservation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_debut = null;
+    #[ORM\ManyToOne(targetEntity: Machine::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Machine $machine = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_fin = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $client = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $statut = null;
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank]
+    private ?\DateTimeInterface $dateDebut = null;
+
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan(propertyPath: "dateDebut", message: "La date de fin doit être après la date de début.")]
+    private ?\DateTimeInterface $dateFin = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $status = 'en attente';
+
+    // Getters et Setters
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDateDebut(): ?\DateTimeInterface
+    public function getMachine(): ?Machine
     {
-        return $this->date_debut;
+        return $this->machine;
     }
 
-    public function setDateDebut(\DateTimeInterface $date_debut): static
+    public function setMachine(?Machine $machine): self
     {
-        $this->date_debut = $date_debut;
+        $this->machine = $machine;
+        return $this;
+    }
 
+    public function getClient(): ?User
+    {
+        return $this->client;
+    }
+
+    public function setClient(?User $client): self
+    {
+        $this->client = $client;
+        return $this;
+    }
+
+    public function getDateDebut(): ?\DateTimeInterface
+    {
+        return $this->dateDebut;
+    }
+
+    public function setDateDebut(\DateTimeInterface $dateDebut): self
+    {
+        $this->dateDebut = $dateDebut;
         return $this;
     }
 
     public function getDateFin(): ?\DateTimeInterface
     {
-        return $this->date_fin;
+        return $this->dateFin;
     }
 
-    public function setDateFin(\DateTimeInterface $date_fin): static
+    public function setDateFin(\DateTimeInterface $dateFin): self
     {
-        $this->date_fin = $date_fin;
-
+        $this->dateFin = $dateFin;
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatus(): ?string
     {
-        return $this->statut;
+        return $this->status;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatus(string $status): self
     {
-        $this->statut = $statut;
-
+        $this->status = $status;
         return $this;
     }
 }
