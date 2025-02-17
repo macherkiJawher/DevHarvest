@@ -1,0 +1,57 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0 rounded">
+          <div class="card-header bg-success text-white text-center">
+    <h3 class="card-title mb-0" style="font-size: 2rem; color: black; font-weight: bold;">🛒 Mon Panier</h3>
+</div>
+
+            <div class="card-body">
+                {% if panier is empty %}
+                    <div class="alert alert-warning text-center" role="alert">
+                        Votre panier est vide. Ajoutez des produits pour commencer vos achats !
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center">
+                            <thead class="bg-dark text-white">
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Quantité</th>
+                                    <th>Prix Unitaire</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produit in panier %}
+                                    <tr>
+                                        <td class="fw-bold">{{ produit.nom }}</td>
+                                        <td>{{ produit.quantitestock }}</td>
+                                        <td>{{ produit.prixunitaire }} €</td>
+                                        <td class="fw-bold text-success">{{ produit.prixunitaire * produit.quantitestock }} €</td>
+                                        <td>
+                                            <a href="{{ path('app_commande_supprimer', {id: produit.id}) }}" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-4 p-3 bg-light rounded">
+                        <h5 class="fw-bold">Total : <span class="text-success">{{ total }} €</span></h5>
+                        <a href="{{ path('app_commande_commander') }}" class="btn btn-primary btn-lg shadow">
+                            <i class="fas fa-shopping-cart"></i> Passer la commande
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

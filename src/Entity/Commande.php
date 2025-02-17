@@ -1,8 +1,13 @@
 <?php
 
+// src/Entity/Commande.php
+
 namespace App\Entity;
 
+use App\Enum\EtatCommande;
 use App\Repository\CommandeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,53 +19,83 @@ class Commande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_de_creation = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $datecommande = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column(enumType: EtatCommande::class)]
+    private ?EtatCommande $etat = null;
 
-    #[ORM\Column]
-    private ?float $montant = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?float $total = null;
+
+    #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'commande', cascade: ['persist', 'remove'])]
+    private Collection $detailCommandes;
+
+    public function __construct()
+    {
+        $this->detailCommandes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDateDeCreation(): ?\DateTimeInterface
+    public function getDatecommande(): ?\DateTimeInterface
     {
-        return $this->date_de_creation;
+        return $this->datecommande;
     }
 
-    public function setDateDeCreation(\DateTimeInterface $date_de_creation): static
+    public function setDatecommande(\DateTimeInterface $datecommande): static
     {
-        $this->date_de_creation = $date_de_creation;
-
+        $this->datecommande = $datecommande;
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getEtat(): ?EtatCommande
     {
-        return $this->status;
+        return $this->etat;
     }
 
-    public function setStatus(string $status): static
+    public function setEtat(EtatCommande $etat): static
     {
-        $this->status = $status;
-
+        $this->etat = $etat;
         return $this;
     }
 
-    public function getMontant(): ?float
+    public function getTotal(): ?float
     {
-        return $this->montant;
+        return $this->total;
     }
 
-    public function setMontant(float $montant): static
+    public function setTotal(float $total): static
     {
-        $this->montant = $montant;
+        $this->total = $total;
+        return $this;
+    }
 
+    public function getDetailCommandes(): Collection
+    {
+        return $this->detailCommandes;
+    }
+
+    public function addDetailCommande(DetailCommande $detailCommande): static
+    {
+        if (!$this->detailCommandes->contains($detailCommande)) {
+            $this->detailCommandes->add($detailCommande);
+            $detailCommande->setCommande($this);
+        }
+        return $this;
+    }
+
+    public function removeDetailCommande(DetailCommande $detailCommande): static
+    {
+        if ($this->detailCommandes->removeElement($detailCommande)) {
+            if ($detailCommande->getCommande() === $this) {
+                $detailCommande->setCommande(null);
+            }
+        }
         return $this;
     }
 }
+

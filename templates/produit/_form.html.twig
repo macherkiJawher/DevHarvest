@@ -1,0 +1,88 @@
+{% block title %}Produit{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.nom) }}
+            {{ form_widget(form.nom, {
+                'attr': {
+                    'class': 'form-control' ~ (form.nom.vars.errors|length > 0 ? ' is-invalid' : '')
+                }
+            }) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {
+                'attr': {
+                    'class': 'form-control' ~ (form.description.vars.errors|length > 0 ? ' is-invalid' : '')
+                }
+            }) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.prixunitaire) }}
+            {{ form_widget(form.prixunitaire, {
+                'attr': {
+                    'class': 'form-control' ~ (form.prixunitaire.vars.errors|length > 0 ? ' is-invalid' : '')
+                }
+            }) }}
+            {{ form_errors(form.prixunitaire) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.quantitestock) }}
+            {{ form_widget(form.quantitestock, {
+                'attr': {
+                    'class': 'form-control' ~ (form.quantitestock.vars.errors|length > 0 ? ' is-invalid' : '')
+                }
+            }) }}
+            {{ form_errors(form.quantitestock) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.categorie) }}
+            {{ form_widget(form.categorie, {
+                'attr': {
+                    'class': 'form-control' ~ (form.categorie.vars.errors|length > 0 ? ' is-invalid' : '')
+                }
+            }) }}
+            {{ form_errors(form.categorie) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.imageFile) }}
+            {{ form_widget(form.imageFile, {
+                'attr': {
+                    'class': 'form-control' ~ (form.imageFile.vars.errors|length > 0 ? ' is-invalid' : '')
+                }
+            }) }}
+            {{ form_errors(form.imageFile) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        {% if form.vars.errors|length > 0 %}
+            Swal.fire({
+                title: 'Erreur de formulaire!',
+                text: 'Veuillez vérifier les champs invalides.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        {% elseif app.session.flashbag.has('success') %}
+            Swal.fire({
+                title: 'Succès!',
+                text: '{{ app.session.flashbag.get('success')[0] }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        {% endif %}
+    </script>
+{% endblock %}

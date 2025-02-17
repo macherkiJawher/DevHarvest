@@ -73,7 +73,7 @@ class AdminController extends AbstractController
      }
      
      // Modification d'un post par l'administrateur
-    #[Route('/post/edit/{id}', name: 'user_post_edit')]
+    #[Route('/post/edit/{id}', name: 'admin_post_edit')]
 public function editPostUser(
     Post $post,
     Request $request,
