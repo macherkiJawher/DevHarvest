@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Enum\EtatCommande;
 
 #[Route('/commande')]
 final class CommandeController extends AbstractController
@@ -75,7 +76,7 @@ final class CommandeController extends AbstractController
 
         $commande = new Commande();
         $commande->setDateCommande(new \DateTime()); // Utilisation de setDateCommande()
-        $commande->setEtat('en attente');  // Définir un état par défaut
+        $commande->setEtat(EtatCommande::VALIDEE);
 
         // Calculer le total de la commande
         $total = 0;
@@ -110,7 +111,7 @@ final class CommandeController extends AbstractController
             throw $this->createNotFoundException('Commande non trouvée');
         }
 
-        return $this->render('commande/confirmation.html.twig', [
+        return $this->render('commande/confirmee.html.twig', [
             'commande' => $commande,
         ]);
     }

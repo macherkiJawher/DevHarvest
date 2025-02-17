@@ -12,7 +12,7 @@
                 <p>Merci pour votre commande ! Voici les détails :</p>
                 <ul>
                     <li><strong>ID de la commande : </strong>{{ commande.id }}</li>
-                    <li><strong>Date : </strong>{{ commande.date|date('d/m/Y') }}</li>
+                    <li><strong>Date de commande : </strong>{{ commande.datecommande|date('d/m/Y H:i') }}</li>
                     <li><strong>Total : </strong>{{ commande.total }} €</li>
                 </ul>
 

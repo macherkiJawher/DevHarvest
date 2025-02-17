@@ -1,5 +1,7 @@
 <?php
 
+// src/Entity/Commande.php
+
 namespace App\Entity;
 
 use App\Enum\EtatCommande;
@@ -24,12 +26,9 @@ class Commande
     private ?EtatCommande $etat = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $total = null;
+    private ?float $total = null;
 
-    /**
-     * @var Collection<int, DetailCommande>
-     */
-    #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'commande')]
+    #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'commande', cascade: ['persist', 'remove'])]
     private Collection $detailCommandes;
 
     public function __construct()
@@ -42,13 +41,6 @@ class Commande
         return $this->id;
     }
 
-    public function setId(string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     public function getDatecommande(): ?\DateTimeInterface
     {
         return $this->datecommande;
@@ -57,7 +49,6 @@ class Commande
     public function setDatecommande(\DateTimeInterface $datecommande): static
     {
         $this->datecommande = $datecommande;
-
         return $this;
     }
 
@@ -69,25 +60,20 @@ class Commande
     public function setEtat(EtatCommande $etat): static
     {
         $this->etat = $etat;
-
         return $this;
     }
 
-    public function getTotal(): ?string
+    public function getTotal(): ?float
     {
         return $this->total;
     }
 
-    public function setTotal(string $total): static
+    public function setTotal(float $total): static
     {
         $this->total = $total;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, DetailCommande>
-     */
     public function getDetailCommandes(): Collection
     {
         return $this->detailCommandes;
@@ -99,19 +85,17 @@ class Commande
             $this->detailCommandes->add($detailCommande);
             $detailCommande->setCommande($this);
         }
-
         return $this;
     }
 
     public function removeDetailCommande(DetailCommande $detailCommande): static
     {
         if ($this->detailCommandes->removeElement($detailCommande)) {
-            // set the owning side to null (unless already changed)
             if ($detailCommande->getCommande() === $this) {
                 $detailCommande->setCommande(null);
             }
         }
-
         return $this;
     }
 }
+
