@@ -19,7 +19,7 @@
         </div>
 
         <div class="post-card shadow-sm pt-1 bg-white rounded">
-            <p class="text-muted"><strong>Posté par </strong></p>
+            <p class="text-muted"><strong>Posté par </strong>{{ post.auteur.username }}</p>
             <small class="text-muted mb-1">🕒 Publié le {{ post.date|date('d/m/Y H:i') }}</small>
             <h2 class="text-primary">{{ post.titre }}</h2>
             <p class="text-muted">{{ post.contenu }}</p>
@@ -41,27 +41,30 @@
             </div>
         </div>
 
-        <!-- Section des commentaires -->
-      <h3>Commentaires</h3>
-        <h3>Ajouter un commentaire</h3>
-        <form action="{{ path('post_view', { 'id': post.id }) }}" method="post">
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button type="submit" class="btn btn-success mt-2">Commenter</button>
-            {{ form_end(form) }}
-        </form>
-
+        <h3>Commentaires</h3>
         {% for commentaire in post.commentaires %}
-            <div class="comment-card p-3 mb-2 bg-light rounded">
-                <p>{{ commentaire.contenu }}</p>
-                <small class="text-muted">Publié le {{ commentaire.date|date('d/m/Y H:i') }}</small>
+            <div class="card mb-3">
+                <div class="card-body">
+                    {% if commentaire.auteur %}
+                        <h5 class="card-title">Posté par {{ commentaire.auteur.username }}</h5>
+                    {% else %}
+                        <h5 class="card-title">Auteur inconnu</h5>
+                    {% endif %}
+                    <p class="card-text">{{ commentaire.contenu }}</p>
+                    <small class="text-muted">Le {{ commentaire.date|date('d/m/Y H:i') }}</small>
+                </div>
             </div>
         {% else %}
             <p>Aucun commentaire pour le moment.</p>
         {% endfor %}
 
-     
+        <hr>
 
+        <h3>Ajouter un commentaire</h3>
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+        {{ form_end(form) }}
     </div>
 
     <style>

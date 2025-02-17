@@ -23,6 +23,9 @@ class Commentaire
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
     private ?Post $post = null;
 
+    #[ORM\ManyToOne(inversedBy: 'commentaires')]
+    private ?User $auteur = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Commentaire
     public function setPost(?Post $post): static
     {
         $this->post = $post;
+
+        return $this;
+    }
+
+    public function getAuteur(): ?User
+    {
+        return $this->auteur;
+    }
+
+    public function setAuteur(?User $auteur): static
+    {
+        $this->auteur = $auteur;
 
         return $this;
     }

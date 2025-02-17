@@ -1,24 +1,37 @@
-{% extends 'base.html.twig' %}
+{# templates/post/edit.html.twig #}
 
-{% block title %}Modifier le post{% endblock %}
+{% extends 'client.html.twig' %}
+
+{% block title %}Modifier le Post{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="text-center">Modifier le post</h1>
+<div class="container mt-4">
+  <h1>Modifier le Post</h1>
 
-        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-            <div class="mb-3">
-                {{ form_row(form.titre) }}
-            </div>
-            <div class="mb-3">
-                {{ form_row(form.contenu) }}
-            </div>
-            <div class="mb-3">
-                {{ form_row(form.imageFile) }}
-            </div>
-            <button type="submit" class="btn btn-success w-100">💾 Enregistrer</button>
-        {{ form_end(form) }}
-
-        <a href="{{ path('post_view', { 'id': post.id }) }}" class="btn btn-secondary mt-3">⬅ Annuler</a>
+  {{ form_start(form) }}
+    <div class="form-group mb-3">
+      {{ form_label(form.titre, 'Titre') }}
+      {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
     </div>
+    
+    <div class="form-group mb-3">
+      {{ form_label(form.contenu, 'Contenu') }}
+      {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+    </div>
+
+    <div class="form-group mb-3">
+      {{ form_label(form.imageFile, 'Image (optionnelle)') }}
+      {{ form_widget(form.imageFile, {'attr': {'class': 'form-control-file'}}) }}
+    </div>
+
+    {% if post.image %}
+      <div class="mb-3">
+        <img src="{{ asset('uploads/posts/' ~ post.image) }}" alt="Image actuelle" class="img-fluid" />
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a href="{{ path('post_view', {'id': post.id}) }}" class="btn btn-secondary">Annuler</a>
+  {{ form_end(form) }}
+</div>
 {% endblock %}

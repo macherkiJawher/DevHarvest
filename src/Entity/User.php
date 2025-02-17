@@ -1,9 +1,10 @@
 <?php
-// src/Entity/User.php
 namespace App\Entity;
 
 use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -27,8 +28,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: "Password is required.")]
     private string $password;
 
+    #[ORM\Column(type: "string", length: 255, unique: true)]  // Make the username unique
+    #[Assert\NotBlank(message: "Username is required.")]
+    #[Assert\Length(min: 3, max: 20, minMessage: "Username must be at least {{ limit }} characters long.", maxMessage: "Username cannot be longer than {{ limit }} characters.")]
+    private string $username;  // New username property
+
     #[ORM\Column(type: "string", enumType: RoleEnum::class)]
     private RoleEnum $role;
+
+    /**
+     * @var Collection<int, Commentaire>
+     */
+    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'auteur')]
+    private Collection $commentaires;
+
+    public function __construct()
+    {
+        $this->commentaires = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -61,22 +78,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return [$this->role->value];
     }
-   
 
     public function getRole(): string
     {
-        return $this->role->value ?? 'ROLE_USER'; // Assure qu'une valeur est toujours retournée
+        return $this->role->value ?? 'ROLE_USER';
     }
-    
 
-    
     public function setRole(string $role): self
-{
-    $this->role = RoleEnum::from($role); // Convertit la chaîne en Enum
-    return $this;
-}
-
-
+    {
+        $this->role = RoleEnum::from($role);
+        return $this;
+    }
 
     public function getUserIdentifier(): string
     {
@@ -85,6 +97,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // Pas de données sensibles à effacer
+        // No sensitive data to erase
+    }
+
+    // Getter and setter for username
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): static
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): static
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getAuteur() === $this) {
+                $commentaire->setAuteur(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -8,33 +8,37 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType; // Importer TextType
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-
-class RegistrationFormType extends AbstractType
+class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            // Ajouter le champ username
+            ->add('username', TextType::class, [
+                'label' => 'Nom d\'utilisateur',
+                'attr' => ['class' => 'form-control']
+            ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
-                'attr' => ['class' => 'form-control']
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
-                'attr' => ['class' => 'form-control']
+                // Pour l'édition, vous pouvez rendre ce champ optionnel
+                'required' => false,
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Rôle',
-                'choices' => RoleEnum::getChoices(),
+                'choices' => array_combine(
+                    array_map(fn (RoleEnum $role) => $role->name, array_filter(RoleEnum::cases(), fn ($role) => $role !== RoleEnum::ADMIN)),
+                    array_map(fn (RoleEnum $role) => $role->value, array_filter(RoleEnum::cases(), fn ($role) => $role !== RoleEnum::ADMIN))
+                ),
                 'expanded' => false,
                 'multiple' => false,
-                'required' => true,
-                'attr' => ['class' => 'form-control']
             ]);
-          
     }
 
     public function configureOptions(OptionsResolver $resolver): void

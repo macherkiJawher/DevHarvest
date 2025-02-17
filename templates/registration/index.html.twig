@@ -39,6 +39,12 @@
             {{ form_errors(form) }}
         </div>
 
+        <!-- Username field with margin-bottom -->
+        <div class="form-group mb-3">
+            {{ form_label(form.username, 'Nom d\'utilisateur') }}
+            {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
         <!-- Email field with margin-bottom -->
         <div class="form-group mb-3">
             {{ form_label(form.email, 'Email') }}

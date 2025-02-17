@@ -1,0 +1,83 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détail du Post{% endblock %}
+
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg border-0" style="width: 800px; border-radius: 12px; background-color: #ffffff;">
+        <div class="card-header bg-dark text-white text-center py-3" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+            <h4 class="mb-0">{{ post.titre }}</h4>
+        </div>
+        <div class="card-body p-4 bg-light">
+            <!-- Détails du Post -->
+            <p><strong>Auteur :</strong> 
+                <span class="text-primary">
+                    {% if post.auteur %}
+                        {{ post.auteur.username }}
+                    {% else %}
+                        Auteur inconnu
+                    {% endif %}
+                </span>
+            </p>
+            <p><strong>Date :</strong> {{ post.date|date('d/m/Y H:i') }}</p>
+            <div class="mb-3">
+                <p class="text-justify">{{ post.contenu }}</p>
+                {% if post.image %}
+                    <div class="text-center">
+                        <img src="{{ asset('uploads/posts/' ~ post.image) }}" alt="Image du post" class="img-fluid rounded shadow">
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Boutons d'Action -->
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('admin_post') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+                <div>
+                    <a href="{{ path('admin_post_edit', {'id': post.id}) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                    <form action="{{ path('admin_post_delete', {'id': post.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Confirmer la suppression ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Séparateur -->
+            <hr class="my-4">
+
+            <!-- Section des Commentaires -->
+            <h5 class="text-center mb-3">Commentaires</h5>
+            {% if post.commentaires is not empty %}
+                {% for commentaire in post.commentaires %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-primary">
+                                {% if commentaire.auteur %}
+                                    {{ commentaire.auteur.username }}
+                                {% else %}
+                                    Auteur inconnu
+                                {% endif %}
+                            </h6>
+                            <p class="card-text">{{ commentaire.contenu }}</p>
+                            <small class="text-muted">Posté le {{ commentaire.date|date('d/m/Y H:i') }}</small>
+                            <form action="{{ path('admin_comment_delete', {'id': commentaire.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Confirmer la suppression de ce commentaire ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_comment' ~ commentaire.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-muted">Aucun commentaire pour le moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

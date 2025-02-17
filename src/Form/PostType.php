@@ -25,17 +25,17 @@ class PostType extends AbstractType
                 'attr' => ['class' => 'form-control', 'rows' => 4]
             ])
             ->add('imageFile', FileType::class, [
-                'label' => 'Image (JPG, PNG, max 2MB)',
-                'mapped' => false,
-                'required' => false,
+                'label' => 'Image (optionnelle)',
+                'mapped' => false, // ne pas lier directement à une propriété de l'entité
+                'required' => false, // l'image est optionnelle
                 'constraints' => [
                     new File([
                         'maxSize' => '2M',
-                        'mimeTypes' => ['image/jpeg', 'image/png'],
-                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG ou PNG).'
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, GIF).',
                     ])
                 ],
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control-file'],
             ]);
     }
 

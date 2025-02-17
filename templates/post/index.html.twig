@@ -21,7 +21,11 @@
                     {% endif %}
                     <div class="d-flex">
                         <div class="w-100">
-                            <p class="text-muted mb-1"><strong>Posté par </strong></p>
+                            {% if post.auteur %}
+                                <p class="text-muted mb-1"><strong>Posté par </strong>{{ post.auteur.username }}</p>
+                            {% else %}
+                                <p class="text-muted mb-1"><strong>Auteur inconnu</strong></p>
+                            {% endif %}
                             <small class="text-muted">🕒 Publié le {{ post.date|date('d/m/Y H:i') }}</small>
                             <h5 class="mb-1 text-primary">{{ post.titre }}</h5>
                             <p class="text-muted mb-1">{{ post.contenu|slice(0, 150) }}...</p>
