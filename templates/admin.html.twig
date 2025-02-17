@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{% block title %}Admin Dashboard{% endblock %}</title>
+  <meta content="Admin Dashboard" name="description">
+  <meta content="Admin, Dashboard" name="keywords">
+
+  {% block css %}
+    <!-- Favicon -->
+    <link href="{{ asset('tempadmin/img/favicon.png') }}" rel="icon">
+    <link href="{{ asset('tempadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ asset('tempadmin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('tempadmin/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('tempadmin/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('tempadmin/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('tempadmin/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('tempadmin/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('tempadmin/vendor/simple-datatables/style.css') }}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{{ asset('tempadmin/css/style.css') }}" rel="stylesheet">
+  {% endblock %}
+</head>
+
+<body>
+  {% block navbar %}
+    <!-- Header Section -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+      <div class="d-flex align-items-center justify-content-between">
+        <a href="{{ path('admin_dashboard') }}" class="logo d-flex align-items-center">
+          <img src="{{ asset('tempadmin/img/devicon.png') }}" alt="">
+          <span class="d-none d-lg-block">DevHarvest Admin</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
+      </div>
+
+     
+
+      <nav class="header-nav ms-auto">
+        
+          
+            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+              <img src="{{ asset('tempadmin/img/adm.png') }}" alt="Profile" class="rounded-circle">
+              <span class="d-none d-md-block dropdown-toggle ps-2">DevHarvest</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+              <li class="dropdown-header">
+                <h6>Kevin Anderson</h6>
+                <span>Web Designer</span>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item d-flex align-items-center" href="users-profile.html"><i class="bi bi-person"></i><span>My Profile</span></a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item d-flex align-items-center" href="users-profile.html"><i class="bi bi-gear"></i><span>Account Settings</span></a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item d-flex align-items-center" href="pages-faq.html"><i class="bi bi-question-circle"></i><span>Need Help?</span></a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="bi bi-box-arrow-right"></i><span>Sign Out</span></a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  {% endblock %}
+
+  {% block sidebar %}
+    <!-- Sidebar Section -->
+    <aside id="sidebar" class="sidebar">
+      <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{{ path('admin_dashboard') }}">
+            <i class="bi bi-house-door"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        
+      
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_user_index') }}">
+                <i class="bi bi-people"></i>
+                <span>Gestion des Utilisateurs</span>
+            </a>
+        </li>
+          <li class="nav-item">
+          <a class="nav-link" href="{{ path('admin_dashboard') }}">
+            <i class="bi bi-gear"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+  {% endblock %}
+
+  {% block body %}
+    <!-- Body Section (Content will be injected here) -->
+    <main id="main" class="main">
+      {% block content %}
+        <!-- Your content goes here -->
+      {% endblock %}
+    </main>
+  {% endblock %}
+
+  {% block javascript %}
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('tempadmin/vendor/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('tempadmin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('tempadmin/vendor/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('tempadmin/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{ asset('tempadmin/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('tempadmin/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('tempadmin/vendor/tinymce/tinymce.min.js') }}"></script>
+
+    <!-- Main JS File -->
+    <script src="{{ asset('tempadmin/js/main.js') }}"></script>
+  {% endblock %}
+</body>
+
+</html>

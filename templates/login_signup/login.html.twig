@@ -1,7 +1,75 @@
-{% extends 'base.html.twig' %}
+{% extends 'client.html.twig' %}
 
 {% block title %}Login{% endblock %}
 
-{% block body %}
+{% block navbar %} 
+ <header class="main-header">
+        <!-- Start Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-default bootsnav">
+            <div class="container">
+                <!-- Start Header Navigation -->
+                <div class="navbar-header">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+                    <a class="navbar-brand" href="{{ path('app_client') }}"><img src="{{ asset('client/images/logo.png')}}" class="logo" alt=""></a>
+                </div>
+                <!-- End Header Navigation -->
 
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
+                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Register</a></li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+        </nav>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card p-4" style="max-width: 400px; width: 100%; background-color: #f1f8e9; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <h1 class="text-center" style="color: #388e3c;">Login</h1>
+
+            <form action="{{ path('app_login') }}" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label" style="color: #388e3c;">Email</label>
+                    <input
+                            type="email"
+                            id="email"
+                            name="_username"
+                            value="{{ app.request.cookies.get('username') ?? '' }}"
+                            required
+                            placeholder="Your email"
+                            class="form-control"
+                            style="border-color: #388e3c;"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label" style="color: #388e3c;">Password</label>
+                    <input
+                            type="password"
+                            id="password"
+                            name="_password"
+                            required
+                            placeholder="Your password"
+                            class="form-control"
+                            style="border-color: #388e3c;"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-success w-100" style="background-color: #66bb6a; border-color: #388e3c;">Login</button>
+
+                <div class="text-center mt-3">
+                    <a href="{{ path('app_register') }}" style="color: #388e3c;">Don't have an account? Register here.</a>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
