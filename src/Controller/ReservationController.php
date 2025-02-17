@@ -29,7 +29,7 @@ class ReservationController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Réservation effectuée avec succès !');
-            return $this->redirectToRoute('app_machine_show', ['id' => $machine->getId()]);
+            return $this->redirectToRoute('app_machine_list', ['id' => $machine->getId()]);
         }
 
         return $this->render('reservation/reserver.html.twig', [

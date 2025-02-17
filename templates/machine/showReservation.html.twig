@@ -28,8 +28,12 @@
                 </div>
                 
                 <div class="text-center mt-4">
-                  
-                    <a href="{{ path('app_machine_list') }}" class="btn btn-secondary px-4">Retour à la liste</a>
+                    <a href="{{ path('app_machine_reserver', { 'id': machine.id }) }}" class="btn btn-success px-4 me-2">
+                        Réserver
+                    </a>
+                    <a href="{{ path('app_machine_list') }}" class="btn btn-secondary px-4">
+                        Retour à la liste
+                    </a>
                 </div>
             </div>
         </div>
