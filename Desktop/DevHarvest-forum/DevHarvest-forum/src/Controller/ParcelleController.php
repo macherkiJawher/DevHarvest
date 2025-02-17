@@ -1,5 +1,4 @@
 <?php
-// src/Controller/ParcelleController.php
 
 namespace App\Controller;
 
@@ -21,7 +20,6 @@ class ParcelleController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    // Route pour afficher la liste des parcelles
     #[Route('/parcelle', name: 'parcelle_index')]
     public function index(): Response
     {
@@ -32,7 +30,6 @@ class ParcelleController extends AbstractController
         ]);
     }
 
-    // Route pour afficher les détails d'une parcelle
     #[Route('/parcelle/{id}', name: 'parcelle_show')]
     public function show(Parcelle $parcelle): Response
     {
@@ -41,7 +38,6 @@ class ParcelleController extends AbstractController
         ]);
     }
 
-    // Route pour créer une nouvelle parcelle
     #[Route('/parcelle/new', name: 'parcelle_new')]
     public function new(Request $request): Response
     {
@@ -51,18 +47,16 @@ class ParcelleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('parcelle_images_directory'),  // Répertoire défini dans services.yaml
+                        $this->getParameter('parcelle_images_directory'), 
                         $newFilename
                     );
-                    $parcelle->setImage($newFilename);  // Associer l'image à la parcelle
+                    $parcelle->setImage($newFilename);  
                 } catch (FileException $e) {
-                    // Gérer l'exception en cas d'erreur lors du déplacement du fichier
                     $this->addFlash('error', 'Une erreur est survenue lors de l\'upload de l\'image.');
                     return $this->render('parcelle/new.html.twig', [
                         'form' => $form->createView(),
@@ -70,14 +64,11 @@ class ParcelleController extends AbstractController
                 }
             }
 
-            // Persist et flush les données dans la base
             $this->entityManager->persist($parcelle);
             $this->entityManager->flush();
 
-            // Message flash de confirmation
             $this->addFlash('success', 'La parcelle a été ajoutée avec succès !');
 
-            // Rediriger vers la liste des parcelles après la création
             return $this->redirectToRoute('parcelle_index');
         }
 
@@ -86,7 +77,6 @@ class ParcelleController extends AbstractController
         ]);
     }
 
-    // Route pour modifier une parcelle existante
     #[Route('/parcelle/{id}/edit', name: 'parcelle_edit')]
     public function edit(Request $request, Parcelle $parcelle): Response
     {
@@ -95,16 +85,15 @@ class ParcelleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image si une nouvelle image est téléchargée
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $newFilename = uniqid() . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('parcelle_images_directory'),  // Répertoire défini dans services.yaml
+                        $this->getParameter('parcelle_images_directory'),  
                         $newFilename
                     );
-                    $parcelle->setImage($newFilename);  // Mettre à jour l'image de la parcelle
+                    $parcelle->setImage($newFilename); 
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Une erreur est survenue lors de l\'upload de l\'image.');
                     return $this->render('parcelle/edit.html.twig', [
@@ -125,7 +114,6 @@ class ParcelleController extends AbstractController
         ]);
     }
 
-    // Route pour supprimer une parcelle
     #[Route('/parcelle/{id}/delete', name: 'parcelle_delete')]
     public function delete(Parcelle $parcelle): Response
     {

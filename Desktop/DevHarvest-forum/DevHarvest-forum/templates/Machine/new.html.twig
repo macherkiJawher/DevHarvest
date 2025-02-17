@@ -1,0 +1,41 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Nouvelle Machine{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>Ajouter une nouvelle machine</h2>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                <div class="row">
+                    {% for field in form %}
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(field, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(field, {
+                                'attr': {
+                                    'class': 'form-control' ~ (field.vars.errors|length > 0 ? ' is-invalid' : '')
+                                }
+                            }) }}
+                            {% if field.vars.errors|length > 0 %}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(field) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-success px-4">Enregistrer</button>
+                    <a href="{{ path('app_machine_index') }}" class="btn btn-secondary px-4">Annuler</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -66,11 +66,9 @@ class CultureController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // Mettre à jour la date de plantation et de récolte
             $culture->setDatePlantation($form->get('datePlantation')->getData());
             $culture->setDateRecolte($form->get('dateRecolte')->getData());
     
-            // Gérer l'upload d'une nouvelle image uniquement si l'utilisateur en choisit une
             $image = $form->get('image')->getData();
             if ($image) {
                 if ($culture->getImage()) {

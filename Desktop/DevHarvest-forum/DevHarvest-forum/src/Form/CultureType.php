@@ -1,7 +1,5 @@
 <?php
 
-// src/Form/CultureType.php
-
 namespace App\Form;
 
 use App\Entity\Culture;

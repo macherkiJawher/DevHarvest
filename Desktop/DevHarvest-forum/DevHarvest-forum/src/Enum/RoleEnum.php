@@ -1,5 +1,4 @@
 <?php
-// src/Enum/RoleEnum.php
 
 namespace App\Enum;
 

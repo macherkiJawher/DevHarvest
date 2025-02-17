@@ -1,5 +1,4 @@
 <?php
-// src/Enum/TypeSol.php
 
 namespace App\Enum;
 
