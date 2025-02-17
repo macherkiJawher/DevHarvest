@@ -3,26 +3,42 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h2 class="mb-4">Connexion</h2>
+<div class="container d-flex justify-content-center align-items-center" style="height: 90vh; margin-top: -30px;">
+    <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%; background-color: #f1f8e9; border-radius: 12px;">
+        <h2 class="text-center mb-4" style="color: #388e3c;">Connexion</h2>
 
-    {% if error %}
-        <div class="alert alert-danger">Email ou mot de passe incorrect.</div>
-    {% endif %}
+        {% if error %}
+            <div class="alert alert-danger text-center">Email ou mot de passe incorrect.</div>
+        {% endif %}
 
-   <form method="post">
-    <div class="mb-3">
-        <label for="email" class="form-label">Email :</label>
-        <input type="email" name="_username" id="email" class="form-control" required autofocus>
+        <form method="post">
+            <!-- Email Field -->
+            <div class="form-group mb-3">
+                <label for="email" class="form-label">Email :</label>
+                <input type="email" name="_username" id="email" class="form-control" required autofocus style="padding: 10px;">
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group mb-3">
+                <label for="password" class="form-label">Mot de passe :</label>
+                <input type="password" name="_password" id="password" class="form-control" required style="padding: 10px;">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-success px-4 py-2" style="border-radius: 8px; font-size: 16px;">
+                    Se connecter
+                </button>
+            </div>
+        </form>
+
+        <!-- Register Button -->
+        <div class="d-flex justify-content-center mt-3">
+            <a href="{{ path('app_register') }}" class="btn btn-secondary px-4 py-2" style="border-radius: 8px; font-size: 16px;">
+                S'inscrire
+            </a>
+        </div>
+
     </div>
-
-    <div class="mb-3">
-        <label for="password" class="form-label">Mot de passe :</label>
-        <input type="password" name="_password" id="password" class="form-control" required>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Se connecter</button>
-</form>
-
 </div>
 {% endblock %}
