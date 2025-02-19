@@ -72,6 +72,7 @@ final class ZoneController extends AbstractController
     {
         return $this->render('zone/show.html.twig', [
             'zone' => $zone,
+            'granges' => $zone->getGranges(),
         ]);
     }
 
@@ -97,8 +98,14 @@ final class ZoneController extends AbstractController
     public function delete(Request $request, Zone $zone, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$zone->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($zone);
-            $entityManager->flush();
+            try {
+                $entityManager->remove($zone);
+                $entityManager->flush();
+                $this->addFlash('success', 'Zone supprimée avec succès.');
+            } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
+    
+                $this->addFlash('danger', 'Impossible de supprimer cette zone car elle est liée à une ou plusieurs granges.');
+            }
         }
 
         return $this->redirectToRoute('app_zone_index', [], Response::HTTP_SEE_OTHER);

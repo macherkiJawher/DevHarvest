@@ -1,42 +1,73 @@
 {% extends 'client.html.twig' %}
 
-{% block title %}Grange{% endblock %}
+{% block title %}Grange Details{% endblock %}
 
 {% block body %}
-    <h1>Grange</h1>
+<div class="container mt-5">
+    <!-- Titre de la page -->
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Détails de la Grange</h1>
+        </div>
+    </div>
 
-     <div class="col-md-6">
-            <h3>Image de la Grange</h3>
-            <div class="image-container">
-                {% if grange.image %}
-                    <img class="img-fluid rounded shadow" src="/uploads/granges/{{ grange.image }}" alt="{{ grange.typeGrange }}">
-
-                {% else %}
-                    <img class="img-fluid rounded shadow" src="{{ asset('client/images/grange-placeholder.jpg') }}" alt="Image par défaut">
-                {% endif %}
+    <!-- Section image et informations -->
+    <div class="row">
+        <!-- Colonne Image -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Image de la Grange</h3>
+                </div>
+                <div class="card-body text-center">
+                    {% if grange.image %}
+                        <img class="img-fluid rounded shadow" src="{{ asset('uploads/granges/' ~ grange.image) }}" alt="{{ grange.typeGrange }}">
+                    {% else %}
+                        <img class="img-fluid rounded shadow" src="{{ asset('client/images/grange-placeholder.jpg') }}" alt="Image par défaut">
+                    {% endif %}
+                </div>
             </div>
         </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ grange.id }}</td>
-            </tr>
-            <tr>
-                <th>Type_grange</th>
-                <td>{{ grange.typeGrange }}</td>
-            </tr>
-            <tr>
-                <th>Capacite</th>
-                <td>{{ grange.capacite }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Colonne Informations -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Informations</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <td>{{ grange.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Type de Grange</th>
+                                <td>{{ grange.typeGrange }}</td>
+                            </tr>
+                            <tr>
+                                <th>Capacité</th>
+                                <td>{{ grange.capacite }} unités</td>
+                            </tr>
+                            <tr>
+                                <th>Zone</th>
+                                <td>{{ grange.zone ? grange.zone.nomZone : 'Aucune zone' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <a href="{{ path('app_grange_index') }}">Retour</a>
-
-    <a href="{{ path('app_grange_edit', {'id': grange.id}) }}">Modifier</a>
-
-    {{ include('grange/_delete_form.html.twig') }}
+    <!-- Section Boutons d'action -->
+    <div class="row">
+        <div class="col text-center">
+            <a href="{{ path('app_grange_index') }}" class="btn btn-secondary mr-2">Retour</a>
+            <a href="{{ path('app_grange_edit', {'id': grange.id}) }}" class="btn btn-primary mr-2">Modifier</a>
+            {{ include('grange/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}

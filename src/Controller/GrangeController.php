@@ -19,7 +19,6 @@ final class GrangeController extends AbstractController
 {
     private $slugger;
 
-   
     public function __construct(SluggerInterface $slugger)
     {
         $this->slugger = $slugger;
@@ -53,6 +52,7 @@ final class GrangeController extends AbstractController
                         $this->getParameter('zones_directory'), 
                         $newFilename
                     );
+                    
                     $grange->setImage($newFilename);
                 } catch (FileException $e) {
                     
