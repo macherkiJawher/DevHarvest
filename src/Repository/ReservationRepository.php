@@ -1,14 +1,10 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Reservation>
- */
 class ReservationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +12,25 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
-    //    /**
-    //     * @return Reservation[] Returns an array of Reservation objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Vérifier si une machine est disponible pour une période donnée
+     */
+    public function isMachineAvailable($machine, $dateDebut, $dateFin): bool
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->andWhere('r.machine = :machine')
+            ->andWhere(
+                '(r.dateDebut BETWEEN :dateDebut AND :dateFin) OR
+                 (r.dateFin BETWEEN :dateDebut AND :dateFin) OR
+                 (:dateDebut BETWEEN r.dateDebut AND r.dateFin) OR
+                 (:dateFin BETWEEN r.dateDebut AND r.dateFin)'
+            )
+            ->setParameter('machine', $machine)
+            ->setParameter('dateDebut', $dateDebut)
+            ->setParameter('dateFin', $dateFin)
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?Reservation
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return empty($qb); // Retourne `true` si la machine est disponible
+    }
 }

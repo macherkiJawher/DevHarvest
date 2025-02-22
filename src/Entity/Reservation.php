@@ -34,6 +34,15 @@ class Reservation
     #[ORM\Column(length: 20)]
     private ?string $status = 'en attente';
 
+    public function isOverlapping(Reservation $reservation): bool
+    {
+        return (
+            ($this->dateDebut >= $reservation->getDateDebut() && $this->dateDebut <= $reservation->getDateFin()) ||
+            ($this->dateFin >= $reservation->getDateDebut() && $this->dateFin <= $reservation->getDateFin()) ||
+            ($this->dateDebut <= $reservation->getDateDebut() && $this->dateFin >= $reservation->getDateFin())
+        );
+    }
+
     // Getters et Setters
 
     public function getId(): ?int

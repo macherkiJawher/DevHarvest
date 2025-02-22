@@ -1,0 +1,29 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Dates réservées{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-danger text-white text-center">
+                <h2>Cette machine est déjà réservée</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center">
+                    La machine <strong>{{ machine.nomMachine }}</strong> est déjà réservée aux dates suivantes :
+                </p>
+
+                <ul class="list-group">
+                    {% for date in datesReservees %}
+                        <li class="list-group-item text-center">{{ date }}</li>
+                    {% endfor %}
+                </ul>
+
+                <div class="text-center mt-3">
+                    <a href="{{ path('app_machine_list') }}" class="btn btn-secondary">Retour à la liste des machines</a>
+                    <a href="{{ path('app_machine_reserver', { id: machine.id }) }}" class="btn btn-primary">Choisir une autre date</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
