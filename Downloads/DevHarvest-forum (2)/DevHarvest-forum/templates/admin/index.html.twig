@@ -1,0 +1,21 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="mb-4">Bienvenue, Admin</h1>
+
+    <div class="d-flex justify-content-center gap-3">
+        <a href="{{ path('admin_user_index') }}" class="btn btn-primary">
+            <i class="fas fa-users"></i> Gérer les utilisateurs
+        </a>
+
+        <form action="{{ path('app_logout') }}" method="post">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

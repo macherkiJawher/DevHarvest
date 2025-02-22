@@ -1,0 +1,34 @@
+{# templates/admin/culture/list.html.twig #}
+{% extends 'admin.html.twig' %}
+
+{% block title %}Gestion des Cultures{% endblock %}
+
+{% block content %}
+  <h1>Liste des Cultures</h1>
+
+  <a href="{{ path('admin_culture_new') }}" class="btn btn-primary mb-3">Ajouter une nouvelle culture</a>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for culture in cultures %}
+        <tr>
+          <td>{{ culture.nom }}</td>
+          <td>{{ culture.description }}</td>
+          <td>
+            <a href="{{ path('admin_culture_edit', {id: culture.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+            <form action="{{ path('admin_culture_delete', {id: culture.id}) }}" method="post" style="display:inline;">
+              <button class="btn btn-danger btn-sm" type="submit">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

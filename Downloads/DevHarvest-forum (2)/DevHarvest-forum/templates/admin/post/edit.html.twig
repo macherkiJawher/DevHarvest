@@ -1,0 +1,45 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier le Post{% endblock %}
+
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg border-0" style="width: 600px; border-radius: 12px; background-color: #ffffff;">
+        <div class="card-header bg-dark text-white text-center py-3" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+            <h4 class="mb-0">Modifier le Post</h4>
+        </div>
+        <div class="card-body p-4 bg-light">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            <div class="mb-3">
+                {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'fw-bold text-secondary mb-1'}}) }}
+                {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                <div class="text-danger small">{{ form_errors(form.titre) }}</div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.contenu, 'Contenu', {'label_attr': {'class': 'fw-bold text-secondary mb-1'}}) }}
+                {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                <div class="text-danger small">{{ form_errors(form.contenu) }}</div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.imageFile, 'Image (optionnelle)', {'label_attr': {'class': 'fw-bold text-secondary mb-1'}}) }}
+                {{ form_widget(form.imageFile, {'attr': {'class': 'form-control-file'}}) }}
+                <div class="text-danger small">{{ form_errors(form.imageFile) }}</div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('admin_post') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Mettre à jour
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

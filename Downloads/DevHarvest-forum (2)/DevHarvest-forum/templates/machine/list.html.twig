@@ -1,0 +1,41 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Machines{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center">Machines disponibles</h1>
+      <br>
+
+        <div class="row">
+            {% for machine in machines %}
+                <div class="col-md-3">
+                    <div class="card shadow-sm border-0">
+                        {% if machine.image %}
+                            <img src="{{ asset('uploads/images/' ~ machine.image) }}" class="card-img-top" alt="Image de la machine" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <img src="{{ asset('uploads/images/default.png') }}" class="card-img-top" alt="Aucune image" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ machine.nomMachine }}</h5>
+                            <p class="card-text"><strong>Type :</strong> {{ machine.type }}</p>
+                            <p class="card-text"><strong>État :</strong> {{ machine.etat }}</p>
+                            <p class="card-text"><strong>Prix :</strong> {{ machine.prixLocationJour }} € / jour</p>
+                            <p class="card-text"><strong>Marque :</strong> {{ machine.marque }}</p>
+
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ path('app_machine_showReservation', { 'id': machine.id }) }}" class="btn btn-primary btn-sm">Voir</a>
+                                <a href="{{ path('app_machine_reserver', { 'id': machine.id }) }}" class="btn btn-success btn-sm">Réserver</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center text-muted">Aucune machine disponible.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

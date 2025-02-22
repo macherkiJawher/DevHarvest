@@ -1,0 +1,76 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Gestion des Posts{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white text-center">
+                    <h3 class="mb-0">Gestion des Posts</h3>
+                </div>
+                <div class="card-body bg-light">
+                   
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="bg-secondary text-white text-center">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titre</th>
+                                    <th>Auteur</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for post in posts %}
+                                <tr>
+                                    <td class="text-center text-dark fw-bold">{{ post.id }}</td>
+                                    <td class="text-dark">{{ post.titre }}</td>
+                                    <td class="text-center">
+                                        {% if post.auteur %}
+                                            {{ post.auteur.username }}
+                                        {% else %}
+                                            <span class="text-muted">Auteur inconnu</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center text-dark">{{ post.date|date('d/m/Y H:i') }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('admin_post_view', {'id': post.id}) }}" class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-eye"></i> Voir
+                                            </a>
+                                            <a href="{{ path('admin_post_edit', {'id': post.id}) }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-edit"></i> Modifier
+                                            </a>
+                                            <form method="post" action="{{ path('admin_post_delete', {'id': post.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce post ?');" class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                                <button class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-trash"></i> Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Aucun post trouvé.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% block body %}
+    <h1>Mon Panier</h1>
+    {% if panier.items is not empty %}
+        <ul>
+            {% for item in panier.items %}
+                <li>{{ item.produit.nom }} - {{ item.produit.prix }}€ x{{ item.quantite }}</li>
+            {% endfor %}
+        </ul>
+        <p>Total: {{ panier.total }}€</p>
+        <form action="{{ path('app_commande_commander') }}" method="POST">
+    <button type="submit" class="btn btn-success">Passer la commande</button>
+</form>
+
+
+    {% else %}
+        <p>Votre panier est vide.</p>
+    {% endif %}
+{% endblock %}

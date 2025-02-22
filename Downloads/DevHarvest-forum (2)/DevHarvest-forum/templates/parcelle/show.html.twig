@@ -1,0 +1,58 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Détails de la parcelle{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>{{ parcelle.zone }}</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Description :</strong> {{ parcelle.description }}</p>
+                <p><strong>Superficie :</strong> {{ parcelle.superficie }} m²</p>
+                <p><strong>Prix de location :</strong> {{ parcelle.prixDeLocation }} TND</p> 
+
+                <p><strong>Date de location :</strong> {{ parcelle.dateDeLocation|date('d/m/Y') }}</p>  
+<p><strong>Date de fin de location :</strong> {{ parcelle.dateDeFinLocation|date('d/m/Y') }}</p>  
+
+                <p><strong>État :</strong> {{ parcelle.etat }}</p>
+                <p><strong>Type de sol :</strong> {{ parcelle.typeSolAsString() }}</p>
+
+                {% if parcelle.cultureActuelle %}
+                    <p><strong>Culture actuelle :</strong> {{ parcelle.cultureActuelle.nom }}</p>
+                {% else %}
+                    <p><strong>Culture actuelle :</strong> Aucune culture en cours</p>
+                {% endif %}
+
+                {% if parcelle.historiqueCultures|length %}
+                    <p><strong>Historique des cultures :</strong> 
+                        {% for culture in parcelle.historiqueCultures %}
+                            {{ culture.nom }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                {% else %}
+                    <p><strong>Historique des cultures :</strong> Aucune culture enregistrée</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                {% if parcelle.image %}
+                    <div class="parcelle-image mb-4">
+                        <img src="{{ asset('uploads/parcelles/' ~ parcelle.image) }}" alt="{{ parcelle.zone }}" class="img-fluid">
+                    </div>
+                {% else %}
+                    <p>Aucune image disponible</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-warning">Modifier</a>
+            <form action="{{ path('parcelle_delete', {'id': parcelle.id}) }}" method="POST" style="display:inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+                <button class="btn btn-danger" type="submit">Supprimer</button>
+            </form>
+            <a href="{{ path('parcelle_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}
