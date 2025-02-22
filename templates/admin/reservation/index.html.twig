@@ -1,0 +1,36 @@
+{% extends 'admin.html.twig' %}
+
+{% block content %}
+<h1>Gestion des Réservations</h1>
+
+<a href="{{ path('admin_reservations_new') }}" class="btn btn-primary mb-3">Ajouter une Réservation</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Machine</th>
+            <th>Date Début</th>
+            <th>Date Fin</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reservation in reservations %}
+        <tr>
+            <td>{{ reservation.id }}</td>
+            <td>{{ reservation.machine.nommachine }}</td>
+            <td>{{ reservation.dateDebut|date('d/m/Y') }}</td>
+            <td>{{ reservation.dateFin|date('d/m/Y') }}</td>
+            <td>
+                <a href="{{ path('admin_reservations_edit', { id: reservation.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                <form action="{{ path('admin_reservations_delete', { id: reservation.id }) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Supprimer cette réservation ?');">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

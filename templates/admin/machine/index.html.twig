@@ -18,9 +18,10 @@
         {% for machine in machines %}
         <tr>
             <td>{{ machine.id }}</td>
-            <td>{{ machine.nommachine }}</td>
+            <td>{{ machine.nommachine }}</td> {# Correction du champ nom_machine #}
             <td>{{ machine.type }}</td>
             <td>
+                <a href="{{ path('admin_machines_show', { id: machine.id }) }}" class="btn btn-info btn-sm">Voir</a>
                 <a href="{{ path('admin_machines_edit', { id: machine.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
                 <form action="{{ path('admin_machines_delete', { id: machine.id }) }}" method="post" style="display:inline;">
                     <input type="hidden" name="_method" value="DELETE">

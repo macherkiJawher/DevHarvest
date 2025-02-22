@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Machine; // Ajout du bon namespace
 
 use App\Entity\User;
 use App\Enum\RoleEnum;
@@ -36,4 +37,11 @@ class AdminController extends AbstractController
 
         return $this->redirectToRoute('admin_users');
     }
+    #[Route('/show/{id}', name: 'admin_machines_show')]
+public function show(Machine $machine): Response
+{
+    return $this->render('admin/machine/show.html.twig', [
+        'machine' => $machine,
+    ]);
+}
 }

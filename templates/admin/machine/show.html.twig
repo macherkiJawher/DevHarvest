@@ -1,0 +1,25 @@
+{% extends 'admin.html.twig' %}
+
+{% block content %}
+<h1>Détails de la Machine</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ machine.nommachine }}</h5>
+        <p><strong>Type :</strong> {{ machine.type }}</p>
+        <p><strong>État :</strong> {{ machine.etat }}</p>
+        <p><strong>Dernier entretien :</strong> {{ machine.datedernierentretien|date('d/m/Y') }}</p>
+        <p><strong>Prix Location (par jour) :</strong> {{ machine.prixlocationjour }}€</p>
+        <p><strong>Marque :</strong> {{ machine.marque }}</p>
+
+        {% if machine.image %}
+            <img src="{{ asset('uploads/machines/' ~ machine.image) }}" width="200" alt="Image de la machine">
+        {% else %}
+            <p>Aucune image disponible</p>
+        {% endif %}
+
+        <br><br>
+        <a href="{{ path('admin_machines_index') }}" class="btn btn-secondary">Retour</a>
+    </div>
+</div>
+{% endblock %}
