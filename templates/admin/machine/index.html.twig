@@ -1,0 +1,34 @@
+{% extends 'admin.html.twig' %}
+
+{% block content %}
+<h1>Gestion des Machines</h1>
+
+<a href="{{ path('admin_machines_new') }}" class="btn btn-primary mb-3">Ajouter une Machine</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for machine in machines %}
+        <tr>
+            <td>{{ machine.id }}</td>
+            <td>{{ machine.nommachine }}</td>
+            <td>{{ machine.type }}</td>
+            <td>
+                <a href="{{ path('admin_machines_edit', { id: machine.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                <form action="{{ path('admin_machines_delete', { id: machine.id }) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Supprimer cette machine ?');">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
