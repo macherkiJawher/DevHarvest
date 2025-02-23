@@ -16,8 +16,12 @@
                     <li><strong>Total : </strong>{{ commande.total }} €</li>
                 </ul>
 
-                <p>Nous vous enverrons un e-mail de confirmation sous peu.</p>
-                <a href="{{ path('app_home') }}" class="btn btn-primary">Retour à l'accueil</a>
+                <h4 class="mt-4">Entrez vos coordonnées</h4>
+                {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_home') }}" class="btn btn-primary mt-3">Retour à l'accueil</a>
             </div>
         </div>
     </div>

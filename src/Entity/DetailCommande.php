@@ -18,7 +18,10 @@ class DetailCommande
     private ?int $quantite = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $soustotal = null;
+    private ?float $prix = null; // Ajout du champ prix
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?float $soustotal = null; // Correction du type (float)
 
     #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -33,13 +36,6 @@ class DetailCommande
         return $this->id;
     }
 
-    public function setId(string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     public function getQuantite(): ?int
     {
         return $this->quantite;
@@ -48,19 +44,28 @@ class DetailCommande
     public function setQuantite(int $quantite): static
     {
         $this->quantite = $quantite;
-
         return $this;
     }
 
-    public function getSoustotal(): ?string
+    public function getPrix(): ?float
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(float $prix): static
+    {
+        $this->prix = $prix;
+        return $this;
+    }
+
+    public function getSoustotal(): ?float
     {
         return $this->soustotal;
     }
 
-    public function setSoustotal(string $soustotal): static
+    public function setSoustotal(float $soustotal): static
     {
         $this->soustotal = $soustotal;
-
         return $this;
     }
 
@@ -72,7 +77,6 @@ class DetailCommande
     public function setCommande(?Commande $commande): static
     {
         $this->commande = $commande;
-
         return $this;
     }
 
@@ -84,7 +88,6 @@ class DetailCommande
     public function setProduit(?Produit $produit): static
     {
         $this->produit = $produit;
-
         return $this;
     }
 }

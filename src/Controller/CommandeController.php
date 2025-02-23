@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Enum\EtatCommande;
+use App\Form\CoordonneesType;
 
 #[Route('/commande')]
 final class CommandeController extends AbstractController
@@ -98,21 +99,30 @@ final class CommandeController extends AbstractController
 
         // Message de confirmation et redirection
         $this->addFlash('success', 'Votre commande a été passée avec succès.');
-        return $this->redirectToRoute('app_commande_confirmation', ['id' => $commande->getId()]);
+        return $this->redirectToRoute('commande_confirmation', ['id' => $commande->getId()]);
     }
 
     // Confirmation de commande
-    #[Route('/{id}/confirmation', name: 'app_commande_confirmation')]
-    public function confirmation($id, EntityManagerInterface $entityManager): Response
+    #[Route('/commande/confirmation', name: 'commande_confirmation')]
+    public function confirmation(Request $request): Response
     {
-        $commande = $entityManager->getRepository(Commande::class)->find($id);
+        $form = $this->createForm(CoordonneesType::class);
+        $form->handleRequest($request);
 
-        if (!$commande) {
-            throw $this->createNotFoundException('Commande non trouvée');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            // Ici, tu peux enregistrer les données en base de données si nécessaire
+            $this->addFlash('success', 'Votre commande a bien été confirmée !');
+            return $this->redirectToRoute('app_home');
         }
 
-        return $this->render('commande/confirmee.html.twig', [
-            'commande' => $commande,
+        return $this->render('commande/confirmation.html.twig', [
+            'form' => $form->createView(),
+            'commande' => [
+                'id' => 123, 
+                'datecommande' => new \DateTime(), 
+                'total' => 49.99
+            ]
         ]);
     }
 
