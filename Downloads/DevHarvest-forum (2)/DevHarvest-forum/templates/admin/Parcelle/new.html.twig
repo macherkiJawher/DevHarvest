@@ -1,8 +1,8 @@
-{% extends 'client.html.twig' %}
+{% extends 'admin.html.twig' %}
 
 {% block title %}Ajouter une Parcelle{% endblock %}
 
-{% block body %}
+{% block content %}
     <div class="container my-5">
         <h1 class="mb-4 text-center">Ajouter une Parcelle</h1>
 
@@ -87,10 +87,9 @@
         </div>
 
         <div class="form-group text-center mt-4">
-    <button class="btn btn-success btn-lg" type="submit">Soumettre</button>
-    <a href="{{ path('parcelle_index') }}" class="btn btn-danger btn-lg ml-3">Annuler</a>
-</div>
-
+            <button class="btn btn-success btn-lg" type="submit">Soumettre</button>
+            <a href="{{ path('admin_parcelle') }}" class="btn btn-danger btn-lg ml-3">Annuler</a>
+        </div>
 
         {{ form_end(form) }}
     </div>

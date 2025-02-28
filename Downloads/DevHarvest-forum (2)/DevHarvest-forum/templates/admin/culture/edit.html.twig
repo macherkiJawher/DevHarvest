@@ -6,7 +6,7 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Modifier la culture</h1>
-            <a href="{{ path('app_culture_index') }}" class="btn btn-secondary">
+            <a href="{{ path('admin_culture') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Retour à la liste
             </a>
         </div>
@@ -47,7 +47,7 @@
                 </div>
 <div class="form-group text-center mt-4">
             <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save"></i> Enregistrer</button>
-            <a href="{{ path('app_culture_index') }}" class="btn btn-danger btn-lg ml-3">Annuler</a>
+            <a href="{{ path('admin_culture') }}" class="btn btn-danger btn-lg ml-3">Annuler</a>
         </div>
             {{ form_end(form) }}
         </div>

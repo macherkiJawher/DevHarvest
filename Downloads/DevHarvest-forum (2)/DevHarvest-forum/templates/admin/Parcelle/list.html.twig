@@ -1,0 +1,68 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Gestion des Parcelles{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-dark">Liste des Parcelles</h1>
+        <a href="{{ path('admin_parcelle_new') }}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Ajouter une Parcelle
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm bg-white rounded">
+            <thead class="table-dark text-white">
+                <tr>
+                    <th>Description</th>
+                    <th>Superficie</th>
+                    <th>Prix</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>État</th>
+                    <th>Type Sol</th>
+                    <th>Culture</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for parcelle in parcelles %}
+                    <tr>
+                        <td>{{ parcelle.description }}</td>
+                        <td>{{ parcelle.superficie }} m²</td>
+                        <td>{{ parcelle.prixDeLocation|number_format(2, ',', ' ') }} TND</td>
+                        <td>{{ parcelle.dateDeLocation ? parcelle.dateDeLocation|date('d/m/Y') : 'N/A' }}</td>
+                        <td>{{ parcelle.dateDeFinLocation ? parcelle.dateDeFinLocation|date('d/m/Y') : 'N/A' }}</td>
+                        <td>{{ parcelle.etat }}</td>
+                        <td>{{ parcelle.typeSol ? parcelle.typeSol.value : 'Non défini' }}</td>
+                        <td>{{ parcelle.cultureActuelle ? parcelle.cultureActuelle.nom : 'Aucune' }}</td>
+                        <td class="text-center">
+                            <a href="{{ path('admin_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                            <form method="post" action="{{ path('admin_parcelle_delete', {'id': parcelle.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+                                <button class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">Aucune parcelle trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+{% endblock %}

@@ -93,4 +93,9 @@ class Culture
 
         return $this;
     }
+    public function __toString(): string
+{
+    return $this->nom; // Affiche le nom de la culture
+}
+
 }

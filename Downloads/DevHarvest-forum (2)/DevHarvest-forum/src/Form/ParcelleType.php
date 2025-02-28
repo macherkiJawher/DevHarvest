@@ -14,6 +14,9 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Culture;
 
 class ParcelleType extends AbstractType
 {
@@ -33,20 +36,25 @@ class ParcelleType extends AbstractType
                 'constraints' => [new NotBlank(['message' => 'La zone est obligatoire.'])],
             ])
             ->add('superficie', NumberType::class, [
-                'label' => 'Superficie (en m²)',
+                'label' => 'Superficie (m²)',
                 'required' => true,
                 'scale' => 2,
                 'attr' => ['class' => 'form-control', 'step' => '0.01', 'placeholder' => 'Superficie en m²'],
-                'constraints' => [new NotBlank(['message' => 'La superficie est obligatoire.'])],
+                'constraints' => [
+                    new NotBlank(['message' => 'La superficie est obligatoire.']),
+                    new Positive(['message' => 'La superficie doit être un nombre positif.']),
+                ],
             ])
             ->add('prix_de_location', NumberType::class, [
-                'label' => 'Prix de location (en €)',
+                'label' => 'Prix de location (€)',
                 'required' => true,
                 'scale' => 2,
                 'attr' => ['class' => 'form-control', 'step' => '0.01', 'placeholder' => 'Prix de location en €'],
-                'constraints' => [new NotBlank(['message' => 'Le prix de location est obligatoire.'])],
+                'constraints' => [
+                    new NotBlank(['message' => 'Le prix de location est obligatoire.']),
+                    new Positive(['message' => 'Le prix doit être un nombre positif.']),
+                ],
             ])
-            
             ->add('date_de_location', DateType::class, [
                 'label' => 'Date de location',
                 'required' => true,
@@ -85,8 +93,14 @@ class ParcelleType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [new NotBlank(['message' => 'Le type de sol est obligatoire.'])],
             ])
+            ->add('cultureActuelle', EntityType::class, [
+                'class' => Culture::class,
+                'choice_label' => 'nom',
+                'placeholder' => 'Sélectionner une culture actuelle',
+                'required' => false,
+            ])
             ->add('image', FileType::class, [
-                'label' => 'Image de la parcelle (jpeg, png, gif)',
+                'label' => 'Image de la parcelle (JPEG, PNG, GIF)',
                 'mapped' => false,
                 'required' => false,
                 'attr' => ['class' => 'form-control-file'],
@@ -95,7 +109,7 @@ class ParcelleType extends AbstractType
                         'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
                         'maxSize' => '5M',
                         'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG ou GIF).',
-                        'maxSizeMessage' => 'L\'image ne doit pas dépasser 5 Mo.'
+                        'maxSizeMessage' => 'L\'image ne doit pas dépasser 5 Mo.',
                     ])
                 ],
             ]);

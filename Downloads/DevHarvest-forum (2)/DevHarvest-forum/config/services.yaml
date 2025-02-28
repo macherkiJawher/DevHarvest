@@ -10,6 +10,8 @@ parameters:
     images_directory: '%kernel.project_dir%/public/uploads/images'
     cultures_directory: '%kernel.project_dir%/public/uploads/cultures'
     parcelle_images_directory: '%kernel.project_dir%/public/uploads/parcelles'
+    uploads_directory: '%kernel.project_dir%/public/uploads/images'
+
 services:
     # default configuration for services in *this* file
     _defaults:

@@ -1,11 +1,11 @@
 <?php
 // src/Entity/Parcelle.php
 
+// src/Entity/Parcelle.php
+
 namespace App\Entity;
 
 use App\Repository\ParcelleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\TypeSol;
@@ -47,9 +47,6 @@ class Parcelle
     #[ORM\JoinColumn(nullable: true)]
     private ?Culture $cultureActuelle = null;
 
-    #[ORM\ManyToMany(targetEntity: Culture::class)]
-    private Collection $historiqueCultures;
-
     // Gestion de l'image
     #[ORM\Column(type: 'string', nullable: true)]
     #[Assert\Image(
@@ -60,13 +57,7 @@ class Parcelle
     )]
     private ?string $image = null;
 
-    public function __construct()
-    {
-        $this->historiqueCultures = new ArrayCollection();
-    }
-
-    // Getters et Setters...
-    
+    // Getters et Setters
     public function getId(): ?int
     {
         return $this->id;
@@ -163,7 +154,7 @@ class Parcelle
     // Nouvelle méthode pour obtenir la valeur sous forme de chaîne
     public function getTypeSolAsString(): string
     {
-        return $this->typeSol->value;  // Accède à la valeur de l'énumération
+        return $this->typeSol->value; // Accède à la valeur de l'énumération
     }
 
     public function getCultureActuelle(): ?Culture
@@ -174,25 +165,6 @@ class Parcelle
     public function setCultureActuelle(?Culture $cultureActuelle): static
     {
         $this->cultureActuelle = $cultureActuelle;
-        return $this;
-    }
-
-    public function getHistoriqueCultures(): Collection
-    {
-        return $this->historiqueCultures;
-    }
-
-    public function addHistoriqueCulture(Culture $culture): static
-    {
-        if (!$this->historiqueCultures->contains($culture)) {
-            $this->historiqueCultures->add($culture);
-        }
-        return $this;
-    }
-
-    public function removeHistoriqueCulture(Culture $culture): static
-    {
-        $this->historiqueCultures->removeElement($culture);
         return $this;
     }
 

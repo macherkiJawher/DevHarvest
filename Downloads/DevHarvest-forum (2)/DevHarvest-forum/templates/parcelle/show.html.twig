@@ -23,16 +23,6 @@
                 {% else %}
                     <p><strong>Culture actuelle :</strong> Aucune culture en cours</p>
                 {% endif %}
-
-                {% if parcelle.historiqueCultures|length %}
-                    <p><strong>Historique des cultures :</strong> 
-                        {% for culture in parcelle.historiqueCultures %}
-                            {{ culture.nom }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
-                {% else %}
-                    <p><strong>Historique des cultures :</strong> Aucune culture enregistrée</p>
-                {% endif %}
             </div>
 
             <div class="col-md-6">
