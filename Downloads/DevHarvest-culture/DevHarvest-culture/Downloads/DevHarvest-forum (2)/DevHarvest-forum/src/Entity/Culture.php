@@ -70,6 +70,20 @@ class Culture
 
         return $this;
     }
+    #[ORM\Column(type: "float")]
+    private ?float $quantite = 0;
+
+
+    public function getQuantite(): ?float
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(float $quantite): static
+    {
+        $this->quantite = $quantite;
+        return $this;
+    }
 
     // Getters et setters
     public function getId(): ?int

@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class CultureType extends AbstractType
 {
@@ -25,6 +26,14 @@ class CultureType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => ['class' => 'form-control']
+            ])
+            ->add('quantite', NumberType::class, [
+                'label' => 'Quantité disponible',
+                'required' => true,
+                'attr' => [
+                    'min' => 0,  // Valeur minimale de quantité
+                    'step' => 0.1,  // Pas de la quantité
+                ],
             ])
             ->add('datePlantation', DateType::class, [
                 'widget' => 'single_text',

@@ -1,5 +1,7 @@
 <?php
 
+// src/Controller/CultureController.php
+
 namespace App\Controller;
 
 use App\Entity\Culture;
@@ -22,15 +24,19 @@ class CultureController extends AbstractController
         $this->rendementService = $rendementService;
     }
 
+    // Affichage du rendement de la culture
     #[Route('/{id}/rendement', name: 'culture_rendement')]
     public function afficherRendement(Culture $culture): Response
     {
-        $rendement = $this->rendementService->calculerRendement($culture); // Appel du service pour calculer le rendement
+        // Appel du service pour calculer le rendement
+        $rendement = $this->rendementService->calculerRendement($culture); 
         return $this->render('culture/rendement.html.twig', [
             'culture' => $culture,
             'rendement' => $rendement,
         ]);
     }
+
+    // Affichage de la liste des cultures
     #[Route('/', name: 'app_culture_index', methods: ['GET'])]
     public function index(CultureRepository $cultureRepository): Response
     {
@@ -39,7 +45,7 @@ class CultureController extends AbstractController
         ]);
     }
 
-
+    // Création d'une nouvelle culture
     #[Route('/new', name: 'culture_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -48,7 +54,7 @@ class CultureController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle the uploaded image if exists
+            // Gestion de l'image si elle existe
             $image = $form->get('image')->getData();
             if ($image) {
                 $newFileName = uniqid() . '.' . $image->guessExtension();
@@ -56,6 +62,7 @@ class CultureController extends AbstractController
                 $culture->setImage($newFileName);
             }
 
+            // Sauvegarde de la culture dans la base de données
             $entityManager->persist($culture);
             $entityManager->flush();
 
@@ -68,6 +75,7 @@ class CultureController extends AbstractController
         ]);
     }
 
+    // Affichage des détails d'une culture
     #[Route('/{id}', name: 'culture_show', methods: ['GET'])]
     public function show(Culture $culture): Response
     {
@@ -76,16 +84,18 @@ class CultureController extends AbstractController
         ]);
     }
 
+    // Modification d'une culture existante
     #[Route('/{id}/edit', name: 'culture_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CultureType::class, $culture);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $culture->setDatePlantation($form->get('datePlantation')->getData());
             $culture->setDateRecolte($form->get('dateRecolte')->getData());
-    
+
+            // Gestion de l'image si elle existe
             $image = $form->get('image')->getData();
             if ($image) {
                 if ($culture->getImage()) {
@@ -98,21 +108,21 @@ class CultureController extends AbstractController
                 $image->move($this->getParameter('images_directory'), $newFileName);
                 $culture->setImage($newFileName);
             }
-    
+
+            // Sauvegarde des changements dans la base de données
             $entityManager->flush();
-    
+
             $this->addFlash('success', 'La culture a été mise à jour avec succès.');
             return $this->redirectToRoute('app_culture_index');
         }
-    
+
         return $this->render('culture/edit.html.twig', [
             'culture' => $culture,
             'form' => $form->createView(),
         ]);
     }
-    
 
-
+    // Suppression d'une culture
     #[Route('/{id}', name: 'culture_delete', methods: ['POST'])]
     public function delete(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
