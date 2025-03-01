@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.titre }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+    
+<a href="{{ path('post_edit', { 'id': post.id }) }}" class="btn btn-primary">✏ Modifier</a>
+
+        <h1 class="text-center">{{ post.titre }}</h1>
+
+        {% if post.image %}
+            <div class="text-center mb-3">
+                <img src="{{ asset('uploads/posts/' ~ post.image) }}" alt="Image du post" class="img-fluid rounded">
+            </div>
+        {% endif %}
+
+        <p>{{ post.contenu }}</p>
+        <p><strong>Publié le :</strong> {{ post.date|date('d/m/Y H:i') }}</p>
+
+        <hr>
+
+        <a href="{{ path('post_list') }}" class="btn btn-secondary">⬅ Retour</a>
+    </div>
+{% endblock %}

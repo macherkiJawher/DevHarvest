@@ -1,0 +1,73 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Créer une zone{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Créer une zone</h1>
+
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_label(form.nom_zone) }}
+                        {{ form_widget(form.nom_zone, {'attr': {'class': 'form-control' ~ (form.nom_zone.vars.errors|length > 0 ? ' is-invalid' : '')}}) }}
+                        {{ form_errors(form.nom_zone) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.superficie_zone) }}
+                        {{ form_widget(form.superficie_zone, {'attr': {'class': 'form-control' ~ (form.superficie_zone.vars.errors|length > 0 ? ' is-invalid' : ''), 'step': 'any'}}) }}
+                        {{ form_errors(form.superficie_zone) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.localisation_zone) }}
+                        <div id="map" style="height: 400px;"></div> <!-- Mapbox map container -->
+                        {{ form_widget(form.localisation_zone, {'attr': {'class': 'form-control' ~ (form.localisation_zone.vars.errors|length > 0 ? ' is-invalid' : '')}}) }}
+                        {{ form_errors(form.localisation_zone) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.image) }}
+                        {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                        {{ form_errors(form.image) }}
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Créer</button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        <a href="{{ path('app_zone_index') }}" class="btn btn-secondary mt-3">Retour</a>
+    </div>
+
+    <!-- Mapbox JavaScript -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <script>
+        // Initialize the map with Mapbox API key
+        mapboxgl.accessToken = '{{ mapbox_api_key }}';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v11', // Map style
+            center: [2.2945, 48.8584], // Paris coordinates by default
+            zoom: 13
+        });
+
+        // Add a marker on the map (this will be updated later)
+        var marker = new mapboxgl.Marker()
+            .setLngLat([2.2945, 48.8584]) // Default coordinates
+            .addTo(map);
+
+        // Event listener to get the coordinates of the clicked position
+        map.on('click', function (e) {
+            var lngLat = e.lngLat;
+            marker.setLngLat(lngLat);
+            // Update the localisation_zone field with the coordinates
+            document.getElementById('zone_localisation_zone').value = lngLat.lng + ',' + lngLat.lat;
+        });
+    </script>
+
+{% endblock %}

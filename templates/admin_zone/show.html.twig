@@ -1,0 +1,39 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de la Zone{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Détails de la Zone</h1>
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <td>{{ zone.id }}</td>
+        </tr>
+        <tr>
+            <th>Nom de la Zone</th>
+            <td>{{ zone.nomZone }}</td>
+        </tr>
+        <tr>
+            <th>Superficie</th>
+            <td>{{ zone.superficieZone }} m²</td>
+        </tr>
+        <tr>
+            <th>Localisation</th>
+            <td>{{ zone.localisationZone }}</td>
+        </tr>
+        <tr>
+    <th>Image</th>
+    <td>
+        {% if zone.image %}
+            <img src="{{ asset('uploads/zones/' ~ zone.image) }}" alt="Image de la zone" class="img-fluid" width="300">
+        {% else %}
+            <span class="text-muted">Aucune image disponible</span>
+        {% endif %}
+    </td>
+    </tr>
+
+    </table>
+    <a href="{{ path('admin_zone_index') }}" class="btn btn-secondary">Retour à la liste</a>
+</div>
+{% endblock %}

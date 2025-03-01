@@ -1,0 +1,17 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+zone_recherche:
+    path: /zones/recherche
+    controller: App\Controller\ZoneController::searchZones
+    methods: [GET]
+
+
+
+
+    
+
+    
