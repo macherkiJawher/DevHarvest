@@ -56,10 +56,13 @@ class Post
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'post')]
     private Collection $commentaires;
 
+    
+
     public function __construct()
     {
-        $this->commentaires = new ArrayCollection();
-        $this->date = new \DateTime(); 
+       
+        $this->date = new \DateTime();
+        $this->commentaires = new ArrayCollection(); 
     }
 
     public function getId(): ?int
@@ -122,7 +125,6 @@ class Post
     public function setAuteur(?user $auteur): static
     {
         $this->auteur = $auteur;
-
         return $this;
     }
 

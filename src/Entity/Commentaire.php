@@ -17,14 +17,14 @@ class Commentaire
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    private ?User $auteur = null;
+    private ?Post $post = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    private ?Post $post = null;
+    private ?User $auteur = null;
 
     public function getId(): ?int
     {
@@ -55,18 +55,6 @@ class Commentaire
         return $this;
     }
 
-    public function getAuteur(): ?user
-    {
-        return $this->auteur;
-    }
-
-    public function setAuteur(?user $auteur): static
-    {
-        $this->auteur = $auteur;
-
-        return $this;
-    }
-
     public function getPost(): ?Post
     {
         return $this->post;
@@ -75,6 +63,18 @@ class Commentaire
     public function setPost(?Post $post): static
     {
         $this->post = $post;
+
+        return $this;
+    }
+
+    public function getAuteur(): ?User
+    {
+        return $this->auteur;
+    }
+
+    public function setAuteur(?User $auteur): static
+    {
+        $this->auteur = $auteur;
 
         return $this;
     }

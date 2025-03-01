@@ -1,11 +1,9 @@
 <?php
 
-// src/Controller/UserController.php
-
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Enum\RoleEnum;  // N'oubliez pas de l'importer
+use App\Enum\RoleEnum;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -22,59 +20,75 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/create-agriculteur', name: 'create_agriculteur')]
-    public function createAgriculteur(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
-    {
+    private function createUser(
+        string $email,
+        string $username,
+        string $password,
+        RoleEnum $role,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager
+    ): Response {
         $user = new User();
-        $user->setEmail('agriculteur@test.com');
-        $user->setPassword($passwordHasher->hashPassword($user, 'password123'));
-        $user->setRoles([RoleEnum::ROLE_AGRICULTEUR]);
+        $user->setEmail($email);
+        $user->setUsername($username);
+        $user->setPassword($passwordHasher->hashPassword($user, $password));
+        $user->setRole($role->value);
 
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return new Response('Agriculteur créé avec succès');
+        return new Response("Utilisateur '$username' créé avec succès avec le rôle {$role->value}");
+    }
+
+    #[Route('/create-agriculteur', name: 'create_agriculteur')]
+    public function createAgriculteur(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    {
+        return $this->createUser(
+            'agriculteur@test.com',
+            'AgriculteurUser',
+            'password123',
+            RoleEnum::AGRICULTEUR,
+            $passwordHasher,
+            $entityManager
+        );
     }
 
     #[Route('/create-client', name: 'create_client')]
     public function createClient(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $user->setEmail('client@test.com');
-        $user->setPassword($passwordHasher->hashPassword($user, 'password123'));
-        $user->setRoles([RoleEnum::ROLE_CLIENT]);
-
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        return new Response('Client créé avec succès');
+        return $this->createUser(
+            'client@test.com',
+            'ClientUser',
+            'password123',
+            RoleEnum::CLIENT,
+            $passwordHasher,
+            $entityManager
+        );
     }
 
     #[Route('/create-fournisseur', name: 'create_fournisseur')]
     public function createFournisseur(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $user->setEmail('fournisseur@test.com');
-        $user->setPassword($passwordHasher->hashPassword($user, 'password123'));
-        $user->setRoles([RoleEnum::ROLE_FOURNISSEUR]);
-
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        return new Response('Fournisseur créé avec succès');
+        return $this->createUser(
+            'fournisseur@test.com',
+            'FournisseurUser',
+            'password123',
+            RoleEnum::FOURNISSEUR,
+            $passwordHasher,
+            $entityManager
+        );
     }
 
     #[Route('/create-admin', name: 'create_admin')]
     public function createAdmin(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $user->setEmail('admin@test.com');
-        $user->setPassword($passwordHasher->hashPassword($user, 'password123'));
-        $user->setRoles([RoleEnum::ROLE_ADMIN]);
-
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        return new Response('Administrateur créé avec succès');
+        return $this->createUser(
+            'admin@test.com',
+            'AdminUser',
+            'password123',
+            RoleEnum::ADMIN,
+            $passwordHasher,
+            $entityManager
+        );
     }
 }

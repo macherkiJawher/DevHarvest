@@ -1,44 +1,40 @@
 <?php
-
-// src/Entity/User.php
-
 namespace App\Entity;
 
 use App\Enum\RoleEnum;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;  // Assurez-vous que l'énumération est bien incluse
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\UserRepository;
-
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\Table(name: "users")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    #[ORM\Column(type: "string", length: 180, unique: true)]
+    #[Assert\NotBlank(message: "Email is required.")]
+    #[Assert\Email(message: "Please enter a valid email address.")]
+    private string $email;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column(type: 'simple_array')]
-    private array $roles = [];
+    #[ORM\Column(type: "string")]
+    #[Assert\NotBlank(message: "Password is required.")]
+    private string $password;
 
-    #[ORM\Column]
-    private ?string $password = null;
+    #[ORM\Column(type: "string", length: 255, unique: true)]  // Make the username unique
+    #[Assert\NotBlank(message: "Username is required.")]
+    #[Assert\Length(min: 3, max: 20, minMessage: "Username must be at least {{ limit }} characters long.", maxMessage: "Username cannot be longer than {{ limit }} characters.")]
+    private string $username;  // New username property
 
-    /**
-     * @var Collection<int, Post>
-     */
-    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'auteur')]
-    private Collection $posts;
+    #[ORM\Column(type: "string", enumType: RoleEnum::class)]
+    private RoleEnum $role;
 
     /**
      * @var Collection<int, Commentaire>
@@ -48,7 +44,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->posts = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
     }
 
@@ -62,30 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        $roles[] = RoleEnum::ROLE_USER; // Ajoutez un rôle par défaut
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
         return $this;
     }
 
@@ -94,45 +68,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return [$this->role->value];
+    }
+
+    public function getRole(): string
+    {
+        return $this->role->value ?? 'ROLE_USER';
+    }
+
+    public function setRole(string $role): self
+    {
+        $this->role = RoleEnum::from($role);
+        return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 
     public function eraseCredentials(): void
     {
-        // Efface les données sensibles ici si nécessaire
+        
     }
 
-    /**
-     * @return Collection<int, Post>
-     */
-    public function getPosts(): Collection
+ 
+
+    public function getUsername(): ?string
     {
-        return $this->posts;
+        return $this->username;
     }
 
-    public function addPost(Post $post): static
+    public function setUsername(string $username): self
     {
-        if (!$this->posts->contains($post)) {
-            $this->posts->add($post);
-            $post->setAuteur($this);
-        }
-
-        return $this;
-    }
-
-    public function removePost(Post $post): static
-    {
-        if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
-            if ($post->getAuteur() === $this) {
-                $post->setAuteur(null);
-            }
-        }
-
+        $this->username = $username;
         return $this;
     }
 

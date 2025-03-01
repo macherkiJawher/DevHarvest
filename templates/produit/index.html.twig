@@ -96,7 +96,6 @@
                 });
             {% endif %}
 
-            // Confirmation de suppression avec SweetAlert
             {% for produit in produits %}
                 document.querySelector('#delete-form-{{ produit.id }}').addEventListener('submit', function(event) {
                     event.preventDefault();
@@ -109,7 +108,7 @@
                         cancelButtonText: 'Annuler'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            this.submit(); // Soumettre le formulaire pour la suppression
+                            this.submit(); 
                         }
                     });
                 });
