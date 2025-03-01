@@ -1,5 +1,4 @@
 <?php
-
 // src/Controller/CultureController.php
 
 namespace App\Controller;
@@ -12,16 +11,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\PaginationService;
 use App\Service\RendementService;
 
 #[Route('/culture')]
 class CultureController extends AbstractController
 {
     private RendementService $rendementService;
+    private PaginationService $paginationService;
 
-    public function __construct(RendementService $rendementService)
+    public function __construct(RendementService $rendementService, PaginationService $paginationService)
     {
         $this->rendementService = $rendementService;
+        $this->paginationService = $paginationService;
     }
 
     // Affichage du rendement de la culture
@@ -36,15 +38,35 @@ class CultureController extends AbstractController
         ]);
     }
 
-    // Affichage de la liste des cultures
     #[Route('/', name: 'app_culture_index', methods: ['GET'])]
-    public function index(CultureRepository $cultureRepository): Response
+    public function index(Request $request, CultureRepository $cultureRepository): Response
     {
+        // Vérification de la page et de la récupération des cultures
+        $page = $request->query->getInt('page', 1);
+        $limit = 9;  // Nombre d'éléments par page
+        $query = $cultureRepository->createQueryBuilder('c')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery();
+    
+        $cultures = $query->getResult();
+    
+        // Vérification du contenu de cultures
+        dump($cultures); // Ajoutez cette ligne pour vérifier si des cultures sont récupérées
+    
+        // Total des cultures
+        $totalCultures = $cultureRepository->count([]);
+        $totalPages = ceil($totalCultures / $limit);
+    
         return $this->render('culture/index.html.twig', [
-            'cultures' => $cultureRepository->findAll(),
+            'cultures' => $cultures,
+            'pagination' => [
+                'current_page' => $page,
+                'total_pages' => $totalPages,
+            ]
         ]);
     }
-
+    
     // Création d'une nouvelle culture
     #[Route('/new', name: 'culture_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
