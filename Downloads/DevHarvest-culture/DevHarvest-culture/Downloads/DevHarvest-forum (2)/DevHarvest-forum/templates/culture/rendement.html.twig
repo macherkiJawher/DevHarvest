@@ -1,0 +1,21 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Rendement de la culture{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Rendement de la culture : {{ culture.nom }}</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h3>Rendement estimé : {{ rendement }} €</h3>
+                        <p>Cela est basé sur la superficie totale des parcelles associées à cette culture et leur prix de location.</p>
+                        <a class="btn btn-primary">Retour aux cultures</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

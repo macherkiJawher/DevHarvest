@@ -1,0 +1,133 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier la parcelle{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Modifier la parcelle</h1>
+            <a href="{{ path('admin_dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+
+        <div class="card shadow-lg p-4">
+            {# Début du formulaire avec l'attribut enctype pour gérer l'upload de fichiers #}
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                
+                <div class="mb-3">
+                    {{ form_label(form.zone) }}
+                    {{ form_widget(form.zone, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.zone) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.superficie) }}
+                    {{ form_widget(form.superficie, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.superficie) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.prix_de_location) }}
+                    {{ form_widget(form.prix_de_location, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.prix_de_location) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.date_de_location) }}
+                    {{ form_widget(form.date_de_location, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.date_de_location) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.date_de_fin_location) }}
+                    {{ form_widget(form.date_de_fin_location, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.date_de_fin_location) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.etat) }}
+                    {{ form_widget(form.etat, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.etat) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.type_sol) }}
+                    {{ form_widget(form.type_sol, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.type_sol) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(form.cultureActuelle) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.image) }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.image) }}
+
+                    {# Affichage de l'image actuelle si elle existe #}
+                    {% if form.vars.value.image is not empty %}
+                        <img src="{{ asset('uploads/images/' ~ form.vars.value.image) }}" alt="Image de la parcelle" style="max-width: 200px; margin-top: 10px;">
+                    {% else %}
+                        <p>Aucune image actuelle disponible.</p>
+                    {% endif %}
+                    {% if form.vars.errors|length > 0 %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for error in form.vars.errors %}
+                <li>{{ error.message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+                </div>
+
+               <div class="form-group text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save"></i> Enregistrer</button>
+            <a href="{{ path('admin_parcelle') }}" class="btn btn-danger btn-lg ml-3">Annuler</a>
+        </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <style>
+        .card {
+            max-width: 700px;
+            margin: auto;
+            border-radius: 10px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+    </style>
+{% endblock %}
