@@ -1,3 +1,5 @@
+{# templates/commande/confirmation.html.twig #}
+
 {% extends 'client.html.twig' %}
 
 {% block title %}Confirmation de Commande{% endblock %}
@@ -17,10 +19,30 @@
                 </ul>
 
                 <h4 class="mt-4">Entrez vos coordonnées</h4>
-                {{ form_start(form) }}
-                    {{ form_widget(form) }}
+                {{ form_start(form, {'attr': {'class': 'mt-3'}}) }}
+                    <div class="mb-3">
+                        <label for="{{ form.nom.vars.id }}" class="form-label"><strong>Nom :</strong></label>
+                        {{ form_widget(form.nom) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.prenom.vars.id }}" class="form-label"><strong>Prénom :</strong></label>
+                        {{ form_widget(form.prenom) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.adresse.vars.id }}" class="form-label"><strong>Adresse :</strong></label>
+                        {{ form_widget(form.adresse) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.telephone.vars.id }}" class="form-label"><strong>Téléphone :</strong></label>
+                        {{ form_widget(form.telephone) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.email.vars.id }}" class="form-label"><strong>Email :</strong></label>
+                        {{ form_widget(form.email) }}
+                    </div>
+                    {# Le bouton submit est automatiquement généré par Symfony, donc pas besoin de celui-ci #}
                 {{ form_end(form) }}
-
+                
                 <a href="{{ path('app_home') }}" class="btn btn-primary mt-3">Retour à l'accueil</a>
             </div>
         </div>

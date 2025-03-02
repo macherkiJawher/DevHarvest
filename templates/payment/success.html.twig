@@ -1,0 +1,14 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Commande Réussi{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="alert alert-success">
+            <h2>Commande réussi ! 🎉</h2>
+            <p>Merci pour votre commande. Un email de confirmation vous a été envoyé.</p>
+        </div>
+        <a href="{{ path('app_home') }}" class="btn btn-primary">Retour à l'accueil</a>
+        <a href="{{ path('generate_pdf', { id: commande.id }) }}" class="btn btn-primary">Télécharger la facture PDF</a>
+    </div>
+{% endblock %}

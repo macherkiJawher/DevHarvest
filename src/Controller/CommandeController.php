@@ -3,6 +3,8 @@
 
 namespace App\Controller;
 
+use App\Service\FactureService;
+use App\Service\MailerService;
 use App\Entity\Commande;
 use App\Entity\Produit;
 use App\Form\CommandeType;
@@ -64,69 +66,75 @@ final class CommandeController extends AbstractController
         ]);
     }
 
-    // Finaliser la commande
     #[Route('/commander', name: 'app_commande_commander')]
     public function commander(PanierService $panierService, EntityManagerInterface $entityManager): Response
     {
         $panier = $panierService->getPanier();
-        // Si le panier est vide
         if (empty($panier)) {
             $this->addFlash('error', 'Votre panier est vide.');
             return $this->redirectToRoute('app_panier');
         }
 
         $commande = new Commande();
-        $commande->setDateCommande(new \DateTime()); // Utilisation de setDateCommande()
+        $commande->setDateCommande(new \DateTime());
         $commande->setEtat(EtatCommande::VALIDEE);
 
-        // Calculer le total de la commande
         $total = 0;
         foreach ($panier as $produitId) {
-            $produit = $entityManager->getRepository(Produit::class)->find($produitId); // Utilisation de l'EntityManager pour récupérer les produits
-            if ($produit) {
-                $total += $produit->getPrixUnitaire(); // Assurez-vous que getPrixUnitaire() existe dans votre entité Produit
+            $produit = $entityManager->getRepository(Produit::class)->find($produitId);
+            if ($produit && $produit->getQuantiteStock() > 0) {
+                $total += $produit->getPrixUnitaire();
+                $produit->setQuantiteStock($produit->getQuantiteStock() - 1);
+                $entityManager->persist($produit);
+            } else {
+                $this->addFlash('error', 'Le produit "' . $produit->getNom() . '" est en rupture de stock.');
+                return $this->redirectToRoute('app_panier');
             }
         }
-        $commande->setTotal($total);
 
-        // Enregistrer la commande dans la base de données
+        $commande->setTotal($total);
         $entityManager->persist($commande);
         $entityManager->flush();
 
-        // Vider le panier après la commande
         $panierService->viderPanier();
-        $entityManager->flush();
 
-        // Message de confirmation et redirection
         $this->addFlash('success', 'Votre commande a été passée avec succès.');
         return $this->redirectToRoute('commande_confirmation', ['id' => $commande->getId()]);
     }
 
-    // Confirmation de commande
-    #[Route('/commande/confirmation', name: 'commande_confirmation')]
-    public function confirmation(Request $request): Response
+    #[Route('/commande/confirmation/{id}', name: 'commande_confirmation')]
+    public function confirmation(Request $request, CommandeRepository $commandeRepository, int $id): Response
     {
+        $commande = $commandeRepository->find($id);
+
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande introuvable');
+        }
+
         $form = $this->createForm(CoordonneesType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer les données du formulaire (par exemple, l'email)
             $data = $form->getData();
-            // Ici, tu peux enregistrer les données en base de données si nécessaire
+            $email = $data['email'];
+
+            // Ajouter une notification pour la confirmation
             $this->addFlash('success', 'Votre commande a bien été confirmée !');
-            return $this->redirectToRoute('app_home');
+
+            // Rediriger vers la page de succès avec l'email comme paramètre
+            return $this->redirectToRoute('payment_success', [
+                'email' => $email,
+                'commandeId' => $commande->getId(),
+            ]);
         }
 
         return $this->render('commande/confirmation.html.twig', [
             'form' => $form->createView(),
-            'commande' => [
-                'id' => 123, 
-                'datecommande' => new \DateTime(), 
-                'total' => 49.99
-            ]
+            'commande' => $commande,
         ]);
     }
 
-    // Supprimer un produit du panier
     #[Route('/panier/supprimer/{id}', name: 'app_commande_supprimer')]
     public function supprimer(PanierService $panierService, int $id): Response
     {
@@ -135,7 +143,6 @@ final class CommandeController extends AbstractController
         return $this->redirectToRoute('app_panier');
     }
 
-    // Vider le panier
     #[Route('/panier/vider', name: 'app_commande_vider')]
     public function viderPanier(PanierService $panierService): Response
     {
@@ -144,7 +151,6 @@ final class CommandeController extends AbstractController
         return $this->redirectToRoute('app_panier');
     }
 
-    // Ajouter une nouvelle commande
     #[Route('/new', name: 'app_commande_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -155,16 +161,15 @@ final class CommandeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($commande);
             $entityManager->flush();
-            return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_commande_index');
         }
 
         return $this->render('commande/new.html.twig', [
             'commande' => $commande,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
-    // Afficher une commande
     #[Route('/{id}', name: 'app_commande_show', methods: ['GET'])]
     public function show(Commande $commande): Response
     {
@@ -173,33 +178,77 @@ final class CommandeController extends AbstractController
         ]);
     }
 
-    // Modifier une commande
-    #[Route('/{id}/edit', name: 'app_commande_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
+    #[Route('/commandes', name: 'admin_commandes')]
+    public function commandes(CommandeRepository $commandeRepository): Response
     {
-        $form = $this->createForm(CommandeType::class, $commande);
-        $form->handleRequest($request);
+        $commandes = $commandeRepository->findAll();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('commande/edit.html.twig', [
-            'commande' => $commande,
-            'form' => $form,
+        return $this->render('admin/commandes/index.html.twig', [
+            'commandes' => $commandes,
         ]);
     }
 
-    // Supprimer une commande
-    #[Route('/{id}', name: 'app_commande_delete', methods: ['POST'])]
-    public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
+    #[Route('/commandes/{id}', name: 'admin_commande_show')]
+    public function afficher(int $id, CommandeRepository $commandeRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$commande->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($commande);
-            $entityManager->flush();
+        $commande = $commandeRepository->find($id);
+
+        if (!$commande) {
+            throw $this->createNotFoundException('La commande n\'existe pas');
         }
 
-        return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
+        return $this->render('admin/commandes/show.html.twig', [
+            'commande' => $commande,
+        ]);
     }
+
+    #[Route('/payment/success', name: 'payment_success')]
+    public function paymentSuccess(MailerService $mailerService, Request $request, CommandeRepository $commandeRepository): Response
+    {
+        $email = $request->query->get('email');
+        $commandeId = $request->query->get('commandeId');
+
+        if (!$email || !$commandeId) {
+            $this->addFlash('error', 'Des informations sont manquantes pour confirmer le paiement.');
+            return $this->redirectToRoute('app_commande_index');
+        }
+
+        $commande = $commandeRepository->find($commandeId);
+
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande introuvable');
+        }
+
+        // Envoi du mail de confirmation
+        $mailerService->sendConfirmationEmail($email, $commandeId);
+
+        return $this->render('payment/success.html.twig', [
+            'commande' => $commande,
+        ]);
+    }
+
+    #[Route('/facture/{id}', name: 'generate_pdf')]
+    public function generatePdf($id, FactureService $factureService, CommandeRepository $commandeRepository): Response
+    {
+        $commande = $commandeRepository->find($id);
+    
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande introuvable');
+        }
+    
+        $pdfContent = $factureService->generateInvoice($commande);
+    
+        return new Response(
+            $pdfContent,
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="facture_' . $commande->getId() . '.pdf"',
+            ]
+        );
+    }
+    
+
+
+    
 }

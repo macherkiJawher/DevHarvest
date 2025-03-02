@@ -1,0 +1,51 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Liste des Commandes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0"><i class="fas fa-list"></i> Liste des Commandes</h3>
+                </div>
+                <div class="card-body p-4 bg-light">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Client</th>
+                                <th scope="col">Date de Commande</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for commande in commandes %}
+                                <tr>
+                                    <th scope="row">{{ commande.id }}</th>
+                                    <td>{{ commande.client.nom }}</td>
+                                    <td>{{ commande.dateCommande|date('d/m/Y') }}</td>
+                                    <td>{{ commande.total }}</td>
+                                    <td>{{ commande.status }}</td>
+                                    <td>
+                                        <a href="{{ path('admin_commande_show', {'id': commande.id}) }}" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i> Voir
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">Aucune commande trouvée</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

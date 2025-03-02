@@ -3,6 +3,7 @@
 // src/Form/CoordonneesType.php
 namespace App\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,6 +30,10 @@ class CoordonneesType extends AbstractType
             ])
             ->add('telephone', TelType::class, [
                 'label' => 'Téléphone',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('email', EmailType::class, [  // Ajoute le champ email ici
+                'label' => 'Email',
                 'attr' => ['class' => 'form-control']
             ])
             ->add('submit', SubmitType::class, [

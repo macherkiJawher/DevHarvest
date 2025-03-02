@@ -20,10 +20,10 @@ class Dashboard1Controller extends AbstractController
         return $this->render('dashboard/fournisseur.html.twig');
     }
 
-    #[Route('/client', name: 'dashboard_client')]
+    #[Route('/dashboard3', name: 'dashboard_client')]
     public function client(): Response
     {
-        return $this->render('dashboard/client.html.twig');
+        return $this->render('dashboard3/clients.html.twig');
     }
 
     #[Route('/technicien', name: 'dashboard_technicien')]
