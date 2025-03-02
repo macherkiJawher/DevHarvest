@@ -21,32 +21,37 @@
     </div>
 
     <!-- Mapbox JavaScript -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet" />
+    
     <script>
-        // Vérifier si la localisation est valide avant d'afficher la carte
-        var localisation = "{{ zone.localisationZone }}";
-        if (localisation.includes(',')) {
-            var coordinates = localisation.split(',').map(parseFloat);
-            if (!isNaN(coordinates[0]) && !isNaN(coordinates[1])) {
-                
-                // Initialiser la carte avec la clé API Mapbox
-                mapboxgl.accessToken = '{{ mapbox_api_key }}';
-                var map = new mapboxgl.Map({
-                    container: 'map', // ID du conteneur
-                    style: 'mapbox://styles/mapbox/streets-v11', // Style de la carte
-                    center: [coordinates[0], coordinates[1]], // Coordonnées de la zone
-                    zoom: 13
-                });
+        document.addEventListener("DOMContentLoaded", function() {
+            var localisation = "{{ zone.localisationZone }}";
 
-                // Ajouter un marqueur à la localisation de la zone
-                new mapboxgl.Marker()
-                    .setLngLat([coordinates[0], coordinates[1]])
-                    .addTo(map);
+            if (localisation.includes(',')) {
+                var coordinates = localisation.split(',').map(parseFloat);
+                var longitude = coordinates[0];
+                var latitude = coordinates[1];
+
+                if (!isNaN(longitude) && !isNaN(latitude)) {
+                    mapboxgl.accessToken = '{{ mapbox_api_key }}';
+
+                    var map = new mapboxgl.Map({
+                        container: 'map',
+                        style: 'mapbox://styles/mapbox/streets-v11',
+                        center: [longitude, latitude], // Longitude en premier !
+                        zoom: 13
+                    });
+
+                    new mapboxgl.Marker()
+                        .setLngLat([longitude, latitude])
+                        .addTo(map);
+                } else {
+                    document.getElementById('map').innerHTML = "<p class='text-danger'>Localisation invalide.</p>";
+                }
             } else {
-                document.getElementById('map').innerHTML = "<p class='text-danger'>Localisation invalide.</p>";
+                document.getElementById('map').innerHTML = "<p class='text-danger'>Aucune localisation disponible.</p>";
             }
-        } else {
-            document.getElementById('map').innerHTML = "<p class='text-danger'>Aucune localisation disponible.</p>";
-        }
+        });
     </script>
 {% endblock %}

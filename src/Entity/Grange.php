@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\GrangeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: GrangeRepository::class)]
 class Grange
 {
@@ -29,7 +30,7 @@ class Grange
     private ?string $image = null;
 
     #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $productivite = null; // Attribut pour la productivité
+    private ?float $productivite = null; 
 
 
     #[ORM\ManyToOne(inversedBy: 'granges')]
