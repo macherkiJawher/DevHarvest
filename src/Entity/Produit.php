@@ -53,11 +53,10 @@ class Produit
     #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'produit', cascade: ['remove'])]
     private Collection $detailCommandes;
 
-  
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: "agriculteur_id", referencedColumnName: "id", nullable: false)]
     private ?User $agriculteur = null;
-
+    
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateAjout = null;
     

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Form\ProduitType;
+use App\Enum\CategorieProduit;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,12 +47,25 @@ final class ProduitController extends AbstractController
     }
 
     #[Route('/', name: 'app_produit_index', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository): Response
+    public function index(Request $request, ProduitRepository $produitRepository): Response
     {
+        // Récupérer la catégorie depuis le paramètre GET
+        $categorie = $request->query->get('categorie');
+
+        if ($categorie) {
+            // Appliquer le filtrage par catégorie
+            $produits = $produitRepository->findByCategorie($categorie);
+        } else {
+            // Sinon, récupérer tous les produits
+            $produits = $produitRepository->findAll();
+        }
+
         return $this->render('produit/index.html.twig', [
-            'produits' => $produitRepository->findAll(),
+            'produits' => $produits,
         ]);
     }
+    
+    
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -190,5 +204,7 @@ public function afficher(Produit $produit): Response
         }
 
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
-    }
+    
+    
+}
 }

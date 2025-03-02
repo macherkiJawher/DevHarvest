@@ -23,15 +23,26 @@ class ProduitRepository extends ServiceEntityRepository
      * @param string $categorie
      * @return Produit[]
      */
-    public function findByCategorie(string $categorie): array
+ 
+ /**
+     * Filtrer les produits par catégorie.
+     *
+     * @param string|null $categorie
+     * @return Produit[]
+     */
+    public function findByCategorie(?string $categorie)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.categorie = :categorie')
-            ->setParameter('categorie', $categorie)
-            ->orderBy('p.nom', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $qb = $this->createQueryBuilder('p');
+
+        if ($categorie) {
+            $qb->andWhere('p.categorie = :categorie')
+                ->setParameter('categorie', $categorie);
+        }
+
+        return $qb->getQuery()->getResult();
     }
+
+
 
     /**
      * Recherche des produits en fonction d'un prix maximum.
@@ -79,4 +90,5 @@ class ProduitRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    
 }

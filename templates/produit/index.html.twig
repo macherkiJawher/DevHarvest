@@ -1,10 +1,23 @@
 {% extends 'client.html.twig' %}
 
-{% block title %}Liste des Produits{% endblock %}
-
 {% block body %}
     <div class="container">
         <h1 class="text-center mb-4">Liste des Produits</h1>
+
+        <!-- Filtre par catégorie -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <form method="GET" action="{{ path('app_produit_index') }}" class="form-inline">
+                    <label for="categorie" class="me-2">Filtrer par catégorie:</label>
+                    <select name="categorie" id="categorie" class="form-select w-auto">
+                        <option value="">Tous</option>
+                        <option value="fruits" {% if app.request.get('categorie') == 'fruits' %}selected{% endif %}>Fruits</option>
+                        <option value="legumes" {% if app.request.get('categorie') == 'legumes' %}selected{% endif %}>Légumes</option>
+                    </select>
+                    <button type="submit" class="btn btn-dark ms-2">Filtrer</button>
+                </form>
+            </div>
+        </div>
 
         <div class="text-center mb-4">
             <a href="{{ path('app_dashboard') }}" class="btn btn-dark">
@@ -46,7 +59,7 @@
                                     <span class="text-danger">Rupture</span>
                                 {% endif %}
                             </p>
-                            <p class="fs-5"><strong>Catégorie:</strong> {{ produit.categorie.value }}</p>
+                            <p class="fs-5"><strong>Catégorie:</strong> {{ produit.categorie ? produit.categorie.value : 'Non défini' }}</p>
                         </div>
                         <div class="card-footer text-center">
                             <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info me-2">
@@ -73,46 +86,4 @@
             {% endfor %}
         </div>
     </div>
-
-    {% block javascripts %}
-        {{ parent() }}
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            {% if app.session.flashbag.has('success') %}
-                Swal.fire({
-                    title: 'Succès!',
-                    text: '{{ app.session.flashbag.get('success')[0] }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            {% endif %}
-
-            {% if app.session.flashbag.has('error') %}
-                Swal.fire({
-                    title: 'Erreur!',
-                    text: '{{ app.session.flashbag.get('error')[0] }}',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            {% endif %}
-
-            {% for produit in produits %}
-                document.querySelector('#delete-form-{{ produit.id }}').addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    Swal.fire({
-                        title: 'Êtes-vous sûr?',
-                        text: "Vous allez supprimer ce produit!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Oui, supprimer!',
-                        cancelButtonText: 'Annuler'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            this.submit(); 
-                        }
-                    });
-                });
-            {% endfor %}
-        </script>
-    {% endblock %}
 {% endblock %}
