@@ -24,27 +24,32 @@
                         <p><strong>Description :</strong> {{ culture.description }}</p>
                         <p><strong>Date de plantation :</strong> {{ culture.datePlantation|date('d/m/Y') }}</p>
                         <p><strong>Date de récolte :</strong> {{ culture.dateRecolte|date('d/m/Y') }}</p>
-                        <p><strong>Quantité :</strong> {{ culture.quantite }} unités</p>
+                        <p><strong>Quantité :</strong> {{ culture.quantite }} KG</p>
+                        <p><strong>Catégorie :</strong> {{ culture.categorie }}</p> <!-- Affichage de la catégorie -->
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Boutons d'action -->
-        <div class="text-center mt-4">
-            <a href="{{ path('culture_edit', {'id': culture.id}) }}" class="btn btn-warning shadow-sm me-3">
-                <i class="fas fa-edit"></i> Modifier
-            </a>
-            <form action="{{ path('culture_delete', {'id': culture.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer cette culture ?');">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture.id) }}">
-                <button class="btn btn-danger shadow-sm me-3" type="submit">
-                    <i class="fas fa-trash-alt"></i> Supprimer
-                </button>
-            </form>
-            <a href="{{ path('app_culture_index') }}" class="btn btn-secondary shadow-sm">
-                <i class="fas fa-arrow-left"></i> Retour à la liste
-            </a>
-        </div>
+<div class="mt-4 text-center">
+    <a href="{{ path('culture_edit', {'id': culture.id}) }}" class="btn btn-warning shadow-sm mr-2">
+        <i class="fas fa-edit"></i> Modifier
+    </a>
+    <form action="{{ path('culture_delete', {'id': culture.id}) }}" method="POST" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer cette culture ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture.id) }}">
+        <button class="btn btn-danger shadow-sm mr-2" type="submit">
+            <i class="fas fa-trash-alt"></i> Supprimer
+        </button>
+    </form>
+    <a href="{{ path('app_culture_index') }}" class="btn btn-secondary shadow-sm mr-2">
+        <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+    <a href="{{ path('culture_pdf', {'id': culture.id}) }}" class="btn btn-primary mr-2">
+        <i class="fas fa-file-pdf"></i> Télécharger en PDF
+    </a>
+</div>
+
     </div>
 
     <style>
@@ -78,18 +83,6 @@
             margin-bottom: 20px;
         }
 
-        .parcelle-image img {
-            border-radius: 10px;
-            object-fit: cover;
-            max-height: 400px;
-            width: 100%;
-            transition: transform 0.3s ease;
-        }
-
-        .parcelle-image img:hover {
-            transform: scale(1.05);
-        }
-
         .btn {
             font-size: 1rem;
             padding: 10px 20px;
@@ -100,6 +93,15 @@
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
 
         .btn-warning {

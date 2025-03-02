@@ -35,6 +35,9 @@ class Culture
     #[ORM\Column(type: "string")]
     private ?string $saison = null; // Ajout de l'attribut saison
 
+    #[ORM\Column(type: "string")]
+    private ?string $categorie = null; // Nouveau champ pour la catégorie
+
     // Relation OneToMany vers Parcelle
     #[ORM\OneToMany(mappedBy: 'cultureActuelle', targetEntity: Parcelle::class)]
     private Collection $parcelles;
@@ -70,9 +73,9 @@ class Culture
 
         return $this;
     }
+
     #[ORM\Column(type: "float")]
     private ?float $quantite = 0;
-
 
     public function getQuantite(): ?float
     {
@@ -154,6 +157,17 @@ class Culture
     public function setSaison(string $saison): static
     {
         $this->saison = $saison; // Définit la saison
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->categorie; // Retourne la catégorie
+    }
+
+    public function setCategorie(string $categorie): static
+    {
+        $this->categorie = $categorie; // Définit la catégorie
         return $this;
     }
 

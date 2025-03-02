@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Parcelle {{ parcelle.id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .info {
+            margin-bottom: 10px;
+        }
+        .info strong {
+            display: inline-block;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Parcelle {{ parcelle.id }}</h1>
+
+        <div class="info">
+            <strong>Description:</strong> {{ parcelle.description }}
+        </div>
+
+        <div class="info">
+            <strong>Zone:</strong> {{ parcelle.zone }}
+        </div>
+
+        <div class="info">
+            <strong>Superficie:</strong> {{ parcelle.superficie }} m²
+        </div>
+
+        <div class="info">
+            <strong>Prix de location:</strong> {{ parcelle.prixDeLocation | number_format(2, ',', ' ') }} DZD
+        </div>
+
+        <div class="info">
+            <strong>Date de location:</strong> {{ parcelle.dateDeLocation|date('d/m/Y') }}
+        </div>
+
+        <div class="info">
+            <strong>Date de fin de location:</strong> {{ parcelle.dateDeFinLocation|date('d/m/Y') }}
+        </div>
+
+        <div class="info">
+            <strong>État:</strong> {{ parcelle.etat }}
+        </div>
+
+        <div class="info">
+            <strong>Type de sol:</strong> {{ parcelle.typeSolAsString }}
+        </div>
+
+        <div class="info">
+            <strong>Culture actuelle:</strong> 
+            {% if parcelle.cultureActuelle %}
+                {{ parcelle.cultureActuelle.nom }} <!-- Assurez-vous que 'Culture' a une propriété 'nom' -->
+            {% else %}
+                Aucune culture en cours
+            {% endif %}
+        </div>
+
+        <div class="info">
+            <strong>Rendement estimé:</strong> {{ parcelle.rendement }}
+        </div>
+
+        {% if parcelle.image %}
+            <div class="info">
+                <strong>Image de la parcelle:</strong>
+                <img src="{{ asset('uploads/images/' ~ parcelle.image) }}" alt="Image Parcelle" style="max-width: 100%; height: auto;">
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -61,6 +61,28 @@
 
                         <hr>
 
+                        <!-- Boutons pour choisir la catégorie (Fruit, Légume, Céréale) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">🍎 Type de culture</label>
+                            <div class="d-flex justify-content-start">
+                                <div class="form-check me-4">
+                                    <input class="form-check-input" type="radio" name="{{ form.categorie.vars.full_name }}" id="categorie_fruit" value="fruit" {% if form.categorie.vars.value == 'fruit' %}checked{% endif %}>
+                                    <label class="form-check-label" for="categorie_fruit">Fruit</label>
+                                </div>
+                                <div class="form-check me-4">
+                                    <input class="form-check-input" type="radio" name="{{ form.categorie.vars.full_name }}" id="categorie_legume" value="legume" {% if form.categorie.vars.value == 'legume' %}checked{% endif %}>
+                                    <label class="form-check-label" for="categorie_legume">Légume</label>
+                                </div>
+                                <div class="form-check me-4">
+                                    <input class="form-check-input" type="radio" name="{{ form.categorie.vars.full_name }}" id="categorie_cereal" value="cereal" {% if form.categorie.vars.value == 'cereal' %}checked{% endif %}>
+                                    <label class="form-check-label" for="categorie_cereal">Céréale</label>
+                                </div>
+                            </div>
+                            {{ form_errors(form.categorie) }}
+                        </div>
+
+                        <hr>
+
                         <div class="text-center">
                             <button class="btn btn-success btn-lg shadow-sm me-2" type="submit">
                                 <i class="fas fa-check"></i> Soumettre
@@ -71,8 +93,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{ form_end(form) }}
             </div>
         </div>
     </div>

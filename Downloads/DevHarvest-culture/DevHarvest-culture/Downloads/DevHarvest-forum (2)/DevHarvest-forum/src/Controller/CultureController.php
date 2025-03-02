@@ -1,5 +1,4 @@
 <?php
-// src/Controller/CultureController.php
 
 namespace App\Controller;
 
@@ -13,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\PaginationService;
 use App\Service\RendementService;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 #[Route('/culture')]
 class CultureController extends AbstractController
@@ -30,8 +31,7 @@ class CultureController extends AbstractController
     #[Route('/{id}/rendement', name: 'culture_rendement')]
     public function afficherRendement(Culture $culture): Response
     {
-        // Appel du service pour calculer le rendement
-        $rendement = $this->rendementService->calculerRendement($culture); 
+        $rendement = $this->rendementService->calculerRendement($culture);
         return $this->render('culture/rendement.html.twig', [
             'culture' => $culture,
             'rendement' => $rendement,
@@ -41,23 +41,12 @@ class CultureController extends AbstractController
     #[Route('/', name: 'app_culture_index', methods: ['GET'])]
     public function index(Request $request, CultureRepository $cultureRepository): Response
     {
-        // Vérification de la page et de la récupération des cultures
         $page = $request->query->getInt('page', 1);
-        $limit = 9;  // Nombre d'éléments par page
-        $query = $cultureRepository->createQueryBuilder('c')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery();
-    
-        $cultures = $query->getResult();
-    
-        // Vérification du contenu de cultures
-        dump($cultures); // Ajoutez cette ligne pour vérifier si des cultures sont récupérées
-    
-        // Total des cultures
+        $limit = 9;
+        $cultures = $cultureRepository->findBy([], [], $limit, ($page - 1) * $limit);
         $totalCultures = $cultureRepository->count([]);
         $totalPages = ceil($totalCultures / $limit);
-    
+
         return $this->render('culture/index.html.twig', [
             'cultures' => $cultures,
             'pagination' => [
@@ -66,8 +55,7 @@ class CultureController extends AbstractController
             ]
         ]);
     }
-    
-    // Création d'une nouvelle culture
+
     #[Route('/new', name: 'culture_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -76,7 +64,6 @@ class CultureController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gestion de l'image si elle existe
             $image = $form->get('image')->getData();
             if ($image) {
                 $newFileName = uniqid() . '.' . $image->guessExtension();
@@ -84,7 +71,6 @@ class CultureController extends AbstractController
                 $culture->setImage($newFileName);
             }
 
-            // Sauvegarde de la culture dans la base de données
             $entityManager->persist($culture);
             $entityManager->flush();
 
@@ -97,7 +83,6 @@ class CultureController extends AbstractController
         ]);
     }
 
-    // Affichage des détails d'une culture
     #[Route('/{id}', name: 'culture_show', methods: ['GET'])]
     public function show(Culture $culture): Response
     {
@@ -106,7 +91,6 @@ class CultureController extends AbstractController
         ]);
     }
 
-    // Modification d'une culture existante
     #[Route('/{id}/edit', name: 'culture_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
@@ -114,10 +98,6 @@ class CultureController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $culture->setDatePlantation($form->get('datePlantation')->getData());
-            $culture->setDateRecolte($form->get('dateRecolte')->getData());
-
-            // Gestion de l'image si elle existe
             $image = $form->get('image')->getData();
             if ($image) {
                 if ($culture->getImage()) {
@@ -131,7 +111,6 @@ class CultureController extends AbstractController
                 $culture->setImage($newFileName);
             }
 
-            // Sauvegarde des changements dans la base de données
             $entityManager->flush();
 
             $this->addFlash('success', 'La culture a été mise à jour avec succès.');
@@ -144,15 +123,42 @@ class CultureController extends AbstractController
         ]);
     }
 
-    // Suppression d'une culture
     #[Route('/{id}', name: 'culture_delete', methods: ['POST'])]
     public function delete(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $culture->getId(), $request->request->get('_token'))) {
+            if ($culture->getImage()) {
+                $oldImagePath = $this->getParameter('images_directory') . '/' . $culture->getImage();
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
             $entityManager->remove($culture);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_culture_index');
+    }
+
+    // Génération du PDF
+    #[Route('/{id}/pdf', name: 'culture_pdf')]
+    public function generatePdf(Culture $culture): Response
+    {
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        $dompdf = new Dompdf($pdfOptions);
+        $html = $this->renderView('culture/pdf.html.twig', [
+            'culture' => $culture,
+        ]);
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="culture_'.$culture->getId().'.pdf"',
+        ]);
     }
 }

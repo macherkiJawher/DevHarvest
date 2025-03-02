@@ -27,6 +27,16 @@ class CultureType extends AbstractType
                 'label' => 'Description',
                 'attr' => ['class' => 'form-control']
             ])
+            ->add('categorie', ChoiceType::class, [
+                'choices' => [
+                    'Fruit' => 'fruit',
+                    'Légume' => 'legume',
+                    'Céréale' => 'cereal',
+                ],
+                'label' => 'Catégorie',
+                'expanded' => true, // Pour afficher les options comme des boutons radio
+                'multiple' => false, // Un seul choix possible
+            ])
             ->add('quantite', NumberType::class, [
                 'label' => 'Quantité disponible',
                 'required' => true,

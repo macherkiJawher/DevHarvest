@@ -12,6 +12,19 @@
             </a>
         </div>
 
+        <!-- Nouveau bouton avec menu déroulant -->
+        <div class="dropdown text-center mb-4">
+            <button class="btn btn-info btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Choisir une catégorie
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#fruits">Fruits</a></li>
+                <li><a class="dropdown-item" href="#legumes">Légumes</a></li>
+                <li><a class="dropdown-item" href="#cereales">Céréales</a></li>
+                <li><a class="dropdown-item" href="#autres">Autres</a></li>
+            </ul>
+        </div>
+
         <div class="row">
             {% if cultures is not empty %}
                 {% for culture in cultures %}
