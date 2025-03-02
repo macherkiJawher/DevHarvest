@@ -1,0 +1,19 @@
+{# templates/produit/index.html.twig #}
+{% extends 'client.html.twig' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block body %}
+    <h1>Liste des Produits</h1>
+    <div class="produits">
+        {% for produit in produits %}
+            <div class="produit">
+                <img src="{{ produit.getImageUrl() }}" alt="{{ produit.nom }}">
+                <h2>{{ produit.nom }}</h2>
+                <p>{{ produit.description }}</p>
+                <p>Prix: {{ produit.prixunitaire }}€</p>
+                <a href="{{ path('app_panier_ajouter', {'id': produit.id}) }}" class="btn btn-success">Ajouter au panier</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

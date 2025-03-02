@@ -1,0 +1,80 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Gestion des Parcelles{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white text-center">
+                    <h3 class="mb-0">Gestion des Parcelles</h3>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0 text-secondary">Liste des Parcelles</h5>
+                        <a href="{{ path('admin_parcelle_new') }}" class="btn btn-outline-success">
+                            <i class="fas fa-plus mr-2"></i> Ajouter une Parcelle
+                        </a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="bg-secondary text-white text-center">
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Superficie</th>
+                                    <th>Prix</th>
+                                    <th>Date début</th>
+                                    <th>Date fin</th>
+                                    <th>État</th>
+                                    <th>Type Sol</th>
+                                    <th>Culture</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for parcelle in parcelles %}
+                                <tr>
+                                    <td class="text-dark">{{ parcelle.description }}</td>
+                                    <td class="text-center text-dark">{{ parcelle.superficie }} m²</td>
+                                    <td class="text-center text-dark">{{ parcelle.prixDeLocation|number_format(2, ',', ' ') }} TND</td>
+                                    <td class="text-center text-dark">{{ parcelle.dateDeLocation ? parcelle.dateDeLocation|date('d/m/Y') : 'N/A' }}</td>
+                                    <td class="text-center text-dark">{{ parcelle.dateDeFinLocation ? parcelle.dateDeFinLocation|date('d/m/Y') : 'N/A' }}</td>
+                                    <td class="text-center text-dark">{{ parcelle.etat }}</td>
+                                    <td class="text-center text-dark">{{ parcelle.typeSol ? parcelle.typeSol.value : 'Non défini' }}</td>
+                                    <td class="text-center text-dark">{{ parcelle.cultureActuelle ? parcelle.cultureActuelle.nom : 'Aucune' }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('admin_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-edit mr-2"></i> Modifier
+                                            </a>
+                                            <form method="post" action="{{ path('admin_parcelle_delete', {'id': parcelle.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');" class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+                                                <button class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-trash-alt mr-2"></i> Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted">Aucune parcelle trouvée.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left mr-2"></i> Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

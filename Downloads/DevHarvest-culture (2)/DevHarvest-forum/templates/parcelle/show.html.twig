@@ -1,0 +1,159 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Détails de la parcelle{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-success text-center mb-4">{{ parcelle.zone }}</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Détails de la parcelle</h5>
+                        <p><strong>Description :</strong> {{ parcelle.description }}</p>
+                        <p><strong>Superficie :</strong> {{ parcelle.superficie }} m²</p>
+                        <p><strong>Prix de location :</strong> {{ parcelle.prixDeLocation }} TND</p>
+                        <p><strong>Date de location :</strong> {{ parcelle.dateDeLocation|date('d/m/Y') }}</p>  
+                        <p><strong>Date de fin de location :</strong> {{ parcelle.dateDeFinLocation|date('d/m/Y') }}</p>  
+                        <p><strong>État :</strong> {{ parcelle.etat }}</p>
+                        <p><strong>Type de sol :</strong> {{ parcelle.typeSolAsString() }}</p>
+
+                        {% if parcelle.cultureActuelle %}
+                            <p><strong>Culture actuelle :</strong> {{ parcelle.cultureActuelle.nom }}</p>
+                        {% else %}
+                            <p><strong>Culture actuelle :</strong> Aucune culture en cours</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                {% if parcelle.image %}
+                    <div class="parcelle-image mb-4">
+                        <img src="{{ asset('uploads/parcelles/' ~ parcelle.image) }}" alt="{{ parcelle.zone }}" class="img-fluid rounded shadow-sm">
+                    </div>
+                {% else %}
+                    <p>Aucune image disponible</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Carte pour afficher le rendement -->
+        <div class="card mt-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Rendement de la parcelle</h5>
+                <p class="card-text">{{ parcelle.getRendement() }}</p>
+            </div>
+        </div>
+
+        <div class="mt-4 text-center">
+    <a href="{{ path('parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-warning shadow-sm mr-2">
+        <i class="fas fa-edit"></i> Modifier
+    </a>
+    <form action="{{ path('parcelle_delete', {'id': parcelle.id}) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+        <button class="btn btn-danger shadow-sm mr-2" type="submit">
+            <i class="fas fa-trash-alt"></i> Supprimer
+        </button>
+    </form>
+    <a href="{{ path('parcelle_index') }}" class="btn btn-secondary shadow-sm mr-2">
+        <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+    <a href="{{ path('parcelle_pdf', { id: parcelle.id }) }}" class="btn btn-primary mr-2">
+        <i class="fas fa-download"></i> Télécharger en PDF
+    </a>
+</div>
+
+    </div>
+
+    <style>
+        body {
+            background-color: #f4f7fa;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .card {
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            font-size: 1.1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .parcelle-image img {
+            border-radius: 10px;
+            object-fit: cover;
+            max-height: 400px;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .parcelle-image img:hover {
+            transform: scale(1.05);
+        }
+
+        .btn {
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mr-2 {
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}

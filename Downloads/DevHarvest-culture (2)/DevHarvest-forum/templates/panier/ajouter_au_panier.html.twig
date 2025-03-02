@@ -1,0 +1,20 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block body %}
+<h1>Liste des produits</h1>
+
+<ul>
+    {% for produit in produits %}
+        <li>
+            <h3>{{ produit.nom }}</h3>
+            <p>{{ produit.description }}</p>
+            <p>Prix: {{ produit.prixunitaire }} €</p>
+
+            <!-- Utilisation correcte de la route "ajouter_au_panier" -->
+            <a href="{{ path('ajouter_au_panier', { 'id': produit.id }) }}" class="btn btn-primary">Ajouter au panier</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

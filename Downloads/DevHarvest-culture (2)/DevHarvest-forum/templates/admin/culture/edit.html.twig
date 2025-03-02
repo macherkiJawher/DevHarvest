@@ -1,0 +1,124 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier la culture{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center text-success mb-4">🌿 Modifier la culture</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-4">
+                        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+                            <div class="mb-4">
+                                <label for="{{ form.nom.vars.id }}" class="form-label fw-bold">🌱 Nom de la culture</label>
+                                {{ form_widget(form.nom, { 'attr': { 'class': 'form-control', 'placeholder': 'Ex: Blé, Tomate, Pomme' } }) }}
+                                {{ form_errors(form.nom) }}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.description.vars.id }}" class="form-label fw-bold">📜 Description</label>
+                                {{ form_widget(form.description, { 'attr': { 'class': 'form-control', 'rows': '3', 'placeholder': 'Décrivez la culture...' } }) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.datePlantation.vars.id }}" class="form-label fw-bold">🌍 Date de plantation</label>
+                                    {{ form_widget(form.datePlantation, { 'attr': { 'class': 'form-control' } }) }}
+                                    {{ form_errors(form.datePlantation) }}
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.dateRecolte.vars.id }}" class="form-label fw-bold">🌾 Date de récolte</label>
+                                    {{ form_widget(form.dateRecolte, { 'attr': { 'class': 'form-control' } }) }}
+                                    {{ form_errors(form.dateRecolte) }}
+                                </div>
+                            </div>
+
+                            {% if culture.image %}
+                                <div class="mb-4">
+                                    <label>Image actuelle :</label><br>
+                                    <img src="{{ asset('uploads/images/' ~ culture.image) }}" alt="{{ culture.nom }}" class="img-thumbnail" width="200">
+                                </div>
+                            {% endif %}
+
+                            <div class="mb-4">
+                                <label for="{{ form.image.vars.id }}" class="form-label fw-bold">🖼️ Image de la culture (facultatif)</label>
+                                {{ form_widget(form.image, { 'attr': { 'class': 'form-control', 'accept': 'image/*' } }) }}
+                                {{ form_errors(form.image) }}
+                            </div>
+
+                            <!-- Champ Quantité placé avant les boutons -->
+                            <div class="mb-4">
+                                <label for="{{ form.quantite.vars.id }}" class="form-label fw-bold">📦 Quantité</label>
+                                {{ form_widget(form.quantite, { 'attr': { 'class': 'form-control', 'placeholder': 'Entrez la quantité en kg' } }) }}
+                                {{ form_errors(form.quantite) }}
+                            </div>
+
+                            <!-- Champ Saison placé avant les boutons -->
+                            <div class="mb-4">
+                                <label for="{{ form.saison.vars.id }}" class="form-label fw-bold">🌦️ Saison</label>
+                                {{ form_widget(form.saison, { 'attr': { 'class': 'form-control' } }) }}
+                                {{ form_errors(form.saison) }}
+                            </div>
+
+                            <div class="form-group text-center mt-4">
+                                <button type="submit" class="btn btn-success btn-lg shadow-sm me-2"><i class="fas fa-save"></i> Enregistrer</button>
+                                <a href="{{ path('admin_culture') }}" class="btn btn-danger btn-lg shadow-sm"><i class="fas fa-times"></i> Annuler</a>
+                            </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .form-label {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-lg {
+            font-size: 1.1rem;
+            padding: 12px 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+{% endblock %}

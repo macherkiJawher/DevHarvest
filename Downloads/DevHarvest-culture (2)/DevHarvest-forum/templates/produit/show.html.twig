@@ -1,0 +1,48 @@
+
+{% extends 'client.html.twig' %}
+
+{% block title %}Détails du Produit{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="row g-0">
+            <div class="col-md-4 d-flex align-items-center justify-content-center bg-light">
+                {% if produit.image %}
+                    <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
+                         alt="{{ produit.nom }}" 
+                         class="img-fluid rounded shadow" 
+                         style="max-height: 300px; object-fit: cover;">
+                {% else %}
+                    <div class="text-muted text-center">Aucune image disponible</div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h1 class="card-title text-primary fw-bold">{{ produit.nom }}</h1>
+                    <p class="card-text"><strong>Description :</strong> {{ produit.description }}</p>
+                    <p class="card-text"><strong>Prix :</strong> <span class="text-success">{{ produit.prixunitaire }} €</span></p>
+                    <p class="card-text"><strong>Quantité en Stock :</strong> 
+                        {% if produit.quantitestock > 0 %}
+                            <span class="text-success">{{ produit.quantitestock }}</span>
+                        {% else %}
+                            <span class="text-danger">Rupture de stock</span>
+                        {% endif %}
+                    </p>
+                    <p class="card-text"><strong>Catégorie :</strong> {{ produit.categorie.value }}</p>
+                    
+                    <div class="mt-4">
+                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning me-2">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <a href="{{ path('app_produit_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la Liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
