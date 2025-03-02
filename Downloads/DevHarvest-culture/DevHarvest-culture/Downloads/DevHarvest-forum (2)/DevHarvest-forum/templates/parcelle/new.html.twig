@@ -83,7 +83,7 @@
                             <div class="col-md-6">
                                 <label for="{{ form.type_sol.vars.id }}" class="form-label fw-bold">🌱 Type de sol</label>
                                 {{ form_widget(form.type_sol, {
-                                    'attr': {'class': 'form-control'}
+                                    'attr': {'class': 'form-control', 'placeholder': 'Choisissez le type de sol'}
                                 }) }}
                                 {{ form_errors(form.type_sol) }}
                             </div>
@@ -98,6 +98,14 @@
                             {{ form_errors(form.image) }}
                         </div>
 
+                        <!-- Section de la culture actuelle -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label for="{{ form.cultureActuelle.vars.id }}" class="form-label fw-bold">🌱 Culture actuelle</label>
+                                {{ form_widget(form.cultureActuelle, { 'attr': { 'class': 'form-control', 'placeholder': 'Entrez la culture actuelle' } }) }}
+                                {{ form_errors(form.cultureActuelle) }}
+                            </div>
+                        </div>
                         <hr>
 
                         <!-- Section des boutons -->
@@ -160,6 +168,27 @@
 
         .btn:hover {
             transform: translateY(-2px);
+        }
+
+        /* Améliorations des champs de texte */
+        .form-control {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+        }
+
+        .form-control:focus {
+            background-color: #fff;
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control-file {
+            border-radius: 8px;
+            border: 1px solid #ccc;
         }
     </style>
 

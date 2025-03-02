@@ -12,23 +12,37 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Knp\Component\Pager\PaginatorInterface;
 
 class ParcelleController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private SluggerInterface $slugger;
+    private PaginatorInterface $paginator;
 
-    public function __construct(EntityManagerInterface $entityManager, SluggerInterface $slugger)
+    public function __construct(EntityManagerInterface $entityManager, SluggerInterface $slugger, PaginatorInterface $paginator)
     {
         $this->entityManager = $entityManager;
         $this->slugger = $slugger;
+        $this->paginator = $paginator;
     }
 
     #[Route('/parcelle', name: 'parcelle_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $parcelles = $this->entityManager->getRepository(Parcelle::class)->findAll();
-        return $this->render('parcelle/index.html.twig', ['parcelles' => $parcelles]);
+        // Récupère toutes les parcelles
+        $queryBuilder = $this->entityManager->getRepository(Parcelle::class)->createQueryBuilder('p');
+
+        // Pagination
+        $parcelles = $this->paginator->paginate(
+            $queryBuilder, // La requête à paginer
+            $request->query->getInt('page', 1), // La page actuelle
+            10 // Le nombre de parcelles par page
+        );
+
+        return $this->render('parcelle/index.html.twig', [
+            'parcelles' => $parcelles,
+        ]);
     }
 
     #[Route('/parcelle/new', name: 'parcelle_new', methods: ['GET', 'POST'])]
@@ -97,28 +111,27 @@ class ParcelleController extends AbstractController
         return $this->redirectToRoute('parcelle_index');
     }
 
-// Génération du PDF
-#[Route('/{id}/pdf', name: 'parcelle_pdf')]
-public function generatePdf(Parcelle $parcelle): Response
-{
-    $pdfOptions = new Options();
-    $pdfOptions->set('defaultFont', 'Arial');
+    // Génération du PDF
+    #[Route('/{id}/pdf', name: 'parcelle_pdf')]
+    public function generatePdf(Parcelle $parcelle): Response
+    {
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
 
-    $dompdf = new Dompdf($pdfOptions);
-    $html = $this->renderView('parcelle/pdf.html.twig', [
-        'parcelle' => $parcelle,
-    ]);
+        $dompdf = new Dompdf($pdfOptions);
+        $html = $this->renderView('parcelle/pdf.html.twig', [
+            'parcelle' => $parcelle,
+        ]);
 
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
 
-    return new Response($dompdf->output(), 200, [
-        'Content-Type' => 'application/pdf',
-        'Content-Disposition' => 'inline; filename="parcelle_'.$parcelle->getId().'.pdf"',
-    ]);
-}
-
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="parcelle_'.$parcelle->getId().'.pdf"',
+        ]);
+    }
 
     private function handleImageUpload(?UploadedFile $imageFile, Parcelle $parcelle, ?string $oldImage = null): void
     {

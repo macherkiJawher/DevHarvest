@@ -12,19 +12,6 @@
             </a>
         </div>
 
-        <!-- Nouveau bouton avec menu déroulant -->
-        <div class="dropdown text-center mb-4">
-            <button class="btn btn-info btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                Choisir une catégorie
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="#fruits">Fruits</a></li>
-                <li><a class="dropdown-item" href="#legumes">Légumes</a></li>
-                <li><a class="dropdown-item" href="#cereales">Céréales</a></li>
-                <li><a class="dropdown-item" href="#autres">Autres</a></li>
-            </ul>
-        </div>
-
         <div class="row">
             {% if cultures is not empty %}
                 {% for culture in cultures %}
@@ -55,15 +42,6 @@
                                     <a href="{{ path('culture_show', {'id': culture.id}) }}" class="btn btn-info shadow-sm custom-btn-spacing hover-shadow">
                                         <i class="fas fa-eye"></i> Voir
                                     </a>
-                                    <a href="{{ path('culture_edit', {'id': culture.id}) }}" class="btn btn-warning shadow-sm custom-btn-spacing hover-shadow">
-                                        <i class="fas fa-edit"></i> Modifier
-                                    </a>
-                                    <form method="post" action="{{ path('culture_delete', {'id': culture.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette culture ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture.id) }}">
-                                        <button class="btn btn-danger shadow-sm custom-btn-spacing hover-shadow" type="submit">
-                                            <i class="fas fa-trash-alt"></i> Supprimer
-                                        </button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
