@@ -1,0 +1,83 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Profil de {{ user.username }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" style="max-width: 800px;">
+        <h1 class="text-center mb-4">👤 Profil de {{ user.username }}</h1>
+
+        <div class="text-center mb-3">
+            <p>Email : {{ user.email }}</p>
+        </div>
+
+        <h2 class="text-center mb-3">📝 Mes Posts</h2>
+
+        <div class="post-list">
+            {% for post in posts %}
+                <div class="post-card shadow-sm p-3 mb-3 bg-white rounded">
+                    <div class="d-flex flex-column">
+                        <h5 class="mb-1 text-primary">{{ post.titre }}</h5>
+                        <p class="text-muted mb-1">{{ post.contenu|slice(0, 150) }}...</p>
+                        
+                        {% if post.image %}
+                            <hr class="image-divider">
+                            <img src="{{ asset('uploads/posts/' ~ post.image) }}" class="img-fluid img-custom" alt="Image du post">
+                            <hr class="image-divider">
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ path('post_view', { 'id': post.id }) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center">
+                                <i class="fas fa-comment me-2"></i> <span> Voir plus</span>
+                            </a>
+                            <form action="{{ path('post_delete', { 'id': post.id }) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center">
+                                    <i class="fas fa-trash me-2"></i> Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center">Vous n'avez publié aucun post.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <style>
+        .post-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-outline-primary, .btn-outline-danger {
+            transition: all 0.3s ease;
+            border-width: 2px;
+            border-radius: 30px;
+            padding: 8px 20px;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .img-custom {
+            max-height: 100vw;
+            border-radius: 20px;
+        }
+
+        .image-divider {
+            border-top: 1px solid #ccc;
+            margin: 10px 0;
+        }
+    </style>
+{% endblock %}

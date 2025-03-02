@@ -7,6 +7,11 @@
         
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ path('post_list') }}" class="btn btn-secondary">⬅ Retour</a>
+            <div class="mb-3 text-center">
+                <a href="{{ path('post_auto_response', {'id': post.id}) }}" class="btn btn-info">
+                    <i class="fas fa-robot"></i> Réponse Automatique
+                </a>
+            </div>
             {% if post.auteur == app.user %}
                 <a href="{{ path('post_edit', { 'id': post.id }) }}" class="btn btn-primary">✏ Modifier</a>
                 <form action="{{ path('post_delete', { 'id': post.id }) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');" class="d-inline-block">
@@ -29,35 +34,22 @@
                 </div>
             {% endif %}
 
-            <div class="mt-3 d-flex gap-3 align-items-center">
-                <button class="btn btn-outline-success btn-sm d-flex align-items-center like-btn">
-                    <i class="fas fa-thumbs-up me-2"></i> 
-                    <span>3054</span>
+            <div id="vote" class="mb-3 text-center">
+            <form action="{{ path('post_vote', {'id': post.id, 'type': 'like'}) }}" method="post" class="d-inline-block">
+                <input type="hidden" name="_token" value="{{ csrf_token('vote' ~ post.id) }}">
+                <button type="submit" class="btn vote-btn vote-like">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span class="vote-count">{{ post.likes }}</span>
                 </button>
-                <button class="btn btn-outline-danger btn-sm d-flex align-items-center dislike-btn">
-                    <i class="fas fa-thumbs-down me-2"></i>
-                    <span>152</span>
+            </form>
+            <form action="{{ path('post_vote', {'id': post.id, 'type': 'dislike'}) }}" method="post" class="d-inline-block">
+                <input type="hidden" name="_token" value="{{ csrf_token('vote' ~ post.id) }}">
+                <button type="submit" class="btn vote-btn vote-dislike">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span class="vote-count">{{ post.dislikes }}</span>
                 </button>
-            </div>
+            </form>
         </div>
-
-        <h3>Commentaires</h3>
-        {% for commentaire in post.commentaires %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    {% if commentaire.auteur %}
-                        <h5 class="card-title">Posté par {{ commentaire.auteur.username }}</h5>
-                    {% else %}
-                        <h5 class="card-title">Auteur inconnu</h5>
-                    {% endif %}
-                    <p class="card-text">{{ commentaire.contenu }}</p>
-                    <small class="text-muted">Le {{ commentaire.date|date('d/m/Y H:i') }}</small>
-                </div>
-            </div>
-        {% else %}
-            <p>Aucun commentaire pour le moment.</p>
-        {% endfor %}
-
         <hr>
 
         <h3>Ajouter un commentaire</h3>
@@ -65,6 +57,30 @@
             {{ form_widget(form) }}
             <button type="submit" class="btn btn-primary">Envoyer</button>
         {{ form_end(form) }}
+        </div>
+        <div class="m-2">
+        <h3>Commentaires</h3>
+            <div class="comments-section">
+                {% for commentaire in post.commentaires %}
+                    <div class="comment-card mb-3 p-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-user-circle text-primary fa-2x me-2"></i>
+                            {% if commentaire.auteur %}
+                                <h5 class="mb-0"><strong>{{ commentaire.auteur.username }}</strong></h5>
+                            {% else %}
+                                <h5 class="mb-0"><strong>Auteur inconnu</strong></h5>
+                            {% endif %}
+                        </div>
+                        <p class="comment-text">{{ commentaire.contenu }}</p>
+                        <small class="text-muted">📅 Le {{ commentaire.date|date('d/m/Y H:i') }}</small>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucun commentaire pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        
     </div>
 
     <style>
@@ -119,27 +135,53 @@
             transform: scale(1.1);
         }
 
-        .comments-section {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          .comments-section {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .comment-card {
-            border-left: 4px solid #007bff;
-            padding-left: 10px;
-        }
-
-        .comment-form textarea {
-            resize: none;
-        }
-        .comment-card {
-            border-left: 4px solid #28a745;
-            padding: 10px;
             background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+
+        .comment-text {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .comment-card h5 {
+            color: #007bff;
+        }
+         .vote-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 50px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        margin: 0 5px;
+    }
+    .vote-like {
+        background: #e6f9e6;
+        border: 2px solid #28a745;
+        color: #28a745;
+    }
+    .vote-dislike {
+        background: #fdecea;
+        border: 2px solid #dc3545;
+        color: #dc3545;
+    }
+    .vote-btn:hover {
+        transform: scale(1.1);
+        opacity: 0.9;
+    }
+    .vote-count {
+        font-weight: bold;
+        margin-left: 5px;
+    }
     </style>
 {% endblock %}

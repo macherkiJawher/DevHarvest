@@ -56,6 +56,13 @@ class Post
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'post')]
     private Collection $commentaires;
 
+    #[ORM\Column(type: 'integer')]
+    private int $likes = 0;
+
+    #[ORM\Column(type: 'integer')]
+    private int $dislikes = 0;
+
+
     
 
     public function __construct()
@@ -155,6 +162,56 @@ class Post
             }
         }
 
+        return $this;
+    }
+
+    public function getLikes(): int
+    {
+        return $this->likes;
+    }
+
+    public function setLikes(int $likes): self
+    {
+        $this->likes = $likes;
+        return $this;
+    }
+
+    public function incrementLikes(): self
+    {
+        $this->likes++;
+        return $this;
+    }
+
+    public function decrementLikes(): self
+    {
+        if ($this->likes > 0) {
+            $this->likes--;
+        }
+        return $this;
+    }
+
+    public function getDislikes(): int
+    {
+        return $this->dislikes;
+    }
+
+    public function setDislikes(int $dislikes): self
+    {
+        $this->dislikes = $dislikes;
+        return $this;
+    }
+
+    public function incrementDislikes(): self
+    {
+        $this->dislikes++;
+        return $this;
+    }
+
+    public function decrementDislikes(): self
+    {
+        if ($this->dislikes > 0) {
+            $this->dislikes--;
+        }
         return $this;
     }
 }

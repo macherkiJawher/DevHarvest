@@ -8,7 +8,7 @@ parameters:
     post_images_directory: '%kernel.project_dir%/public/uploads/posts'
     produit_images_directory: '%kernel.project_dir%/public/uploads/produits'
     images_directory: '%kernel.project_dir%/public/uploads/images'
-
+    gemini_api_key: 'AIzaSyDZ9rrUpL2pChNiU8_VwDUUtq7myb_hD4s'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -23,7 +23,16 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\GeminiService:
+        arguments:
+            $apiKey: '%gemini_api_key%'
+    App\Service\ContentFilterService:
+        autowire: true
+        arguments:
+            $geminiService: '@App\Service\GeminiService'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     
+
+   

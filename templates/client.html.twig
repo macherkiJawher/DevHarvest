@@ -68,7 +68,9 @@
                             <ul class="dropdown-menu">
 								<li><a href="{{ path('post_list') }}">Forum List</a></li>
 								<li><a href="{{ path('post_create') }}">Create Forum</a></li>
-                            
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('user_profile') }}">👤 Mon Profil</a>
+                                </li>
                             </ul>
                         </li>
                           <li class="dropdown">
@@ -144,6 +146,13 @@
     </div>
     <!-- End Top Search -->
     {% endblock %}
+    {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} mt-3" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
 {% block body %}
     <!-- Start Slider -->
   <div id="slides-shop" class="cover-slides" >

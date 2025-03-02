@@ -3,67 +3,181 @@
 {% block title %}Liste des posts{% endblock %}
 
 {% block body %}
-    <div class="container mt-4" style="max-width: 800px;">
-        <h1 class="text-center mb-4">🌾 Forum des Agriculteurs 🌿</h1>
-
-        <div class="text-center mb-3">
-            <a href="{{ path('post_create') }}" class="btn btn-success w-100">Créer un nouveau post 🌱</a>
+    <div class="interface-container">
+        <!-- Barre latérale gauche : Formulaire de tri -->
+        <div class="left-sidebar-wrapper">
+            <div class="left-sidebar">
+                <div class="sort-form-container">
+                    <h3>Trier par</h3>
+                    <form method="get" action="{{ path('post_list') }}">
+                        <select name="sort_by" class="form-select" onchange="this.form.submit()">
+                            <option value="date_desc" {% if sort_by == 'date_desc' %}selected{% endif %}>
+                                Date (plus récent d'abord)
+                            </option>
+                            <option value="date_asc" {% if sort_by == 'date_asc' %}selected{% endif %}>
+                                Date (plus ancien d'abord)
+                            </option>
+                            <option value="likes_desc" {% if sort_by == 'likes_desc' %}selected{% endif %}>
+                                Likes (décroissant)
+                            </option>
+                            <option value="likes_asc" {% if sort_by == 'likes_asc' %}selected{% endif %}>
+                                Likes (croissant)
+                            </option>
+                            <option value="dislikes_desc" {% if sort_by == 'dislikes_desc' %}selected{% endif %}>
+                                Dislikes (décroissant)
+                            </option>
+                            <option value="dislikes_asc" {% if sort_by == 'dislikes_asc' %}selected{% endif %}>
+                                Dislikes (croissant)
+                            </option>
+                        </select>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <div class="post-list">
-            {% for post in posts %}
-                <div class="post-card shadow-sm p-3 mb-3 bg-white rounded position-relative">
-                    {% if post.auteur == app.user %}
-                        <form action="{{ path('post_delete', { 'id': post.id }) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');" class="position-absolute">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
-                            <button type="submit" class="btn btn-outline-danger  btn-sm"><i class="fas fa-trash"></i></button>
-                        </form>
-                    {% endif %}
-                    <div class="d-flex">
-                        <div class="w-100">
+        <!-- Section centrale : Liste des posts -->
+        <div class="main-content">
+            <h1 class="text-center mb-4">🌾 Forum des Agriculteurs 🌿</h1>
+
+            <div class="text-center mb-3">
+                <a href="{{ path('post_create') }}" class="btn btn-success w-100">Créer un nouveau post 🌱</a>
+            </div>
+
+            <div class="post-list">
+                {% for post in posts %}
+                    <div class="post-card shadow-sm p-3 mb-3 bg-white rounded">
+                        <div class="d-flex flex-column">
                             {% if post.auteur %}
-                                <p class="text-muted mb-1"><strong>Posté par </strong>{{ post.auteur.username }}</p>
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="{{ asset('client/images/default-avatar.png') }}" 
+                                         class="profile-pic me-2" 
+                                         alt="Avatar">
+                                    <p class="mb-0">
+                                        <strong>
+                                            <a href="{{ path('profile', { 'id': post.auteur.id }) }}" class="author-link">
+                                                {{ post.auteur.username }}
+                                            </a>
+                                        </strong>
+                                        <span class="badge bg-light text-muted ms-2">🕒 {{ post.date|date('d/m/Y H:i') }}</span>
+                                    </p>
+                                </div>
                             {% else %}
                                 <p class="text-muted mb-1"><strong>Auteur inconnu</strong></p>
                             {% endif %}
-                            <small class="text-muted">🕒 Publié le {{ post.date|date('d/m/Y H:i') }}</small>
+                            
                             <h5 class="mb-1 text-primary">{{ post.titre }}</h5>
                             <p class="text-muted mb-1">{{ post.contenu|slice(0, 150) }}...</p>
-                            {% if post.image %}
-                                <img src="{{ asset('uploads/posts/' ~ post.image) }}" class="img-fluid img-custom mb-2 " alt="Image du post">
-                            {% endif %}
                             
-                            <div class="mt-2 d-flex gap-3 align-items-center">
-                                <!-- Like Button with Font Awesome Icon -->
-                                <button class="btn btn-outline-success btn-sm d-flex align-items-center like-btn">
-                                    <i class="fas fa-thumbs-up me-2 mr-2"></i> 
-                                    <span>3054</span>
-                                </button>
-
-                                <!-- Dislike Button with Font Awesome Icon -->
-                                <button class="btn btn-outline-danger btn-sm d-flex align-items-center dislike-btn">
-                                    <i class="fas fa-thumbs-down me-2 mr-2"></i>
-                                    <span>152</span>
-                                </button>
-
-                                <!-- Comment Button -->
+                            {% if post.image %}
+                                <hr class="image-divider">
+                                <img src="{{ asset('uploads/posts/' ~ post.image) }}" class="img-fluid img-custom" alt="Image du post">
+                            {% endif %}
+                            <hr class="image-divider">
+                            
+                            <div class="d-flex justify-content-between align-items-center">
                                 <a href="{{ path('post_view', { 'id': post.id }) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center comment-btn">
-                                    <i class="fas fa-comment me-2 mr-2"></i> 
-                                    <span> Voir plus</span>
+                                    <i class="fas fa-comment me-2"></i> <span>Voir plus</span>
                                 </a>
+                                {% if post.auteur == app.user %}
+                                    <form action="{{ path('post_delete', { 'id': post.id }) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');" class="d-inline-block">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center delete-btn">
+                                            <i class="fas fa-trash me-2"></i> Supprimer
+                                        </button>
+                                    </form>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
+                {% else %}
+                    <p class="text-center">Aucun post trouvé.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+       <!-- Barre latérale droite : Chatbot AI -->
+        <div class="right-sidebar-wrapper">
+            <div class="right-sidebar">
+                <div class="chatbot-container">
+                    <div class="chatbot-header">
+                        <span class="chatbot-title">Chatbot Agricole</span>
+                        <span class="chatbot-status"></span>
+                    </div>
+                    <div class="chatbot-messages" id="chatbotMessages"></div>
+                    <form id="chatbotForm" class="chatbot-input">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('chatbot') }}">
+                        <input type="text" id="chatbotInput" placeholder="Écrivez un message..." autocomplete="off">
+                        <button type="submit" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
                 </div>
-            {% else %}
-                <p class="text-center">Aucun post trouvé.</p>
-            {% endfor %}
+            </div>
         </div>
     </div>
 
     <style>
         body {
-            background-color: rgb(255, 255, 255);
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .interface-container {
+            display: flex;
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Wrapper pour conserver l’espace des barres latérales */
+        .left-sidebar-wrapper, .right-sidebar-wrapper {
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        .right-sidebar-wrapper {
+            width: 350px;
+        }
+
+        /* Barre latérale gauche */
+        .left-sidebar {
+            width: 100%;
+        }
+
+        .left-sidebar.fixed-sidebar {
+            position: fixed;
+            z-index: 998; /* Sous la navbar (z-index: 999) */
+        }
+
+        .sort-form-container h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #1c1e21;
+        }
+
+        .form-select {
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 0.9rem;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .form-select:focus {
+            border-color: #1877f2;
+            box-shadow: 0 0 5px rgba(24, 119, 242, 0.5);
+            outline: none;
+        }
+
+        /* Section centrale */
+        .main-content {
+            flex-grow: 1;
+            max-width: 800px;
+            width: 100%;
         }
 
         .post-card {
@@ -71,19 +185,25 @@
             border-radius: 8px;
             background: white;
             padding: 15px;
-            position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Adding shadow for better separation */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .btn-outline-success, .btn-outline-danger, .btn-outline-primary {
+        .btn-outline-primary, .btn-outline-danger {
             transition: all 0.3s ease;
-            border-width: 2px; /* Increase the border width for more definition */
+            border-width: 2px;
+            border-radius: 30px;
+            padding: 8px 20px;
         }
 
-        .btn-outline-success:hover {
-            background-color: #28a745;
+        .btn-outline-primary {
+            border-color: #1877f2;
+            color: #1877f2;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #1877f2;
             color: white;
-            box-shadow: 0 4px 10px rgba(40,167,69,0.3); /* Shadow effect on hover */
+            box-shadow: 0 4px 10px rgba(24, 119, 242, 0.3);
         }
 
         .btn-outline-danger:hover {
@@ -92,46 +212,278 @@
             box-shadow: 0 4px 10px rgba(220,53,69,0.3);
         }
 
-        .btn-outline-primary:hover {
-            background-color: #007bff;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,123,255,0.3);
-        }
-
-        .btn i {
-            font-size: 1.3em; /* Increased icon size for better visibility */
-        }
-
         .img-custom {
             max-height: 100vw;
             border-radius: 20px;
-            object-fit: cover; /* Cela garantit que l'image conserve ses proportions sans déformation */
+            width: 100%;
         }
 
-        .position-absolute {
-            position: absolute;
-            top: 0;
-            right: 0;
-            margin: 10px;
+        .comment-btn, .delete-btn {
+            display: flex;
+            align-items: center;
         }
 
-        .gap-3 {
-            gap: 20px;
+        .comment-btn i, .delete-btn i {
+            font-size: 1.2em;
         }
 
-        /* Added animation on buttons */
-        .like-btn, .dislike-btn, .comment-btn {
-            border-radius: 30px; /* Rounded buttons */
-            padding: 8px 20px; /* Spacing inside the button */
+        .comment-btn:hover, .delete-btn:hover {
+            transform: scale(1.1);
         }
 
-        .like-btn:hover, .dislike-btn:hover, .comment-btn:hover {
-            transform: scale(1.1); /* Slight zoom effect on hover */
+        .image-divider {
+            border: 1px solid #ddd;
+            margin: 10px 0;
         }
 
-        /* Custom style for the button counters */
-        .btn span {
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .author-link {
+            color: #1877f2;
+            text-decoration: none;
             font-weight: bold;
         }
+
+        .author-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Barre latérale droite avec Chatbot */
+        .right-sidebar {
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .right-sidebar.fixed-sidebar {
+            position: fixed;
+            z-index: 998; /* Sous la navbar (z-index: 999) */
+        }
+
+        .chatbot-container h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #1c1e21;
+        }
+
+        .chatbot-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccd0d5;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+        }
+
+        .chatbot-messages .message {
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 20px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .chatbot-messages .user-message {
+            background-color: #1877f2;
+            color: #fff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .chatbot-messages .ai-message {
+            background-color: #e4e6eb;
+            color: #1c2526;
+            align-self: flex-start;
+        }
+
+        .chatbot-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccd0d5;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chatbot-input input:focus {
+            border-color: #1877f2;
+            box-shadow: 0 0 5px rgba(24, 119, 242, 0.5);
+        }
+
+        .chatbot-input button {
+            background-color: #1877f2;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .chatbot-input button:hover {
+            background-color: #155db2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .left-sidebar-wrapper {
+                width: 250px;
+            }
+
+            .main-content {
+                max-width: 600px;
+            }
+
+            .right-sidebar-wrapper {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .right-sidebar-wrapper {
+                display: none;
+            }
+
+            .left-sidebar-wrapper {
+                width: 200px;
+            }
+
+            .left-sidebar.fixed-sidebar,
+            .right-sidebar.fixed-sidebar {
+                position: static;
+            }
+
+            .main-content {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .interface-container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .left-sidebar-wrapper, .main-content, .right-sidebar-wrapper {
+                width: 100%;
+                max-width: none;
+            }
+
+            .left-sidebar.fixed-sidebar,
+            .right-sidebar.fixed-sidebar {
+                position: static;
+            }
+
+            .left-sidebar-wrapper {
+                margin-bottom: 20px;
+            }
+
+            .right-sidebar-wrapper {
+                display: block;
+                margin-top: 20px;
+            }
+
+            .post-card {
+                padding: 10px;
+            }
+
+            .btn-outline-primary, .btn-outline-danger {
+                padding: 6px 15px;
+            }
+
+            .chatbot-messages {
+                height: 200px; /* Réduit pour mobile */
+            }
+        }
     </style>
+
+    {% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatbotForm = document.getElementById('chatbotForm');
+            const chatbotInput = document.getElementById('chatbotInput');
+            const chatbotMessages = document.getElementById('chatbotMessages');
+            const sendBtn = chatbotForm.querySelector('.send-btn');
+
+            sendBtn.disabled = true;
+
+            chatbotInput.addEventListener('input', function () {
+                sendBtn.disabled = chatbotInput.value.trim() === '';
+            });
+
+            chatbotForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const userMessage = chatbotInput.value.trim();
+                if (userMessage === '') return;
+
+                const userDiv = document.createElement('div');
+                userDiv.classList.add('message', 'user-message');
+                userDiv.textContent = userMessage;
+                chatbotMessages.appendChild(userDiv);
+
+                const loadingDiv = document.createElement('div');
+                loadingDiv.classList.add('message', 'ai-message');
+                loadingDiv.textContent = 'En train d’écrire...';
+                chatbotMessages.appendChild(loadingDiv);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+                fetch('{{ path('post_chatbot') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        'message': userMessage,
+                        '_csrf_token': document.querySelector('input[name="_csrf_token"]').value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    chatbotMessages.removeChild(loadingDiv);
+                    if (data.error) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.classList.add('message', 'ai-message');
+                        errorDiv.style.backgroundColor = '#ffcccc'; // Rouge clair pour les erreurs
+                        errorDiv.textContent = data.error;
+                        chatbotMessages.appendChild(errorDiv);
+                    } else {
+                        const aiDiv = document.createElement('div');
+                        aiDiv.classList.add('message', 'ai-message');
+                        aiDiv.textContent = data.response;
+                        chatbotMessages.appendChild(aiDiv);
+                    }
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                })
+                .catch(error => {
+                    chatbotMessages.removeChild(loadingDiv);
+                    const errorDiv = document.createElement('div');
+                    errorDiv.classList.add('message', 'ai-message');
+                    errorDiv.style.backgroundColor = '#ffcccc';
+                    errorDiv.textContent = 'Erreur inattendue : ' + error.message;
+                    chatbotMessages.appendChild(errorDiv);
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                });
+
+                chatbotInput.value = '';
+                sendBtn.disabled = true;
+            });
+        });
+    </script>
+{% endblock %}
 {% endblock %}
