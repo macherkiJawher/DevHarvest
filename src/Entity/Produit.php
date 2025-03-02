@@ -62,7 +62,7 @@ class Produit
     
     public function __construct()
     {
-        $this->dateAjout = new \DateTime(); // Initialisation automatique
+        $this->dateAjout = new \DateTime(); 
         $this->detailCommandes = new ArrayCollection();
     }
 

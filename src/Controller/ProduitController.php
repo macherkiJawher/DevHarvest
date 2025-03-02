@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/produit')]
@@ -68,31 +69,43 @@ final class ProduitController extends AbstractController
     
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $produit = new Produit();
-        $form = $this->createForm(ProduitType::class, $produit);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $produit = new Produit();
+    $form = $this->createForm(ProduitType::class, $produit);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('imageFile')->getData();
-            $filename = $this->handleImageUpload($imageFile, $produit);
-            if ($filename) {
-                $produit->setImage($filename);
-            }
-
-            $entityManager->persist($produit);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Produit ajouté avec succès!');
-            return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Associer l'agriculteur à ce produit
+        $user = $this->getUser();
+        if ($user && in_array('ROLE_AGRICULTEUR', $user->getRoles())) {
+            $produit->setAgriculteur($user); // L'utilisateur connecté devient l'agriculteur du produit
+        } else {
+            $this->addFlash('error', 'Vous devez être un agriculteur pour ajouter un produit.');
+            return $this->redirectToRoute('app_home');
         }
 
-        return $this->render('produit/new.html.twig', [
-            'produit' => $produit,
-            'form' => $form->createView(),
-        ]);
+        // Gérer l'image si présente
+        $imageFile = $form->get('imageFile')->getData();
+        $filename = $this->handleImageUpload($imageFile, $produit);
+        if ($filename) {
+            $produit->setImage($filename);
+        }
+
+        // Sauvegarder le produit
+        $entityManager->persist($produit);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Produit ajouté avec succès!');
+        return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('produit/new.html.twig', [
+        'produit' => $produit,
+        'form' => $form->createView(),
+    ]);
+}
+
 
     #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
     public function show(Produit $produit): Response
@@ -186,13 +199,14 @@ public function afficher(Produit $produit): Response
         ]);
     }
     #[Route('/commande/panier', name: 'produits_panier')]
-    public function afficherProduitsPourPanier(ProduitRepository $produitRepository): Response
-    {
-        $produits = $produitRepository->findAll();
+public function afficherPanier(Request $request, ProduitRepository $produitRepository): Response
+{
+    $produits = $produitRepository->findAll();
+    return $this->render('produit/liste_panier.html.twig', [
+        'produits' => $produits,
+    ]);
+}
 
-        return $this->render('produit/liste_panier.html.twig', [
-            'produits' => $produits,
-        ]);}
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {

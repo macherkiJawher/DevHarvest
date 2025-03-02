@@ -1,10 +1,23 @@
 {% extends 'client.html.twig' %}
 
+{% block title %}Liste des Produits{% endblock %}
+
 {% block body %}
     <div class="container">
         <h1 class="text-center mb-4">Liste des Produits</h1>
 
-        <!-- Filtre par catégorie -->
+        <div class="text-center mb-4">
+            <a href="{{ path('app_dashboard') }}" class="btn btn-dark">
+                <i class="fas fa-chart-line"></i> Voir le Dashboard
+            </a>
+        </div>
+
+        <div class="text-center mb-4">
+            <a href="{{ path('app_produit_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Ajouter un produit
+            </a>
+        </div>
+<!-- Filtre par catégorie -->
         <div class="row mb-4">
             <div class="col-12 text-center">
                 <form method="GET" action="{{ path('app_produit_index') }}" class="form-inline">
@@ -18,19 +31,6 @@
                 </form>
             </div>
         </div>
-
-        <div class="text-center mb-4">
-            <a href="{{ path('app_dashboard') }}" class="btn btn-dark">
-                <i class="fas fa-chart-line"></i> Voir le Dashboard
-            </a>
-        </div>
-
-        <div class="text-center mb-4">
-            <a href="{{ path('app_produit_new') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Ajouter un produit
-            </a>
-        </div>
-
         <div class="row mt-4">
             {% for produit in produits %}
                 <div class="col-lg-4 col-md-6 mb-4">
@@ -59,7 +59,7 @@
                                     <span class="text-danger">Rupture</span>
                                 {% endif %}
                             </p>
-                            <p class="fs-5"><strong>Catégorie:</strong> {{ produit.categorie ? produit.categorie.value : 'Non défini' }}</p>
+                            <p class="fs-5"><strong>Catégorie:</strong> {{ produit.categorie.value }}</p>
                         </div>
                         <div class="card-footer text-center">
                             <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-info me-2">
@@ -68,6 +68,7 @@
                             <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning me-2">
                                 <i class="fas fa-edit"></i> Modifier
                             </a>
+                            <!-- Formulaire de suppression avec SweetAlert -->
                             <form action="{{ path('app_produit_delete', {'id': produit.id}) }}" method="post" id="delete-form-{{ produit.id }}" style="display:inline;">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
                                 <button class="btn btn-danger" type="submit">
@@ -86,4 +87,48 @@
             {% endfor %}
         </div>
     </div>
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            // Afficher les messages flash de succès ou d'erreur
+            {% if app.session.flashbag.has('success') %}
+                Swal.fire({
+                    title: 'Succès!',
+                    text: '{{ app.session.flashbag.get('success')[0] }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            {% endif %}
+
+            {% if app.session.flashbag.has('error') %}
+                Swal.fire({
+                    title: 'Erreur!',
+                    text: '{{ app.session.flashbag.get('error')[0] }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            {% endif %}
+
+            // Ajouter l'événement pour chaque formulaire de suppression
+            {% for produit in produits %}
+                document.querySelector('#delete-form-{{ produit.id }}').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Êtes-vous sûr?',
+                        text: "Vous allez supprimer ce produit!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Oui, supprimer!',
+                        cancelButtonText: 'Annuler'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.submit();  // Soumettre le formulaire si confirmé
+                        }
+                    });
+                });
+            {% endfor %}
+        </script>
+    {% endblock %}
 {% endblock %}
