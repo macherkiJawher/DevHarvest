@@ -6,6 +6,18 @@
     <!-- Start Zones Section -->
     <div class="zone-box py-5">
         <div class="container">
+
+        <!-- Display Flash Messages (Prevent duplication) -->
+            {% for label, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
             <!-- Title Section -->
             <div class="row mb-4">
                 <div class="col-lg-12 text-center">
@@ -58,4 +70,19 @@
         </div>
     </div>
     <!-- End Zones Section -->
+
+    {% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Fonction pour faire disparaître les messages flash après 2 secondes
+        setTimeout(function() {
+            var flashMessages = document.querySelectorAll('.alert');
+            flashMessages.forEach(function(msg) {
+                msg.classList.remove('show');
+                msg.classList.add('fade');
+            });
+        }, 2000); // Le message disparaît après 2000ms = 2 secondes
+    </script>
+{% endblock %}
+
 {% endblock %}

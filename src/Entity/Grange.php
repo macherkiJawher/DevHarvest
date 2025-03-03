@@ -6,6 +6,7 @@ use App\Repository\GrangeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 
+
 #[ORM\Entity(repositoryClass: GrangeRepository::class)]
 class Grange
 {
@@ -32,12 +33,14 @@ class Grange
     #[ORM\Column(type: 'float', nullable: true)]
     private ?float $productivite = null; 
 
+    
+
 
     #[ORM\ManyToOne(inversedBy: 'granges')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Zone $zone = null;
 
-    // src/Entity/Grange.php
+   
 public function calculerProductivite(): string
 {
     $productivite = 0;

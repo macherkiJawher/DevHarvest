@@ -64,6 +64,8 @@ final class GrangeController extends AbstractController
             return $this->redirectToRoute('app_grange_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $this->addFlash('success', 'Grange ajoutée avec succès!');
+
         return $this->render('grange/new.html.twig', [
             'grange' => $grange,
             'form' => $form,
@@ -93,6 +95,8 @@ final class GrangeController extends AbstractController
             return $this->redirectToRoute('app_grange_index', [], Response::HTTP_SEE_OTHER);
         }
 
+         $this->addFlash('success', 'Grange modifié avec succès!');
+
         return $this->render('grange/edit.html.twig', [
             'grange' => $grange,
             'form' => $form,
@@ -106,8 +110,11 @@ final class GrangeController extends AbstractController
             $entityManager->remove($grange);
             $entityManager->flush();
         }
+        
+        $this->addFlash('success', 'Grange supprimé avec succès!');
 
         return $this->redirectToRoute('app_grange_index', [], Response::HTTP_SEE_OTHER);
     }
+    
     
 }

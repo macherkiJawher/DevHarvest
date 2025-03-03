@@ -69,6 +69,8 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         $entityManager->persist($zone);
         $entityManager->flush();
 
+
+        $this->addFlash('success', 'zone ajoutée avec succès !');
         return $this->redirectToRoute('app_zone_index', [], Response::HTTP_SEE_OTHER);
     }
 
@@ -105,10 +107,13 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
 
             return $this->redirectToRoute('app_zone_index', [], Response::HTTP_SEE_OTHER);
         }
+        $mapboxApiKey = $this->getParameter('mapbox_api_key');
 
+        $this->addFlash('success', 'zone modifié avec succès !');
         return $this->render('zone/edit.html.twig', [
             'zone' => $zone,
             'form' => $form,
+            'mapbox_api_key' => $mapboxApiKey,
         ]);
     }
 
@@ -125,7 +130,7 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
                 $this->addFlash('danger', 'Impossible de supprimer cette zone car elle est liée à une ou plusieurs granges.');
             }
         }
-
+        $this->addFlash('success', 'zone supprimé avec succès !');
         return $this->redirectToRoute('app_zone_index', [], Response::HTTP_SEE_OTHER);
     }
 

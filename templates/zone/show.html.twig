@@ -1,57 +1,70 @@
 {% extends 'client.html.twig' %}
 
-{% block title %}Détails de la zone - {{ zone.nomZone }}{% endblock %}
+{% block title %}Détails de la Zone{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1>Détails de la zone : {{ zone.nomZone }}</h1>
+<div class="container mt-5">
+    <!-- Section Détails de la Zone -->
+    <h1 class="text-warning text-center">{{ zone.nomZone }}</h1>
+    <p><strong>Superficie :</strong> {{ zone.superficieZone }} m²</p>
+    <p><strong>Localisation :</strong> {{ zone.localisationZone }}</p>
 
-        <div class="card">
-            <div class="card-body">
-                <p><strong>Nom de la zone :</strong> {{ zone.nomZone }}</p>
-                <p><strong>Superficie :</strong> {{ zone.superficieZone }} m²</p>
-                <p><strong>Localisation :</strong> {{ zone.localisationZone }}</p>
-
-                <!-- Carte Mapbox -->
-                <div id="map" style="height: 400px;"></div>  
-            </div>
-        </div>
-
-        <a href="{{ path('app_zone_index') }}" class="btn btn-secondary mt-3">Retour</a>
+    <!-- Carte Mapbox -->
+    <div class="mb-4">
+        <h3 class="text-center">Localisation</h3>
+        <div id="map" style="height: 400px; border-radius: 8px;"></div>
     </div>
 
-    <!-- Mapbox JavaScript -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet" />
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var localisation = "{{ zone.localisationZone }}";
+    <!-- Section Liste des Granges -->
+    <h3 class="mt-4 text-center">Granges associées</h3>
+    {% if granges is empty %}
+        <p class="text-muted text-center">Aucune grange trouvée pour cette zone.</p>
+    {% else %}
+        <div class="row">
+            {% for grange in granges %}
+                <div class="col-md-4">
+                    <div class="card mb-3 shadow">
+                        {% if grange.image %}
+                            <img src="{{ asset('uploads/' ~ grange.image) }}" class="card-img-top" alt="Image de la grange">
+                        {% else %}
+                            <img src="{{ asset('images/default-barn.jpg') }}" class="card-img-top" alt="Image par défaut">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ grange.typeGrange }}</h5>
+                            <p class="card-text"><strong>Capacité :</strong> {{ grange.capacite }}</p>
+                            {% if grange.productivite is not null %}
+                                <p class="card-text"><strong>Productivité :</strong> {{ grange.productivite }} unités</p>
+                            {% endif %}
+                            <a href="{{ path('app_grange_show', {'id': grange.id}) }}" class="btn btn-sm btn-info">Voir plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-            if (localisation.includes(',')) {
-                var coordinates = localisation.split(',').map(parseFloat);
-                var longitude = coordinates[0];
-                var latitude = coordinates[1];
+    <a href="{{ path('app_zone_index') }}" class="btn btn-outline-warning mt-3">Retour</a>
+</div>
 
-                if (!isNaN(longitude) && !isNaN(latitude)) {
-                    mapboxgl.accessToken = '{{ mapbox_api_key }}';
+<!-- Mapbox JavaScript -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+<script>
+    mapboxgl.accessToken = '{{ mapbox_api_key }}';
 
-                    var map = new mapboxgl.Map({
-                        container: 'map',
-                        style: 'mapbox://styles/mapbox/streets-v11',
-                        center: [longitude, latitude], // Longitude en premier !
-                        zoom: 13
-                    });
+    var coordinates = "{{ zone.localisationZone }}".split(",");
+    var lng = parseFloat(coordinates[0]) || 2.2945; // Valeur par défaut (Paris)
+    var lat = parseFloat(coordinates[1]) || 48.8584;
 
-                    new mapboxgl.Marker()
-                        .setLngLat([longitude, latitude])
-                        .addTo(map);
-                } else {
-                    document.getElementById('map').innerHTML = "<p class='text-danger'>Localisation invalide.</p>";
-                }
-            } else {
-                document.getElementById('map').innerHTML = "<p class='text-danger'>Aucune localisation disponible.</p>";
-            }
-        });
-    </script>
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [lng, lat],
+        zoom: 13
+    });
+
+    new mapboxgl.Marker()
+        .setLngLat([lng, lat])
+        .addTo(map);
+</script>
+
 {% endblock %}
