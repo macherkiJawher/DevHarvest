@@ -31,17 +31,20 @@ class MachineController extends AbstractController
      * Liste des machines.
      */
     #[Route('/', name: 'app_machine_index', methods: ['GET'])]
-    public function index(MachineRepository $machineRepository): Response
+    public function index(MachineRepository $machineRepository, Request $request): Response
     {
-        $machines = $machineRepository->findAll();
-        $csrfTokens = [];
-        foreach ($machines as $machine) {
-            $csrfTokens[$machine->getId()] = $this->csrfTokenManager->getToken('delete' . $machine->getId())->getValue();
-        }
-        return $this->render('machine/index.html.twig', [
-            'machines' => $machines,
-            'csrf_tokens' => $csrfTokens,
-        ]);
+        $search = $request->query->get('search', ''); // Récupérer la valeur de la recherche ('' par défaut)
+
+    if ($search) {
+        $machines = $machineRepository->searchMachines($search);
+    } else {
+        $machines = $machineRepository->findAll(); // Afficher toutes les machines si pas de recherche
+    }
+
+    return $this->render('machine/index.html.twig', [
+        'machines' => $machines,
+        'search' => $search, // Passer la variable au template
+    ]);
     }
     #[Route('/list', name: 'app_machine_list', methods: ['GET'])]
     public function list(MachineRepository $machineRepository): Response
