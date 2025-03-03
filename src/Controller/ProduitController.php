@@ -50,21 +50,47 @@ final class ProduitController extends AbstractController
     #[Route('/', name: 'app_produit_index', methods: ['GET'])]
     public function index(Request $request, ProduitRepository $produitRepository): Response
     {
-        // Récupérer la catégorie depuis le paramètre GET
-        $categorie = $request->query->get('categorie');
-
-        if ($categorie) {
-            // Appliquer le filtrage par catégorie
-            $produits = $produitRepository->findByCategorie($categorie);
-        } else {
-            // Sinon, récupérer tous les produits
-            $produits = $produitRepository->findAll();
+        // Récupération des paramètres GET
+        $search = $request->query->get('search', '');
+        $categorieId = $request->query->get('categorie', '');
+        $tri = $request->query->get('tri', '');
+    
+        // Création de la requête dynamique
+        $queryBuilder = $produitRepository->createQueryBuilder('p');
+    
+        // Appliquer la recherche par nom
+        if (!empty($search)) {
+            $queryBuilder->andWhere('p.nom LIKE :search')
+                         ->setParameter('search', '%' . $search . '%');
         }
-
+    
+       
+    
+        // Appliquer le tri
+        switch ($tri) {
+            case 'nom':
+                $queryBuilder->orderBy('p.nom', 'ASC');
+                break;
+            case 'prix':
+                $queryBuilder->orderBy('p.prixUnitaire', 'ASC');
+                break;
+            case 'quantite':
+                $queryBuilder->orderBy('p.quantiteStock', 'DESC');
+                break;
+        }
+    
+        // Exécuter la requête
+        $produits = $queryBuilder->getQuery()->getResult();
+    
         return $this->render('produit/index.html.twig', [
             'produits' => $produits,
+            'search' => $search,
+            'categorie' => $categorieId,
+            'tri' => $tri,
         ]);
     }
+    
+    
     
     
 
@@ -166,7 +192,8 @@ public function afficher(Produit $produit): Response
         return $this->redirectToRoute('admin_produits');
     }
     
-    
+   
+
     
 
 

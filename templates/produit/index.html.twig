@@ -31,6 +31,21 @@
                 </form>
             </div>
         </div>
+        <form method="GET">
+    <input type="text" name="search" value="{{ search }}" placeholder="Rechercher un produit">
+    
+   
+
+    <select name="tri">
+        <option value="">Trier par</option>
+        <option value="nom" {% if tri == 'nom' %}selected{% endif %}>Nom</option>
+        <option value="prix" {% if tri == 'prix' %}selected{% endif %}>Prix</option>
+        <option value="quantite" {% if tri == 'quantite' %}selected{% endif %}>Quantité</option>
+    </select>
+
+    <button type="submit">Rechercher</button>
+</form>
+
         <div class="row mt-4">
             {% for produit in produits %}
                 <div class="col-lg-4 col-md-6 mb-4">
