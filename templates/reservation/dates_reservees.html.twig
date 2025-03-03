@@ -13,11 +13,28 @@
                     La machine <strong>{{ machine.nomMachine }}</strong> est déjà réservée aux dates suivantes :
                 </p>
 
-                <ul class="list-group">
-                    {% for date in datesReservees %}
-                        <li class="list-group-item text-center">{{ date }}</li>
-                    {% endfor %}
-                </ul>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Date de réservation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for date in datesReservees %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ date }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-muted">Aucune réservation enregistrée.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="text-center mt-3">
                     <a href="{{ path('app_machine_list') }}" class="btn btn-secondary">Retour à la liste des machines</a>

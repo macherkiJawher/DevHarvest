@@ -24,6 +24,21 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
     
+    #[Route('/connect/google', name: 'connect_google_start')]
+    public function connectGoogle(ClientRegistry $clientRegistry)
+    {
+        return $clientRegistry->getClient('google')->redirect(
+            ['email', 'profile'], // Scopes demandés
+            []
+        );
+    }
+
+    #[Route('/connect/google/check', name: 'connect_google_check')]
+    public function connectGoogleCheck()
+    {
+        // Symfony gère automatiquement l'authentification, cette route est un point d'entrée
+    }
+    
     #[Route('/redirect-by-role', name: 'app_redirect_by_role')]
     public function redirectByRole(): Response
     {

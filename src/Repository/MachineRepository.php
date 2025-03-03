@@ -15,7 +15,16 @@ class MachineRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Machine::class);
     }
-
+    
+    public function findMachinesForReservation(int $agriculteurId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.proprietaire != :agriculteur')
+            ->setParameter('agriculteur', $agriculteurId)
+            ->getQuery()
+            ->getResult();
+    }
+    
     //    /**
     //     * @return Machine[] Returns an array of Machine objects
     //     */

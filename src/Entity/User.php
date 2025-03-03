@@ -30,11 +30,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "string", enumType: RoleEnum::class)]
     private RoleEnum $role;
 
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    
     public function getEmail(): ?string
     {
         return $this->email;

@@ -37,3 +37,6 @@ security:
         - { path: ^/fournisseur, roles: ROLE_FOURNISSEUR }
         - { path: ^/client, roles: ROLE_CLIENT }
         - { path: ^/technicien, roles: ROLE_TECHNICIEN }
+        - { path: ^/machines, roles: ROLE_AGRICULTEUR }
+        - { path: ^/reservations, roles: ROLE_AGRICULTEUR }
+

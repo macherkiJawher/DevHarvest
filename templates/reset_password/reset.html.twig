@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation du mot de passe{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Réinitialisation du mot de passe</h2>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label>Nouveau mot de passe :</label>
+            <input type="password" name="password" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Modifier</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="{{ path('app_login') }}">Retour à la connexion</a>
+    </div>
+</div>
+{% endblock %}
