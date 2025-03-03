@@ -18,16 +18,14 @@ class MachineRepository extends ServiceEntityRepository
      * Rechercher les machines par nom, type, marque ou état
      */
     public function searchMachines(?string $search): array
-{
-    $query = $this->createQueryBuilder('m');
-
-    if ($search) {
-        $query->andWhere('m.nomMachine LIKE :search OR m.type LIKE :search OR m.marque LIKE :search OR m.etat LIKE :search')
-              ->setParameter('search', '%' . $search . '%');
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.nom_machine LIKE :search OR m.type LIKE :search OR m.marque LIKE :search OR m.etat LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->getQuery()
+            ->getResult();
     }
-
-    return $query->getQuery()->getResult();
-}
+    
 
 
     /**

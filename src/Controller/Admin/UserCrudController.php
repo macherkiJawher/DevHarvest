@@ -17,12 +17,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserCrudController extends AbstractController
 {
     #[Route('/', name: 'admin_user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
+    public function index(Request $request, UserRepository $userRepository): Response
     {
+        $search = $request->query->get('search', '');
+        $tri = $request->query->get('tri', '');
+    
+        $users = $userRepository->searchUsers($search, $tri);
+    
         return $this->render('admin/user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $users,
+            'search' => $search,
+            'tri' => $tri,
         ]);
     }
+    
 
     #[Route('/new', name: 'admin_user_new', methods: ['GET', 'POST'])]
    

@@ -31,21 +31,43 @@ class MachineController extends AbstractController
      * Liste des machines.
      */
     #[Route('/', name: 'app_machine_index', methods: ['GET'])]
-    public function index(MachineRepository $machineRepository, Request $request): Response
-    {
-        $search = $request->query->get('search', ''); // Récupérer la valeur de la recherche ('' par défaut)
+public function index(Request $request, MachineRepository $machineRepository): Response
+{
+    $search = $request->query->get('search', '');
+    $tri = $request->query->get('tri', '');
 
-    if ($search) {
-        $machines = $machineRepository->searchMachines($search);
-    } else {
-        $machines = $machineRepository->findAll(); // Afficher toutes les machines si pas de recherche
+    $queryBuilder = $machineRepository->createQueryBuilder('m');
+
+    if (!empty($search)) {
+        $queryBuilder->andWhere('m.nom_machine LIKE :search OR m.type LIKE :search OR m.marque LIKE :search OR m.etat LIKE :search')
+                     ->setParameter('search', '%' . $search . '%');
     }
+
+    switch ($tri) {
+        case 'nom':
+            $queryBuilder->orderBy('m.nom_machine', 'ASC');
+            break;
+        case 'prix_asc':
+            $queryBuilder->orderBy('m.prix_location_jour', 'ASC'); // Prix croissant
+            break;
+        case 'prix_desc':
+            $queryBuilder->orderBy('m.prix_location_jour', 'DESC'); // Prix décroissant
+            break;
+        case 'etat':
+            $queryBuilder->orderBy('m.etat', 'ASC');
+            break;
+    }
+
+    $machines = $queryBuilder->getQuery()->getResult();
 
     return $this->render('machine/index.html.twig', [
         'machines' => $machines,
-        'search' => $search, // Passer la variable au template
+        'search' => $search,
+        'tri' => $tri,
     ]);
-    }
+}
+
+    
     #[Route('/list', name: 'app_machine_list', methods: ['GET'])]
     public function list(MachineRepository $machineRepository): Response
     {
