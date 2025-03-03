@@ -17,10 +17,7 @@
                             <th>ID</th>
                             <td>{{ commande.id }}</td>
                         </tr>
-                        <tr>
-                            <th>Client</th>
-                            <td>{{ commande.client.nom }}</td>
-                        </tr>
+                       
                         <tr>
                             <th>Date de Commande</th>
                             <td>{{ commande.dateCommande|date('d/m/Y') }}</td>
@@ -31,7 +28,7 @@
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td>{{ commande.status }}</td>
+<td>{{ commande.etat.name }}</td>
                         </tr>
                     </table>
 

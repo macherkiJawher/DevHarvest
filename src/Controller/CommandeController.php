@@ -178,7 +178,7 @@ final class CommandeController extends AbstractController
         ]);
     }
 
-    #[Route('/commandes', name: 'admin_commandes')]
+    #[Route('/admin/commandes', name: 'admin_commandes')]
     public function commandes(CommandeRepository $commandeRepository): Response
     {
         $commandes = $commandeRepository->findAll();
@@ -202,28 +202,40 @@ final class CommandeController extends AbstractController
         ]);
     }
 
+    #[Route('/commandes/{id}/delete', name: 'admin_commande_delete', methods: ['POST'])]
+public function delete(int $id, CommandeRepository $commandeRepository, EntityManagerInterface $entityManager): Response
+{
+    $commande = $commandeRepository->find($id);
+
+    if (!$commande) {
+        throw $this->createNotFoundException('La commande n\'existe pas');
+    }
+
+    $entityManager->remove($commande);
+    $entityManager->flush();
+
+    $this->addFlash('success', 'Commande supprimée avec succès.');
+
+    return $this->redirectToRoute('admin_commandes');
+}
+
     #[Route('/payment/success', name: 'payment_success')]
     public function paymentSuccess(MailerService $mailerService, Request $request, CommandeRepository $commandeRepository): Response
     {
-        // Récupérer l'email et l'ID de la commande depuis la requête
         $email = $request->query->get('email');
         $commandeId = $request->query->get('commandeId');
     
-        // Vérifier si les informations sont présentes dans la requête
         if (!$email || !$commandeId) {
             $this->addFlash('error', 'Des informations sont manquantes pour confirmer le paiement.');
             return $this->redirectToRoute('app_commande_index');
         }
     
-        // Rechercher la commande dans la base de données
         $commande = $commandeRepository->find($commandeId);
     
-        // Si la commande n'existe pas, afficher une erreur 404
         if (!$commande) {
             throw $this->createNotFoundException('Commande introuvable');
         }
     
-        // Envoi de l'email de confirmation de paiement
         try {
             $mailerService->sendConfirmationEmail($email, $commandeId);
             $this->addFlash('success', 'Paiement effectué avec succès. Un email de confirmation a été envoyé.');
@@ -231,7 +243,6 @@ final class CommandeController extends AbstractController
             $this->addFlash('error', 'Erreur lors de l\'envoi de l\'email de confirmation : ' . $e->getMessage());
         }
     
-        // Affichage de la page de succès avec les détails de la commande
         return $this->render('payment/success.html.twig', [
             'commande' => $commande,
         ]);

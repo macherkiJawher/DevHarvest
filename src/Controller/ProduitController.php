@@ -50,15 +50,12 @@ final class ProduitController extends AbstractController
     #[Route('/', name: 'app_produit_index', methods: ['GET'])]
     public function index(Request $request, ProduitRepository $produitRepository): Response
     {
-        // Récupération des paramètres GET
         $search = $request->query->get('search', '');
         $categorieId = $request->query->get('categorie', '');
         $tri = $request->query->get('tri', '');
     
-        // Création de la requête dynamique
         $queryBuilder = $produitRepository->createQueryBuilder('p');
     
-        // Appliquer la recherche par nom
         if (!empty($search)) {
             $queryBuilder->andWhere('p.nom LIKE :search')
                          ->setParameter('search', '%' . $search . '%');
@@ -66,7 +63,6 @@ final class ProduitController extends AbstractController
     
        
     
-        // Appliquer le tri
         switch ($tri) {
             case 'nom':
                 $queryBuilder->orderBy('p.nom', 'ASC');
@@ -102,23 +98,20 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // Associer l'agriculteur à ce produit
         $user = $this->getUser();
         if ($user && in_array('ROLE_AGRICULTEUR', $user->getRoles())) {
-            $produit->setAgriculteur($user); // L'utilisateur connecté devient l'agriculteur du produit
+            $produit->setAgriculteur($user); 
         } else {
             $this->addFlash('error', 'Vous devez être un agriculteur pour ajouter un produit.');
             return $this->redirectToRoute('app_home');
         }
 
-        // Gérer l'image si présente
         $imageFile = $form->get('imageFile')->getData();
         $filename = $this->handleImageUpload($imageFile, $produit);
         if ($filename) {
             $produit->setImage($filename);
         }
 
-        // Sauvegarder le produit
         $entityManager->persist($produit);
         $entityManager->flush();
 
