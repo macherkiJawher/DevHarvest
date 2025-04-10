@@ -1,0 +1,38 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de la Grange{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Détails de la Grange</h1>
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <td>{{ grange.id }}</td>
+        </tr>
+        <tr>
+            <th>Type</th>
+            <td>{{ grange.typeGrange }}</td>
+        </tr>
+        <tr>
+            <th>Capacité</th>
+            <td>{{ grange.capacite }} animaux</td>
+        </tr>
+        <tr>
+            <th>Zone</th>
+            <td>{{ grange.zone.nomZone }}</td>
+        </tr>
+        <tr>
+            <th>Image</th>
+            <td>
+                {% if grange.image %}
+                    <img src="{{ asset('uploads/granges/' ~ grange.image) }}" alt="Image de la Grange" width="200">
+                {% else %}
+                    <span class="text-muted">Aucune image</span>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <a href="{{ path('admin_grange_index') }}" class="btn btn-secondary">Retour à la liste</a>
+</div>
+{% endblock %}

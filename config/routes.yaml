@@ -3,3 +3,39 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+generate_pdf:
+    path: /generate-pdf/{id}
+    controller: App\Controller\CommandeController::generatePdf
+zone_recherche:
+    path: /zones/recherche
+    controller: App\Controller\ZoneController::searchZones
+    methods: [GET]
+
+parcelle_index:
+    path: /parcelle
+    controller: App\Controller\ParcelleController::index
+    methods: [GET]
+
+parcelle_show:
+    path: /parcelle/{id}
+    controller: App\Controller\ParcelleController::show
+    methods: [GET]
+    requirements: { id: '\d+' }
+
+parcelle_new:
+    path: /parcelle/new
+    controller: App\Controller\ParcelleController::new
+    methods: [GET, POST]
+
+parcelle_edit:
+    path: /parcelle/{id}/edit
+    controller: App\Controller\ParcelleController::edit
+    methods: [GET, POST]
+    requirements: { id: '\d+' }
+
+parcelle_delete:
+    path: /parcelle/{id}
+    controller: App\Controller\ParcelleController::delete
+    methods: [POST]
+    requirements: { id: '\d+' }

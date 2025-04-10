@@ -6,13 +6,45 @@
     <div class="container">
         <h1 class="text-center mb-4">Liste des Produits</h1>
 
-        
+        <div class="text-center mb-4">
+            <a href="{{ path('app_dashboard') }}" class="btn btn-dark">
+                <i class="fas fa-chart-line"></i> Voir le Dashboard
+            </a>
+        </div>
 
         <div class="text-center mb-4">
             <a href="{{ path('app_produit_new') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Ajouter un produit
             </a>
         </div>
+<!-- Filtre par catégorie -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <form method="GET" action="{{ path('app_produit_index') }}" class="form-inline">
+                    <label for="categorie" class="me-2">Filtrer par catégorie:</label>
+                    <select name="categorie" id="categorie" class="form-select w-auto">
+                        <option value="">Tous</option>
+                        <option value="fruits" {% if app.request.get('categorie') == 'fruits' %}selected{% endif %}>Fruits</option>
+                        <option value="legumes" {% if app.request.get('categorie') == 'legumes' %}selected{% endif %}>Légumes</option>
+                    </select>
+                    <button type="submit" class="btn btn-dark ms-2">Filtrer</button>
+                </form>
+            </div>
+        </div>
+        <form method="GET">
+    <input type="text" name="search" value="{{ search }}" placeholder="Rechercher un produit">
+    
+   
+
+    <select name="tri">
+        <option value="">Trier par</option>
+        <option value="nom" {% if tri == 'nom' %}selected{% endif %}>Nom</option>
+        <option value="prix" {% if tri == 'prix' %}selected{% endif %}>Prix</option>
+        <option value="quantite" {% if tri == 'quantite' %}selected{% endif %}>Quantité</option>
+    </select>
+
+    <button type="submit">Rechercher</button>
+</form>
 
         <div class="row mt-4">
             {% for produit in produits %}
@@ -51,6 +83,7 @@
                             <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-warning me-2">
                                 <i class="fas fa-edit"></i> Modifier
                             </a>
+                            <!-- Formulaire de suppression avec SweetAlert -->
                             <form action="{{ path('app_produit_delete', {'id': produit.id}) }}" method="post" id="delete-form-{{ produit.id }}" style="display:inline;">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
                                 <button class="btn btn-danger" type="submit">
@@ -74,6 +107,7 @@
         {{ parent() }}
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
+            // Afficher les messages flash de succès ou d'erreur
             {% if app.session.flashbag.has('success') %}
                 Swal.fire({
                     title: 'Succès!',
@@ -92,7 +126,7 @@
                 });
             {% endif %}
 
-            // Confirmation de suppression avec SweetAlert
+            // Ajouter l'événement pour chaque formulaire de suppression
             {% for produit in produits %}
                 document.querySelector('#delete-form-{{ produit.id }}').addEventListener('submit', function(event) {
                     event.preventDefault();
@@ -105,7 +139,7 @@
                         cancelButtonText: 'Annuler'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            this.submit(); // Soumettre le formulaire pour la suppression
+                            this.submit();  // Soumettre le formulaire si confirmé
                         }
                     });
                 });

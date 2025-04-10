@@ -1,10 +1,13 @@
 <?php
+// src/Entity/Culture.php
 
 namespace App\Entity;
 
 use App\Repository\CultureRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CultureRepository::class)]
 class Culture
@@ -15,52 +18,161 @@ class Culture
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $type_culture = null;
+    private ?string $nom = null;
+
+    #[ORM\Column(type: "text")]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_semis = null;
+    private ?\DateTimeInterface $date_plantation = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_recolte_prevue = null;
+    private ?\DateTimeInterface $date_recolte = null;
 
+    #[ORM\Column(type: "string")]
+    private ?string $saison = null; // Ajout de l'attribut saison
+
+    #[ORM\Column(type: "string")]
+    private ?string $categorie = null; // Nouveau champ pour la catégorie
+
+    // Relation OneToMany vers Parcelle
+    #[ORM\OneToMany(mappedBy: 'cultureActuelle', targetEntity: Parcelle::class)]
+    private Collection $parcelles;
+
+    public function __construct()
+    {
+        $this->parcelles = new ArrayCollection();
+    }
+
+    public function getParcelles(): Collection
+    {
+        return $this->parcelles;
+    }
+
+    public function addParcelle(Parcelle $parcelle): self
+    {
+        if (!$this->parcelles->contains($parcelle)) {
+            $this->parcelles[] = $parcelle;
+            $parcelle->setCultureActuelle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParcelle(Parcelle $parcelle): self
+    {
+        if ($this->parcelles->removeElement($parcelle)) {
+            // Définit la culture actuelle de la parcelle à null
+            if ($parcelle->getCultureActuelle() === $this) {
+                $parcelle->setCultureActuelle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[ORM\Column(type: "float")]
+    private ?float $quantite = 0;
+
+    public function getQuantite(): ?float
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(float $quantite): static
+    {
+        $this->quantite = $quantite;
+        return $this;
+    }
+
+    // Getters et setters
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTypeCulture(): ?string
+    public function getNom(): ?string
     {
-        return $this->type_culture;
+        return $this->nom;
     }
 
-    public function setTypeCulture(string $type_culture): static
+    public function setNom(string $nom): static
     {
-        $this->type_culture = $type_culture;
-
+        $this->nom = $nom;
         return $this;
     }
 
-    public function getDateSemis(): ?\DateTimeInterface
+    public function getDescription(): ?string
     {
-        return $this->date_semis;
+        return $this->description;
     }
 
-    public function setDateSemis(\DateTimeInterface $date_semis): static
+    public function setDescription(string $description): static
     {
-        $this->date_semis = $date_semis;
-
+        $this->description = $description;
         return $this;
     }
 
-    public function getDateRecoltePrevue(): ?\DateTimeInterface
+    public function getImage(): ?string
     {
-        return $this->date_recolte_prevue;
+        return $this->image;
     }
 
-    public function setDateRecoltePrevue(\DateTimeInterface $date_recolte_prevue): static
+    public function setImage(string $image): static
     {
-        $this->date_recolte_prevue = $date_recolte_prevue;
-
+        $this->image = $image;
         return $this;
+    }
+
+    public function getDatePlantation(): ?\DateTimeInterface
+    {
+        return $this->date_plantation;
+    }
+
+    public function setDatePlantation(\DateTimeInterface $date_plantation): static
+    {
+        $this->date_plantation = $date_plantation;
+        return $this;
+    }
+
+    public function getDateRecolte(): ?\DateTimeInterface
+    {
+        return $this->date_recolte;
+    }
+
+    public function setDateRecolte(\DateTimeInterface $date_recolte): static
+    {
+        $this->date_recolte = $date_recolte;
+        return $this;
+    }
+
+    public function getSaison(): ?string
+    {
+        return $this->saison; // Retourne la saison
+    }
+
+    public function setSaison(string $saison): static
+    {
+        $this->saison = $saison; // Définit la saison
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->categorie; // Retourne la catégorie
+    }
+
+    public function setCategorie(string $categorie): static
+    {
+        $this->categorie = $categorie; // Définit la catégorie
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nom;
     }
 }

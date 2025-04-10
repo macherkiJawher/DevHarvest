@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        
+        /* Header */
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .invoice-header h1 {
+            font-size: 36px;
+            color: #4CAF50; /* Modern Green */
+        }
+        
+        .invoice-header img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+
+        /* Table Styles */
+        .invoice-details {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .invoice-details td, .invoice-details th {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .invoice-details th {
+            background-color: #4CAF50;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .invoice-details td {
+            background-color: #f9f9f9;
+        }
+
+        .invoice-details tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        /* Total Price */
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #4CAF50;
+            text-align: right;
+            margin-top: 30px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+            color: #777;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .invoice-details th, .invoice-details td {
+                padding: 8px;
+            }
+            .total {
+                font-size: 16px;
+                text-align: center;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-header">
+        <h1>Facture</h1>
+    </div>
+
+    <h2>Détails de la commande</h2>
+    <table class="invoice-details">
+        <thead>
+            <tr>
+                <th>Informations</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Commande n° :</strong></td>
+                <td>{{ commande.id }}</td>
+            </tr>
+            <tr>
+                <td><strong>État :</strong></td>
+                <td>{{ commande.etat.value }}</td>
+            </tr>
+            <tr>
+                <td><strong>Date de commande :</strong></td>
+                <td>{{ commande.dateCommande|date('d/m/Y') }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="total">Total: <strong>{{ commande.total }} DT</strong></p>
+
+    <div class="footer">
+        <p>Merci pour votre achat ! Vous recevrez votre commande dans 1 à 2 jours.</p>
+        <p>Cordialement, <strong>Freeshop</strong>, Responsable des ventes.</p>
+    </div>
+</body>
+</html>

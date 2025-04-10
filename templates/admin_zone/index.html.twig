@@ -1,0 +1,76 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Gestion des Zones{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white text-center">
+                    <h3 class="mb-0">Gestion des Zones</h3>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0 text-secondary">Liste des Zones</h5>
+                        <a href="{{ path('admin_zone_new') }}" class="btn btn-outline-success">
+                            <img src="{{ asset('tempadmin/img/addd.png') }}" alt="Ajouter" width="20" height="20">
+                            Ajouter
+                        </a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="bg-secondary text-white text-center">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Superficie</th>
+                                    <th>Localisation</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in zones %}
+                                <tr>
+                                    <td class="text-center text-dark fw-bold">{{ zone.id }}</td>
+                                    <td class="text-dark">{{ zone.nomZone }}</td>
+                                    <td class="text-dark">{{ zone.superficieZone }} m²</td>
+                                    <td class="text-dark">{{ zone.localisationZone }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                        <a href="{{ path('admin_zone_show', {'id': zone.id}) }}" class="btn btn-outline-info btn-sm">
+                                                <img src="{{ asset('tempadmin/img/cons.png') }}" alt="Voir" width="20" height="20">
+                                            </a>
+                                            <a href="{{ path('admin_zone_edit', {'id': zone.id}) }}" class="btn btn-outline-primary btn-sm">
+                                                <img src="{{ asset('tempadmin/img/modd.png') }}" alt="Modifier" width="20" height="20">
+                                            </a>
+                                            <form method="post" action="{{ path('admin_zone_delete', {'id': zone.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?');" class="d-inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ zone.id) }}">
+                                                <button class="btn btn-outline-danger btn-sm">
+                                                    <img src="{{ asset('tempadmin/img/dell.png') }}" alt="Supprimer" width="20" height="20">
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Aucune zone trouvée.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

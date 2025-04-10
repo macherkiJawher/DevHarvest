@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Réservations{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-center">Liste des Réservations</h1>
+
+    <!-- Formulaire de recherche -->
+    <form method="get" action="{{ path('app_reservations_list') }}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Rechercher par machine, client ou statut" value="{{ search }}">
+            <button type="submit" class="btn btn-primary">🔍 Rechercher</button>
+        </div>
+    </form>
+
+    {% if reservations is empty %}
+        <p class="text-muted text-center">Aucune réservation trouvée.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Machine</th>
+                    <th>Client</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                    <tr>
+                        <td>{{ reservation.machine.nomMachine }}</td>
+                        <td>{{ reservation.client.nom }}</td>
+                        <td>{{ reservation.dateDebut|date('d/m/Y') }}</td>
+                        <td>{{ reservation.dateFin|date('d/m/Y') }}</td>
+              

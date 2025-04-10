@@ -3,6 +3,13 @@
 {% block title %}Machines{% endblock %}
 
 {% block body %}
+<!-- Formulaire de recherche -->
+    <form method="get" action="{{ path('app_machine_index') }}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Rechercher par nom, type, marque ou état" value="{{ search ?? '' }}">
+            <button type="submit" class="btn btn-primary">🔍 Rechercher</button>
+        </div>
+    </form>
     <div class="container mt-4">
         <h1 class="text-center">Liste Des Machines</h1>
         <div class="text-right mb-3">

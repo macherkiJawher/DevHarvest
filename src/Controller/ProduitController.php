@@ -4,22 +4,22 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Form\ProduitType;
+use App\Enum\CategorieProduit;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/produit')]
 final class ProduitController extends AbstractController
 {
-    // Méthode privée pour gérer le téléchargement des images
     private function handleImageUpload($imageFile, Produit $produit): ?string
     {
         if ($imageFile) {
-            // Validation de l'extension du fichier
             $allowedExtensions = ['jpg', 'jpeg', 'png'];
             $extension = $imageFile->guessExtension();
             if (!in_array($extension, $allowedExtensions)) {
@@ -27,13 +27,11 @@ final class ProduitController extends AbstractController
                 return null;
             }
 
-            // Validation de la taille du fichier (max 5 Mo)
             if ($imageFile->getSize() > 5 * 1024 * 1024) {
                 $this->addFlash('error', 'Le fichier est trop volumineux. La taille maximale autorisée est de 5 Mo.');
                 return null;
             }
 
-            // Créer le nom unique et déplacer le fichier
             $filename = uniqid() . '.' . $extension;
             try {
                 $imageFile->move(
@@ -50,40 +48,83 @@ final class ProduitController extends AbstractController
     }
 
     #[Route('/', name: 'app_produit_index', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository): Response
+    public function index(Request $request, ProduitRepository $produitRepository): Response
     {
+        $search = $request->query->get('search', '');
+        $categorieId = $request->query->get('categorie', '');
+        $tri = $request->query->get('tri', '');
+    
+        $queryBuilder = $produitRepository->createQueryBuilder('p');
+    
+        if (!empty($search)) {
+            $queryBuilder->andWhere('p.nom LIKE :search')
+                         ->setParameter('search', '%' . $search . '%');
+        }
+    
+       
+    
+        switch ($tri) {
+            case 'nom':
+                $queryBuilder->orderBy('p.nom', 'ASC');
+                break;
+            case 'prix':
+                $queryBuilder->orderBy('p.prixUnitaire', 'ASC');
+                break;
+            case 'quantite':
+                $queryBuilder->orderBy('p.quantiteStock', 'DESC');
+                break;
+        }
+    
+        // Exécuter la requête
+        $produits = $queryBuilder->getQuery()->getResult();
+    
         return $this->render('produit/index.html.twig', [
-            'produits' => $produitRepository->findAll(),
+            'produits' => $produits,
+            'search' => $search,
+            'categorie' => $categorieId,
+            'tri' => $tri,
         ]);
     }
+    
+    
+    
+    
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $produit = new Produit();
-        $form = $this->createForm(ProduitType::class, $produit);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $produit = new Produit();
+    $form = $this->createForm(ProduitType::class, $produit);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image
-            $imageFile = $form->get('imageFile')->getData();
-            $filename = $this->handleImageUpload($imageFile, $produit);
-            if ($filename) {
-                $produit->setImage($filename);
-            }
-
-            $entityManager->persist($produit);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Produit ajouté avec succès!');
-            return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $user = $this->getUser();
+        if ($user && in_array('ROLE_AGRICULTEUR', $user->getRoles())) {
+            $produit->setAgriculteur($user); 
+        } else {
+            $this->addFlash('error', 'Vous devez être un agriculteur pour ajouter un produit.');
+            return $this->redirectToRoute('app_home');
         }
 
-        return $this->render('produit/new.html.twig', [
-            'produit' => $produit,
-            'form' => $form->createView(),
-        ]);
+        $imageFile = $form->get('imageFile')->getData();
+        $filename = $this->handleImageUpload($imageFile, $produit);
+        if ($filename) {
+            $produit->setImage($filename);
+        }
+
+        $entityManager->persist($produit);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Produit ajouté avec succès!');
+        return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('produit/new.html.twig', [
+        'produit' => $produit,
+        'form' => $form->createView(),
+    ]);
+}
+
 
     #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
     public function show(Produit $produit): Response
@@ -93,6 +134,64 @@ final class ProduitController extends AbstractController
         ]);
     }
 
+
+    #[Route('/admin/produits', name: 'admin_produits', methods: ['GET'])]
+    public function liste(ProduitRepository $produitRepository): Response
+    {
+        $produits = $produitRepository->findAll();
+        return $this->render('admin/produits/index.html.twig', [
+            'produits' => $produits,
+        ]);
+}
+
+#[Route('/admin/produits/{id<\d+>}', name: 'admin_produit_afficher', methods: ['GET'])]
+public function afficher(Produit $produit): Response
+{
+    return $this->render('admin/produits/show.html.twig', [
+        'produit' => $produit,
+    ]);
+}
+
+#[Route('/modifier/{id}', name: 'admin_produit_modifier', methods: ['GET', 'POST'])]
+    public function modifierProduit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ProduitType::class, $produit);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Produit mis à jour avec succès.');
+            return $this->redirectToRoute('admin_produit_afficher', ['id' => $produit->getId()]);
+        }
+
+        return $this->render('admin/produits/edit.html.twig', [
+            'form' => $form->createView(),
+            'produit' => $produit,
+        ]);
+    }
+
+    #[Route('/admin/produits/supprimer/{id}', name: 'admin_produit_supprimer', methods: ['POST'])]
+    public function supprimer(Produit $produit, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $produit->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($produit);
+            $entityManager->flush();
+            $this->addFlash('success', 'Produit supprimé avec succès.');
+        } else {
+            $this->addFlash('danger', 'Token CSRF invalide.');
+        }
+    
+        return $this->redirectToRoute('admin_produits');
+    }
+    
+   
+
+    
+
+
+
+
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {
@@ -100,7 +199,6 @@ final class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image si elle est modifiée
             $imageFile = $form->get('imageFile')->getData();
             if ($imageFile) {
                 $filename = $this->handleImageUpload($imageFile, $produit);
@@ -121,13 +219,14 @@ final class ProduitController extends AbstractController
         ]);
     }
     #[Route('/commande/panier', name: 'produits_panier')]
-    public function afficherProduitsPourPanier(ProduitRepository $produitRepository): Response
-    {
-        $produits = $produitRepository->findAll();
+public function afficherPanier(Request $request, ProduitRepository $produitRepository): Response
+{
+    $produits = $produitRepository->findAll();
+    return $this->render('produit/liste_panier.html.twig', [
+        'produits' => $produits,
+    ]);
+}
 
-        return $this->render('produit/liste_panier.html.twig', [
-            'produits' => $produits,
-        ]);}
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {
@@ -139,5 +238,7 @@ final class ProduitController extends AbstractController
         }
 
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
-    }
+    
+    
+}
 }

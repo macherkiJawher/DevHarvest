@@ -15,21 +15,21 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             {{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control shadow-sm', 'type': 'datetime-local'}}) }}
+                            {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control shadow-sm', 'id': 'dateDebut'}}) }}
                             {{ form_errors(form.dateDebut) }}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             {{ form_label(form.dateFin, 'Date de fin', {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.dateFin, {'attr': {'class': 'form-control shadow-sm', 'type': 'datetime-local'}}) }}
+                            {{ form_widget(form.dateFin, {'attr': {'class': 'form-control shadow-sm', 'id': 'dateFin'}}) }}
                             {{ form_errors(form.dateFin) }}
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center mt-3">
-                    <button type="submit" class="btn btn-success px-4" >Réserver</button>
+                    <button type="submit" class="btn btn-success px-4">Réserver</button>
                     <a href="{{ path('app_machine_list') }}" class="btn btn-secondary px-4">Annuler</a>
                 </div>
 
@@ -37,4 +37,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let datesReservees = JSON.parse('{{ datesReservees|raw }}');
+            let dateDebutInput = document.getElementById("dateDebut");
+            let dateFinInput = document.getElementById("dateFin");
+
+            function disableReservedDates(input) {
+                input.addEventListener("input", function () {
+                    let selectedDate = this.value;
+                    if (datesReservees.includes(selectedDate)) {
+                        alert("Cette date est déjà réservée, veuillez choisir une autre.");
+                        this.value = "";
+                    }
+                });
+            }
+
+            disableReservedDates(dateDebutInput);
+            disableReservedDates(dateFinInput);
+        });
+    </script>
 {% endblock %}

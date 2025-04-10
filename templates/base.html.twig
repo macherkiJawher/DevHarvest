@@ -18,6 +18,12 @@
     <link href="{{ asset('temp/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
     <link href="{{ asset('temp/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('temp/css/main.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ asset('client/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('client/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('client/css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('client/css/custom.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.css">
   {% endblock %}
 </head>
 
@@ -26,13 +32,50 @@
   <header id="header" class="header d-flex align-items-center">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
       <a href="{{ path('app_home') }}" class="logo d-flex align-items-center">
-        <img src="{{ asset('temp/img/logo.png') }}" alt="AgriCulture">
+        <img src="{{ asset('client/images/DevHarvest1.png')}}" alt="AgriCulture">
       </a>
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="{{ path('app_home') }}" class="active">Home</a></li>
-          <li><a href="{{ path('app_login') }}" class="active">Login</a></li>
-          <li><a href="{{ path('app_signup') }}" class="active">Sign Up</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{{ path('app_client') }}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                       <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">Produit</a>
+                            <ul class="dropdown-menu">
+								
+								<li><a href="{{ path('app_produit_index') }}">Liste Produit</a></li>
+                            
+                            </ul>
+                        </li>
+
+
+                         <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">Commande</a>
+                            <ul class="dropdown-menu">
+								<li><a href="{{ path('app_produit_liste') }}">Passer commande</a></li>
+							    <li><a href="{{ path('app_panier') }}">Panier</a></li>
+
+                            
+                            </ul>
+                        </li>
+                         <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">Forum</a>
+                            <ul class="dropdown-menu">
+								<li><a href="{{ path('post_list') }}">Forum List</a></li>
+								<li><a href="{{ path('post_create') }}">Create Forum</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('user_profile') }}">👤 Mon Profil</a>
+                                </li>
+                            </ul>
+                        </li>
+                          <li class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">Machine</a>
+                            <ul class="dropdown-menu">
+								<li><a href="{{ path('app_machine_new') }}">Ajouter Machine</a></li>
+                                <li><a href="{{ path('app_machine_index') }}" >Liste Machine</a></li>
+								<li><a href="{{ path('app_machine_list') }}" >Reserver Machine</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -113,12 +156,30 @@
   <a href="#" id="scroll-top" class="scroll-top"><i class="bi bi-arrow-up-short"></i></a>
   <div id="preloader"></div>
 
-  {% block js %}
+  {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
     <script src="{{ asset('temp/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('temp/vendor/aos/aos.js') }}"></script>
     <script src="{{ asset('temp/vendor/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('temp/vendor/glightbox/js/glightbox.min.js') }}"></script>
     <script src="{{ asset('temp/js/main.js') }}"></script>
+
+    <script src="{{ asset('client/js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('client/js/popper.min.js') }}"></script>
+    <script src="{{ asset('client/js/bootstrap.min.js') }}"></script>
+
+    <!-- ALL PLUGINS -->
+    <script src="{{ asset('client/js/jquery.superslides.min.js') }}"></script>
+    <script src="{{ asset('client/js/bootstrap-select.js') }}"></script>
+    <script src="{{ asset('client/js/inewsticker.js') }}"></script>
+    <script src="{{ asset('client/js/bootsnav.js') }}"></script>
+    <script src="{{ asset('client/js/images-loded.min.js') }}"></script>
+    <script src="{{ asset('client/js/isotope.min.js') }}"></script>
+    <script src="{{ asset('client/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('client/js/baguetteBox.min.js') }}"></script>
+    <script src="{{ asset('client/js/form-validator.min.js') }}"></script>
+    <script src="{{ asset('client/js/contact-form-script.js') }}"></script>
+    <script src="{{ asset('client/js/custom.js') }}"></script>
   {% endblock %}
 </body>
 </html>

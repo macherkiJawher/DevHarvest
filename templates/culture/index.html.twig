@@ -1,0 +1,186 @@
+{% extends 'client.html.twig' %}
+
+{% block title %}Liste des Cultures{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center text-success mb-4">🌿 Liste des Cultures</h1>
+
+        <div class="text-center mb-4">
+            <a href="{{ path('culture_new') }}" class="btn btn-success btn-lg shadow-lg hover-shadow">
+                <i class="fas fa-plus"></i> Ajouter une nouvelle culture
+            </a>
+        </div>
+
+        <div class="row">
+            {% if cultures is not empty %}
+                {% for culture in cultures %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0 shadow-lg rounded-lg overflow-hidden">
+                            <div class="image-container">
+                                {% if culture.image %}
+                                    <img src="{{ asset('uploads/images/' ~ culture.image) }}" class="card-img-top" alt="{{ culture.nom }}">
+                                {% else %}
+                                    <img src="{{ asset('images/default.jpg') }}" class="card-img-top" alt="Image par défaut">
+                                {% endif %}
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 class="card-title">
+                                    <a href="{{ path('culture_show', {'id': culture.id}) }}" class="text-dark fw-bold">{{ culture.nom }}</a>
+                                </h5>
+                                <p class="text-muted">{{ culture.description|slice(0, 50) ~ '...' }}</p>
+
+                                <div class="culture-info mt-3">
+                                    <p><strong>🌱 Plantation :</strong> {{ culture.datePlantation ? culture.datePlantation|date('d/m/Y') : 'Non définie' }}</p>
+                                    <p><strong>🌾 Récolte :</strong> {{ culture.dateRecolte ? culture.dateRecolte|date('d/m/Y') : 'Non définie' }}</p>
+                                    <p><strong>📦 Quantité :</strong> <span class="badge bg-light text-success">{{ culture.quantite }} KG</span></p>
+                                    <p><strong>🍂 Saison :</strong> <span class="badge bg-light text-warning">{{ culture.saison }}</span></p>
+                                </div>
+
+                                <hr>
+                                <div class="d-flex justify-content-center">
+                                    <a href="{{ path('culture_show', {'id': culture.id}) }}" class="btn btn-info shadow-sm custom-btn-spacing hover-shadow">
+                                        <i class="fas fa-eye"></i> Voir
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">Aucune culture enregistrée.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Pagination Bootstrap -->
+        <div class="pagination-container mt-4">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if pagination.current_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_culture_index', {'page': pagination.current_page - 1}) }}">
+                                <i class="fas fa-chevron-left"></i> Précédent
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for page in 1..pagination.total_pages %}
+                        <li class="page-item {{ page == pagination.current_page ? 'active' : '' }}">
+                            <a class="page-link" href="{{ path('app_culture_index', {'page': page}) }}">
+                                {{ page }}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                    {% if pagination.current_page < pagination.total_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_culture_index', {'page': pagination.current_page + 1}) }}">
+                                Suivant <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <style>
+        .custom-btn-spacing {
+            margin-right: 15px;
+        }
+
+        .card {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .image-container {
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card-img-top:hover {
+            transform: scale(1.1);
+        }
+
+        .culture-info p {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            font-size: 0.9rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+
+        .btn {
+            font-size: 0.9rem;
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-lg {
+            padding: 12px 18px;
+            font-size: 1.1rem;
+        }
+
+        .pagination-container {
+            margin-top: 30px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .pagination .page-link {
+            border-radius: 50%;
+            font-size: 1.1rem;
+            padding: 10px 15px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .pagination .page-item:first-child .page-link,
+        .pagination .page-item:last-child .page-link {
+            border-radius: 10px;
+        }
+
+        .pagination .page-link {
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+
+        .pagination .page-item.active .page-link:hover {
+            background-color: #28a745;
+        }
+    </style>
+{% endblock %}
